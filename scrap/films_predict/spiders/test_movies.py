@@ -1,6 +1,6 @@
 from utils.environment import get_env
 import scrapy
-from films_predict.items import FilmsItem
+from films_predict.items import FilmItem
 from scrapy.http import Response
 
 BASE_URL = get_env("SCRAP_JP")
@@ -13,5 +13,5 @@ class TestMoviesSpider(scrapy.Spider):
     ]
 
     def parse(self, response: Response):
-        item = FilmsItem()
-        yield from item.parse(response=response)
+        item = FilmItem()
+        return item.parse(response=response)

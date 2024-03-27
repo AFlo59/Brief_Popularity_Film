@@ -9,7 +9,7 @@ import isodate
 from timelength import TimeLength
 
 
-class FilmsItem(Item):
+class FilmItem(Item):
     title = Field()
     director = Field()
     year = Field()
@@ -23,14 +23,13 @@ class FilmsItem(Item):
     copies = Field()
 
     def parse(self, response):
-        title = html.unescape(
-            response.xpath(
-                "//*[@id='content']/table[2]/tbody/tr[2]/td[3]/h3/a/text()"
-            ).extract()
-        )
+        print(response.url)
+        title = response.xpath(
+            "//*[@id='content']/table[2]/tr[2]/td[3]/h3/a/text()"
+        ).extract()
 
-        self["title"] = html.unescape(title)
+        self["title"] = html.unescape(title.pop())
 
-        print(self["title"])
+        print("parse", self["title"])
 
         yield self

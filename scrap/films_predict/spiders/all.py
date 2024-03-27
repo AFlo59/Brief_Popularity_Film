@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 import scrapy
 from scrapy.http import Response
 from scrapy.linkextractors import LinkExtractor
-from films_predict.items import FilmsItem
+from films_predict.items import FilmItem
 
 BASE_URL = "https://www.imdb.com"
 url_regex = r"/title\/(tt[0-9]+)(\/?\?ref_)+"
@@ -15,8 +15,10 @@ class AllMoviesSpider(scrapy.Spider):
         "https://www.imdb.com/title/tt0094794",
     ]
 
+    # "//table[@class='tablesmall tablesmall5']/descendant::tr/descendant::h3/a/text()"
+
     def parse(self, response: Response):
-        item = FilmsItem()
+        item = FilmItem()
         yield from item.parse(response)
 
         links = extractor.extract_links(response)

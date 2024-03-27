@@ -5,30 +5,36 @@
 
 
 # useful for handling different item types with a single interface
-from db.database import connect_db
+from datetime import datetime, timezone
+from db.database_pg import session
 from itemadapter import ItemAdapter
+from films_predict.migrations import FilmModel
 from utils.environment import get_env
 
-from .items import FilmsItem
+from .items import FilmItem
 
 
 class FilmsPipeline:
     def __init__(self) -> None:
-        self.client = connect_db()
+        pass
 
-    def open_spider(self, spider):
-        # print('********* open_spider')
-        db = self.client[get_env("FILM_DB")]
-        self.films = db["films"]
+    # def open_spider(self, spider):
+    #     # print('********* open_spider')
+    #     db = self.client[get_env("FILM_DB")]
+    #     self.films = db["films"]
 
-    def close_spider(self, spider):
-        # print('********* close_spider')
-        self.client.close()
+    # def close_spider(self, spider):
+    #     # print('********* close_spider')
+    #     self.client.close()
 
-    def process_item(self, item: FilmsItem, spider):
-        json = ItemAdapter(item).asdict()
+    def process_item(self, item: FilmItem, spider):
+        film = FilmModel()
+        film_item = ItemAdapter(item)
+        film.title = film_item.get("title")
+        film.time_updated = datetime.now(timezone.utc)
 
-        self.films.update_one(
-            filter={"_id": json["_id"]}, upsert=True, update={"$set": json}
-        )
+        print("process_item", film.__dict__)
+
+        session.add(film)
+        session.commit()
         return item

@@ -3,3 +3,6 @@ python-dotenv
 isodate
 xmltodict
 timelength
+alembic
+sqlalchemy
+psycopg2-binary
