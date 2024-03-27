@@ -1,0 +1,74 @@
+{% load static %}
+{% url "home" as url_home %}
+
+<head>
+    <style>
+
+    </style>
+</head>
+<header>
+    <nav>
+        <a href="{% url 'home' %}">
+            <img src="{% static '/img/name_of_icon.jpeg' %}" alt="icon_home_page">
+        </a>
+        <div class="dropdown">
+            <a id="login-btn" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}"><i class="fa fa-user mr-2"></i>Login</a>
+            <a id="signup-btn" href="{% url 'Administation:Signup' %}" style="display: {% if user.is_authenticated %}none{% endif %}"><i class="fa fa-user-plus mr-2"></i>Signup</a>
+            <button onclick="toggleDropdown()"></button>
+            <div id="dropdown-content" class="dropdown-content" style="display: none;">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'Administration:custom_logout' %}">Logout</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById("dropdown-content");
+        if (dropdown.style.display === "none") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    var businessGuideBtn = document.getElementById("business-guide-btn");
+    businessGuideBtn.addEventListener("click", function() {
+        toggleDropdown("business-guide-dropdown");
+    });
+
+    var userBtn = document.getElementById("user-btn");
+    userBtn.addEventListener("click", function() {
+        toggleDropdown("user-dropdown");
+    });
+
+    var isAuthenticated = "{{ user.is_authenticated }}";
+
+    if (isAuthenticated === "True") {
+        var loginBtn = document.getElementById("login-btn");
+        loginBtn.style.display = "none";
+        var signupBtn = document.getElementById("signup-btn");
+        signupBtn.style.display = "none";
+
+        var username = "{{ user.get_username }}";
+        userBtn.textContent = username;
+    }
+
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+            }
+        }
+        }
+    }
+</script>

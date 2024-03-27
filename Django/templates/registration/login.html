@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head_extrascripts %}
+<title>Login</title>
+<style>
+
+</style>
+{% endblock head_extrascripts %}
+
+{% block content %}
+<Section>
+    <h1>Sign in to your account</h1>
+{% block messages %}
+<form method="post" action="{% url 'Administration:login' %}">
+    {% csrf_token %}
+    <div>
+        <label for="username">Your username</label>
+        {{ form.username }}
+        {{ form.messages }}
+    </div>
+    <div>
+        <label for="password">Password</label>
+        {{ form.password }}
+        {{ form.messages }}
+    </div>
+</form>
+
+{% endblock messages %}
+</Section>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+
+</script>
+{% endblock extra_scripts %}

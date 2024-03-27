@@ -1,15 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import redirect
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
-from .forms import CustomUserCreationForm, CustomUserActivationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from ..forms import *
+from ..models import CustomUser
 
-User = get_user_model()
+User = get_user_model(CustomUser)
 
 class CustomUserCreateView(FormView):
     template_name = 'registration/signup.html'
@@ -40,3 +44,8 @@ class CustomUserActivationView(FormView):
     def form_valid(self, form):
         # Activation logic here
         return super().form_valid(form)
+
+@login_required
+def custom_logout(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
