@@ -1,0 +1,5 @@
+scrapy
+python-dotenv
+isodate
+xmltodict
+timelength
