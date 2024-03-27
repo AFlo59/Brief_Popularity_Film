@@ -1,0 +1,5 @@
+requests
+scikit-learn==1.4.0
+fastapi<1
+uvicorn<1
+catboost
