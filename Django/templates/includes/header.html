@@ -1,5 +1,4 @@
 {% load static %}
-{% url "home" as url_home %}
 
 <head>
     <style>
@@ -7,20 +6,29 @@
     </style>
 </head>
 <header>
-    <nav>
-        <a href="{% url 'home' %}">
-            <img src="{% static '/img/name_of_icon.jpeg' %}" alt="icon_home_page">
+    <nav class='justify-between max-w-6xl mx-auto items-center px-6 h-16 text-base font-semibold hidden md:flex'>
+        <a href=" {% url 'Main:home' %} ">
+        <img class="h-16 w-auto" src="{% static '/img/sba.jpeg' %}" alt="">
         </a>
+
         <div class="dropdown">
-            <a id="login-btn" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}"><i class="fa fa-user mr-2"></i>Login</a>
-            <a id="signup-btn" href="{% url 'Administation:Signup' %}" style="display: {% if user.is_authenticated %}none{% endif %}"><i class="fa fa-user-plus mr-2"></i>Signup</a>
-            <button onclick="toggleDropdown()"></button>
+            <a id="login-btn" class="text-ghost_white flex items-center" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
+                <i class="fa fa-user mr-2"></i>
+                Login
+            </a>
+            <button onclick="toggleDropdown()" id="user-btn" class="dropbtn" style="display: {% if not user.is_authenticated %}none{% endif %}">
+                {{ user.get_username.capitalize }}
+                <i class="fa fa-caret-down"></i>
+            </button> 
             <div id="dropdown-content" class="dropdown-content" style="display: none;">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'Administration:custom_logout' %}">Logout</a>
+                    <a href="{% url 'accounts:custom_logout' %}">Logout</a>
                 {% endif %}
             </div>
+            
         </div>
+        
+
     </nav>
 </header>
 <script>
@@ -48,9 +56,6 @@
     if (isAuthenticated === "True") {
         var loginBtn = document.getElementById("login-btn");
         loginBtn.style.display = "none";
-        var signupBtn = document.getElementById("signup-btn");
-        signupBtn.style.display = "none";
-
         var username = "{{ user.get_username }}";
         userBtn.textContent = username;
     }

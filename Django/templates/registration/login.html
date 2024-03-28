@@ -13,21 +13,27 @@
 <Section>
     <h1>Sign in to your account</h1>
 {% block messages %}
+    {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+{% endblock messages %}
 <form method="post" action="{% url 'Administration:login' %}">
     {% csrf_token %}
     <div>
         <label for="username">Your username</label>
         {{ form.username }}
-        {{ form.messages }}
     </div>
     <div>
         <label for="password">Password</label>
         {{ form.password }}
-        {{ form.messages }}
     </div>
+    <button type="submit" >Sign in</button>
 </form>
 
-{% endblock messages %}
 </Section>
 {% endblock content %}
 {% block extra_scripts %}

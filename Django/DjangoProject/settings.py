@@ -98,8 +98,13 @@ POSTGRES_AVAIL = all(
     ]
 )
 
-POSTGRES_RDY = int(os.getenv('POSTGRES_RDY'))
+POSTGRES_RDY = os.environ.get('POSTGRES_RDY', '0')
 
+if POSTGRES_RDY.lower() == 'true':
+    POSTGRES_RDY = 1
+else:
+    POSTGRES_RDY = 0
+    
 if POSTGRES_AVAIL and POSTGRES_RDY :
 
     DATABASES = {
@@ -180,7 +185,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'Administration.CustomUser'
-AUTHENTICATION_BACKENDS = ['Administration.backends.Name_Of_Method']
+AUTHENTICATION_BACKENDS = [
+    'Administration.backends.CustomUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 EMAIL_BACKEND = 'mailjet.backends.MailjetBackend'
 EMAIL_HOST = 'in-v3.mailjet.com'

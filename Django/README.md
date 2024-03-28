@@ -8,6 +8,12 @@ Brief_Popularity_Film/
 │   │
 │   ├── Administration/
 │   │   └── (contient les éléments liés à l'administration du site Django)
+|   |   |__ models.py
+|   |   |__ urls.py
+|   |   |__ forms.py
+|   |   |__ views/
+|   |       |__ views.py
+|   |       |__ login.py
 │   │
 │   ├── Functionalities/
 │   │   └── (contient les différentes fonctionnalités de votre application)
