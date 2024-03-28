@@ -6,7 +6,7 @@ def load_model(path='model.pkl'): # entrer le bon modèle
     return model
 
 
-# features éventuellement modifiables 
+# features (éventuellement modifiables) 
 def prediction(model, data):
     
     """

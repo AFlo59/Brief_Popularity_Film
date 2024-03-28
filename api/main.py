@@ -41,12 +41,14 @@ class FeaturesInput(BaseModel):
     Titre: str
     TitreOriginal: str
     Score: float
-    Genre: int
+    Genre: str
     Annee: int
     Duree: float    
     Description: str
     Acteurs: str
+    Public: str
     Pays: str
+    LangueOrigine: str
 
 class PredictionOutput(BaseModel):
     category: int
@@ -63,9 +65,11 @@ def prediction_root(feature_input: FeaturesInput):
     F7 = feature_input.Duree
     F8 = feature_input.Description
     F9 = feature_input.Acteurs
-    F10 = feature_input.Pays
+    F10 = feature_input.Public
+    F11 = feature_input.Pays 
+    F12 = feature_input.LangueOrigine
     
-    pred = model_utils.prediction(model, [[F1, F2, F3, F4, F5, F6, F7, F8, F9, F10]])
+    pred = model_utils.prediction(model, [[F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12]])
 
     return PredictionOutput(category=pred)
 """
