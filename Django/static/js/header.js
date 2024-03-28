@@ -1,4 +1,3 @@
-// Fonction pour afficher ou masquer le dropdown
 function toggleDropdown() {
     var dropdown = document.getElementById("dropdown-content");
     if (dropdown.style.display === "none") {
@@ -8,25 +7,47 @@ function toggleDropdown() {
     }
 }
 
-// Événement au chargement de la page
-window.onload = function() {
-    // Récupérer l'état de connexion de l'utilisateur depuis la variable 'isAuthenticated'
-    var isAuthenticated = "{{ user.is_authenticated }}";
+// Obtenez les boutons de dropdown et ajoutez des écouteurs d'événements pour basculer les dropdowns lorsqu'ils sont cliqués
+var businessGuideBtn = document.getElementById("business-guide-btn");
+businessGuideBtn.addEventListener("click", function() {
+    toggleDropdown("business-guide-dropdown");
+});
 
-    // Sélectionner les éléments HTML du bouton de connexion et du bouton de bienvenue
+var userBtn = document.getElementById("user-btn");
+userBtn.addEventListener("click", function() {
+    toggleDropdown("user-dropdown");
+});
+
+// Vérifiez si l'utilisateur est connecté
+var isAuthenticated = "{{ user.is_authenticated }}";
+
+// Si l'utilisateur est connecté, changez les boutons de connexion et d'inscription par le bouton de l'utilisateur connecté
+if (isAuthenticated === "True") {
     var loginBtn = document.getElementById("login-btn");
-    var userBtn = document.getElementById("user-btn");
+    loginBtn.style.display = "none";
+    var signupBtn = document.getElementById("signup-btn");
+    signupBtn.style.display = "none";
 
-    // Si l'utilisateur est connecté
-    if (isAuthenticated === "True") {
-        // Masquer le bouton de connexion
-        loginBtn.style.display = "none";
-        // Afficher le bouton de bienvenue avec le nom de l'utilisateur
-        userBtn.style.display = "block";
-    } else {
-        // Si l'utilisateur n'est pas connecté, afficher le bouton de connexion
-        loginBtn.style.display = "block";
-        // Masquer le bouton de bienvenue
-        userBtn.style.display = "none";
+    var username = "{{ user.get_username }}";
+    userBtn.textContent = username;
+}
+
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+  
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
     }
-};
+  }
