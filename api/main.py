@@ -7,7 +7,6 @@ app = FastAPI()
 model = model_utils.load_model()
 
 
-
 ### Partie factice pour tester 
 
 # Modèle Pydantic pour la structure de données d'entrée
@@ -35,6 +34,7 @@ def prediction_root(feature_input: FeaturesInput):
 
 """
 Partie correcte
+
 # Modèle Pydantic pour la structure de donnée d'entrée
 class FeaturesInput(BaseModel):
     Url: int
