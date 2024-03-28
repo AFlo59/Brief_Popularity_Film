@@ -1,12 +1,14 @@
 #Administration/views/login.py
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 
 
 
-class CustomLoginView(LoginView):
+class CustomLoginView(auth_views.LoginView):
+    form_class = AuthenticationForm
     template_name = 'registration/login.html'
 
     def dispatch(self, request, *args, **kwargs):

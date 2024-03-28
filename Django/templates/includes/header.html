@@ -2,78 +2,34 @@
 
 <head>
     <style>
-
+        
     </style>
 </head>
+
 <header>
-    <nav class='justify-between max-w-6xl mx-auto items-center px-6 h-16 text-base font-semibold hidden md:flex'>
-        <a href=" {% url 'Main:home' %} ">
-        <img class="h-16 w-auto" src="{% static '/img/sba.jpeg' %}" alt="">
+    <nav>
+        <a href="{% url 'Main:home' %}">
+            <img src="{% static '/img/name_of_icon.jpeg' %}" alt="icon_home_page">
         </a>
 
         <div class="dropdown">
-            <a id="login-btn" class="text-ghost_white flex items-center" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
+            <a id="login-btn" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
                 <i class="fa fa-user mr-2"></i>
                 Login
             </a>
             <button onclick="toggleDropdown()" id="user-btn" class="dropbtn" style="display: {% if not user.is_authenticated %}none{% endif %}">
-                {{ user.get_username.capitalize }}
+                Welcome! {{ user.get_username.capitalize }}
                 <i class="fa fa-caret-down"></i>
             </button> 
             <div id="dropdown-content" class="dropdown-content" style="display: none;">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'accounts:custom_logout' %}">Logout</a>
+                    <a href="{% url 'Administration:custom_logout' %}">Logout</a>
                 {% endif %}
             </div>
-            
         </div>
-        
-
     </nav>
+    <nav>
+        <a href="{% url 'Functionalities:test' %}">Test here!</a>
+    </nav>
+    <script defer src="{% static 'js/header.js' %}"></script>
 </header>
-<script>
-    function toggleDropdown() {
-        var dropdown = document.getElementById("dropdown-content");
-        if (dropdown.style.display === "none") {
-            dropdown.style.display = "block";
-        } else {
-            dropdown.style.display = "none";
-        }
-    }
-
-    var businessGuideBtn = document.getElementById("business-guide-btn");
-    businessGuideBtn.addEventListener("click", function() {
-        toggleDropdown("business-guide-dropdown");
-    });
-
-    var userBtn = document.getElementById("user-btn");
-    userBtn.addEventListener("click", function() {
-        toggleDropdown("user-dropdown");
-    });
-
-    var isAuthenticated = "{{ user.is_authenticated }}";
-
-    if (isAuthenticated === "True") {
-        var loginBtn = document.getElementById("login-btn");
-        loginBtn.style.display = "none";
-        var username = "{{ user.get_username }}";
-        userBtn.textContent = username;
-    }
-
-    function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-            }
-        }
-        }
-    }
-</script>
