@@ -21,7 +21,7 @@
                 </ul>
             {% endif %}
 {% endblock messages %}
-<form method="post" action="{% url 'Administration:login' %}">
+<form class="bg-custom-red" method="post" action="{% url 'Administration:login' %}">
     {% csrf_token %}
     <div>
         <label for="username">Your username</label>
