@@ -24,6 +24,7 @@ class AllMoviesSpider(scrapy.Spider):
         try:
             item = FilmItem()
             yield from item.parse(response)
+            print("parsed URL", response.url)
         except TypeError:
             pass
 
@@ -45,5 +46,3 @@ class AllMoviesSpider(scrapy.Spider):
 
         if next_page:
             yield scrapy.Request(f"{BASE_URL}{next_page}")
-        else:
-            print("plus de page")

@@ -1,4 +1,6 @@
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, String, text, TIMESTAMP
+from sqlalchemy.dialects.mysql import TIMESTAMP, INTEGER
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
@@ -7,23 +9,28 @@ Base = declarative_base()
 
 class FilmModel(Base):
     __tablename__ = "films"
+    mysql_engine = "InnoDB"
+    mysql_charset = "utf8mb4"
 
-    id = Column(String, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    director = Column(String, nullable=False)
-    year = Column(Integer, default=-1)
-    country = Column(String)
-    duration = Column(Integer, default=-1)
-    genre = Column(String)
-    first_day = Column(Integer, default=-1)
-    first_weekend = Column(Integer, default=-1)
-    first_week = Column(Integer, default=-1)
-    hebdo_rank = Column(Integer, default=-1)
-    copies = Column(Integer, default=-1)
+    id = Column(String(255), primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    director = Column(String(255), nullable=False)
+    year = Column(INTEGER(4), default=-1)
+    country = Column(String(100))
+    duration = Column(INTEGER(6), default=-1)
+    genre = Column(String(100))
+    first_day = Column(INTEGER(6), default=-1)
+    first_weekend = Column(INTEGER(6), default=-1)
+    first_week = Column(INTEGER(6), default=-1)
+    hebdo_rank = Column(INTEGER(6), default=-1)
+    copies = Column(INTEGER(6), default=-1)
 
     time_created = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
     )
     time_updated = Column(
-        DateTime(timezone=True), server_onupdate=func.now(), nullable=False
+        TIMESTAMP,
+        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        onupdate=func.now(),
+        nullable=False,
     )

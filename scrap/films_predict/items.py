@@ -24,8 +24,6 @@ class FilmItem(Item):
     copies = Field()
 
     def parse(self, response):
-        print("parse URL", response.url)
-
         hebdo_rank = -1
         copies = -1
         first_day = -1
