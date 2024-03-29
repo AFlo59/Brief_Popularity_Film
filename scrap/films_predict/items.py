@@ -3,7 +3,7 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-from utils.string import normalize
+from utils.string import convert_int, normalize
 from scrapy.item import Item, Field
 import isodate
 from timelength import TimeLength
@@ -24,7 +24,15 @@ class FilmItem(Item):
     copies = Field()
 
     def parse(self, response):
-        print(response.url)
+        print("parse URL", response.url)
+
+        hebdo_rank = -1
+        copies = -1
+        first_day = -1
+        first_weekend = -1
+        first_week = -1
+        first_day = -1
+
         title = response.xpath("//h1/text()").get()
         director = response.xpath("//h1/following-sibling::h4/a/text()").get()
 
@@ -55,9 +63,6 @@ class FilmItem(Item):
             '//div[@class="bloc_infos_center tablesmall1b"]/p[contains(text(), "Sortie")]/a/text()'
         ).get()
 
-        hebdo_rank = -1
-        copies = -1
-
         if date_sortie is not None:
             date_sortie = date_sortie.strip()
             hebdo_rank = response.xpath(
@@ -69,16 +74,16 @@ class FilmItem(Item):
 
         self["title"] = normalize(title)
         self["director"] = normalize(director)
-        self["year"] = normalize(block_year_duration[0])
+        self["year"] = convert_int(normalize(block_year_duration[0]))
         self["duration"] = TimeLength(block_year_duration[1]).to_seconds()
         self["country"] = block_country_genre[0]
         self["genre"] = block_country_genre[1]
-        self["first_day"] = normalize(first_day).replace(" ", "") * 1
-        self["first_weekend"] = normalize(first_weekend).replace(" ", "") * 1
-        self["first_week"] = normalize(first_week).replace(" ", "") * 1
-        self["hebdo_rank"] = hebdo_rank * 1
-        self["copies"] = copies * 1
+        self["first_day"] = convert_int(normalize(first_day).replace(" ", ""))
+        self["first_weekend"] = convert_int(normalize(first_weekend).replace(" ", ""))
+        self["first_week"] = convert_int(normalize(first_week).replace(" ", ""))
+        self["hebdo_rank"] = convert_int(hebdo_rank)
+        self["copies"] = convert_int(normalize(copies).replace(" ", ""))
 
-        print("parse", self)
+        # print("parse", self)
 
         yield self

@@ -17,3 +17,11 @@ def normalize(str: AnyStr) -> AnyStr:
     str = str.strip()
 
     return ud.normalize("NFKD", str).encode("ascii", "ignore").decode("utf8")
+
+
+def convert_int(s, default=-1):
+    try:
+        i = int(s)
+    except ValueError:
+        i = default
+    return i

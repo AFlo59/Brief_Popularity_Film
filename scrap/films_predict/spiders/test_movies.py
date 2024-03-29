@@ -9,9 +9,9 @@ BASE_URL = get_env("SCRAP_JP")
 class TestMoviesSpider(scrapy.Spider):
     name = "test_movies"
     start_urls = [
-        f"{BASE_URL}/fichfilm.php?id=10042&view=2",
+        f"{BASE_URL}/fichfilm.php?id=22276&view=2",
     ]
 
     def parse(self, response: Response):
         item = FilmItem()
-        return item.parse(response=response)
+        yield from item.parse(response=response)

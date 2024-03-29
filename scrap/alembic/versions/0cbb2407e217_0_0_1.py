@@ -28,7 +28,7 @@ def upgrade() -> None:
         sa.Column("director", sa.String(), nullable=False),
         sa.Column("year", sa.Integer(), nullable=True),
         sa.Column("country", sa.String(), nullable=True),
-        sa.Column("duration", sa.Integer(), nullable=False, default=-1),
+        sa.Column("duration", sa.Integer(), nullable=True, default=-1),
         sa.Column("genre", sa.String(), nullable=True),
         sa.Column("first_day", sa.Integer(), nullable=True, default=-1),
         sa.Column(
