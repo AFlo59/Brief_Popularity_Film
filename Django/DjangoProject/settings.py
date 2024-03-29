@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'Main',
     'widget_tweaks',
     'tailwind',
-    "theme",
+    'theme',
+    # 'django_browser_reload',
+    
 ]
 
 MIDDLEWARE = [
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -204,3 +207,8 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = {
     "127.0.0.1",
 }
+
+if 'NPM_BIN_PATH' in os.environ:
+    npm_bin_path = os.environ.get('NPM_BIN_PATH')
+else:
+    print("La variable d'environnement NPM_BIN_PATH n'est pas définie.")

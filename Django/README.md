@@ -25,3 +25,6 @@ Brief_Popularity_Film/
 │       └── (environnement virtuel Python)
 │
 └── README.md (README principal du projet)
+
+
+python manage.py tailwind install
