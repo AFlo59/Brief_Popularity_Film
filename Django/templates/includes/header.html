@@ -1,19 +1,17 @@
 {% load static %}
 
 <head>
-    <style>
-        
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
 </head>
 
 <header>
-    <nav>
+    <nav class='justify-between max-w-6xl mx-auto items-center px-6 h-16 text-base font-semibold hidden md:flex'>
         <a href="{% url 'Main:home' %}">
-            <img src="{% static '/img/name_of_icon.jpeg' %}" alt="icon_home_page">
+            <img class="h-16 w-auto" src="{% static '/img/name_of_icon.jpeg' %}" alt="icon_home_page">
         </a>
 
         <div class="dropdown">
-            <a id="login-btn" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
+            <a id="login-btn" class="flex items-center" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
                 <i class="fa fa-user mr-2"></i>
                 Login
             </a>

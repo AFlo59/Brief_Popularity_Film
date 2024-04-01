@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,6 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
+load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -44,7 +49,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'tailwind',
     'theme',
-    # 'django_browser_reload',
+    'django_browser_reload',
     
 ]
 
@@ -57,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -208,7 +213,5 @@ INTERNAL_IPS = {
     "127.0.0.1",
 }
 
-if 'NPM_BIN_PATH' in os.environ:
-    npm_bin_path = os.environ.get('NPM_BIN_PATH')
-else:
-    print("La variable d'environnement NPM_BIN_PATH n'est pas définie.")
+from shutil import which
+NPM_BIN_PATH = which("npm")
