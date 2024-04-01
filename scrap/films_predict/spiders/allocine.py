@@ -5,17 +5,19 @@ from scrapy.http import Response
 from scrapy.linkextractors import LinkExtractor
 from films_predict.items import FilmItem
 
-BASE_URL = get_env("SCRAP_JP")
+BASE_URL = get_env("SCRAP_ALLO")
 url_regex = r"/fichfilm\.php\?.*view=2$"
 extractor = LinkExtractor(
     allow=url_regex, restrict_xpaths='//table[@class="tablesmall tablesmall5"]'
 )
 
+# film/fichefilm_gen_cfilm={entity_id}.html
 
-class AllMoviesSpider(scrapy.Spider):
-    name = "all_movies"
+
+class AlloCineMoviesSpider(scrapy.Spider):
+    name = "allocine_movies"
     start_urls = [
-        f"{BASE_URL}/v9_demarrage.php?view=2",
+        f"{BASE_URL}/_/autocomplete/",
     ]
 
     def parse(self, response: Response):

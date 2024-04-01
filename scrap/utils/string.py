@@ -19,9 +19,21 @@ def normalize(str: AnyStr) -> AnyStr:
     return ud.normalize("NFKD", str).encode("ascii", "ignore").decode("utf8")
 
 
-def convert_int(s, default=-1):
+def convert_int(s: AnyStr, default=-1):
+    s = normalize(s)
     try:
+        s = s.replace(" ", "")
         i = int(s)
+    except ValueError:
+        i = default
+    return i
+
+
+def convert_float(s: AnyStr, default=-1):
+    try:
+        s = s.replace(" ", "")
+        s = s.replace(",", ".")
+        i = float(s)
     except ValueError:
         i = default
     return i

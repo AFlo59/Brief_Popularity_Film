@@ -3,7 +3,10 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-from utils.string import convert_int, normalize
+import json
+import re
+from types import NoneType
+from utils.string import convert_float, convert_int, normalize
 from scrapy.item import Item, Field
 import isodate
 from timelength import TimeLength
@@ -13,6 +16,9 @@ class FilmItem(Item):
     id = Field()
     title = Field()
     director = Field()
+    raw_title = Field()
+    raw_director = Field()
+    url_jp = Field()
     year = Field()
     country = Field()
     duration = Field()
@@ -72,6 +78,9 @@ class FilmItem(Item):
 
         self["title"] = normalize(title)
         self["director"] = normalize(director)
+        self["raw_title"] = title.strip()
+        self["raw_director"] = director.strip()
+        self["url_jp"] = response.url
         self["year"] = convert_int(normalize(block_year_duration[0]))
         self["duration"] = TimeLength(block_year_duration[1]).to_seconds()
         self["country"] = block_country_genre[0]
@@ -84,4 +93,71 @@ class FilmItem(Item):
 
         # print("parse", self)
 
+        yield self
+
+
+class FilmAlloItem(Item):
+    id = Field()
+    id_jp = Field()
+    rating_press = Field()
+    rating_public = Field()
+    casting = Field()
+    synopsis = Field()
+    distributor = Field()
+    budget = Field()
+    lang = Field()
+    visa = Field()
+    award = Field()
+
+    def parse(self, response):
+        ld_json = response.xpath(
+            '//script[@type="application/ld+json"]/text()'
+        ).extract()
+        ld_json = json.loads(ld_json[0])
+
+        casting = [actor["name"] for actor in ld_json["actor"]]
+        synopsis = ld_json["description"]
+        rating_public = ld_json["aggregateRating"]["ratingValue"]
+
+        rating_press = response.xpath(
+            '//div[@class="rating-mdl n25 stareval-stars"]/following-sibling::span[@class="stareval-note"]/text()'
+        ).get()
+        distributor = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "Distributeur")]]/span[contains(@class, "that blue-link")]/text()'
+        ).get()
+        award = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "Récompenses")]]/span[contains(@class, "that blue-link")]/text()'
+        ).get()
+        budget = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "Budget")]]/span[@class="that"]/text()'
+        ).get()
+        lang = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "Langues")]]/span[@class="that"]/text()'
+        ).get()
+        visa = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "Visa")]]/span[@class="that"]/text()'
+        ).get()
+
+        print(distributor)
+        self["id"] = "sdfs"
+        self["id_jp"] = "sdfsJP"
+        self["rating_press"] = convert_float(rating_press)
+        self["rating_public"] = convert_float(rating_public)
+        self["casting"] = casting
+        self["synopsis"] = synopsis
+        self["distributor"] = distributor
+        self["budget"] = convert_int(budget)
+        self["lang"] = [normalize(lang) for lang in lang.split(sep=",")]
+        self["visa"] = convert_int(visa.strip())
+
+        if award is not None:
+            match = re.search(r"([0-9]+) ?prix", award)
+            try:
+                award = match.groups()[0]
+            except NoneType:
+                award = 0
+
+        self["award"] = convert_int(award)
+
+        print(self)
         yield self
