@@ -18,11 +18,14 @@ body, html {
 .header_conteneur {
     flex: 0 0 30%; /* 30% width */
     height: 100%; /* 100% height */
-    background-color: #2f2c2c82; /* For demonstration */
+    background-color: #393131; /* For demonstration */
+    color: rgb(255, 255, 255);
+    border-right: 1px solid white;
 }
 
 .content {
     flex: 1; /* Takes remaining width */
     height: 100%; /* 100% height */
-    background-color: #ffffff; /* For demonstration */
+    background-color: #393131; /* For demonstration */
+    color: rgb(255, 255, 255);
 }
