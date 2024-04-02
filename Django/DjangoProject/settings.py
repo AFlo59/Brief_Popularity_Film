@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*94^5bmpw7s^)sus$xqah7-*#u2809fq!mkn=q5jf3utny==+_'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +48,9 @@ INSTALLED_APPS = [
     'Main',
     'widget_tweaks',
     'tailwind',
+    'theme',
+    'django_browser_reload',
+    
 ]
 
 MIDDLEWARE = [
@@ -54,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -98,8 +107,13 @@ POSTGRES_AVAIL = all(
     ]
 )
 
-POSTGRES_RDY = int(os.getenv('POSTGRES_RDY'))
+POSTGRES_RDY = os.environ.get('POSTGRES_RDY', '0')
 
+if POSTGRES_RDY.lower() == 'true':
+    POSTGRES_RDY = 1
+else:
+    POSTGRES_RDY = 0
+    
 if POSTGRES_AVAIL and POSTGRES_RDY :
 
     DATABASES = {
@@ -157,6 +171,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# settings.py
+
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
@@ -167,9 +183,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -180,7 +193,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'Administration.CustomUser'
-AUTHENTICATION_BACKENDS = ['Administration.backends.Name_Of_Method']
+AUTHENTICATION_BACKENDS = [
+    'Administration.backends.CustomUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 EMAIL_BACKEND = 'mailjet.backends.MailjetBackend'
 EMAIL_HOST = 'in-v3.mailjet.com'
@@ -189,10 +205,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('MAILJET_API_KEY')
 EMAIL_HOST_PASSWORD = os.environ.get('MAILJET_SECRET_KEY')
 
-BASE_URL = 'http://SB-Administration.com' 
+BASE_URL = 'http://FilmCassecouille.com' 
 
 TAILWIND_APP_NAME = 'theme'
 
 INTERNAL_IPS = {
     "127.0.0.1",
 }
+
+from shutil import which
+NPM_BIN_PATH = which("npm")

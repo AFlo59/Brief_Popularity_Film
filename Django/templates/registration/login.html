@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head_extrascripts %}
+<title>Login</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+<style>
+</style>
+{% endblock head_extrascripts %}
+
+{% block content %}
+<Section>
+    <div class="Signin-container">
+        <h1>Sign in to your account</h1>
+{% block messages %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock messages %}
+        <form class="space-y-4 md:space-y-6" method="post" action="{% url 'Administration:login' %}">    
+        {% csrf_token %}
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="username">Your username</label>
+            {{ form.username|add_class:"bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"|attr:"Admin" }}
+        </div>
+        <div>
+            <label for="password">Password</label>
+            {{ form.password|add_class:"bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"|attr:"placeholder=••••••••" }}
+        </div>
+            <button type="submit" >Sign in</button>
+        </form>
+    </div>
+</Section>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+
+</script>
+{% endblock extra_scripts %}
