@@ -1,8 +1,12 @@
 /* Alignement vertical des sections et espacement entre les éléments */
 header {
+    margin: 0;
+    padding: 0;
     height: 100%;
 }
 .nav {
+    margin: 0;
+    padding: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -10,6 +14,8 @@ header {
 
 .first_section,
 .second_section {
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Espacement entre les éléments */
@@ -21,6 +27,8 @@ header {
 /* Espacement entre les éléments à l'intérieur de chaque section */
 .first_section .header_item,
 .second_section .header_item {
+    margin: 0;
+    padding: 0;
     margin-top: 10px; /* Ajustez selon vos préférences */
 }
 
@@ -34,6 +42,8 @@ header {
     align-items: center;
 }
 .first_section > .header_item:first-child > a {
+    margin: 0;
+    padding: 0;
     border: 1px solid white;
     display: flex;
     align-items: center;
@@ -44,6 +54,8 @@ header {
     margin-left: 10px;
 }
 .first_section > .header_item:first-child img {
+    margin: 0;
+    padding: 0;
     border: 1px solid white;
     width: 50px;
     height: 50px;
@@ -118,6 +130,31 @@ header {
     height: 100%;
     border: 1px solid purple;
 }
+
+/* Ajustement de l'espacement et alignement des éléments li à l'intérieur du premier enfant de second_section */
+.second_section > .header_item:first-child {
+    margin: 0;
+    padding: 0;
+    border: 1px solid white;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    list-style-type: none;
+    align-items: center; /* Alignement vertical des éléments */
+    text-align: center; /* Alignement horizontal des éléments */
+}
+
+/* Ajustement de la taille des boutons */
+.second_section > .header_item:first-child li a button {
+    width: 80%; /* Prend toute la largeur disponible */
+}
+
+/* Ajustement de la taille des icônes à l'intérieur des boutons */
+.second_section > .header_item:first-child li a button i {
+    margin-right: 10px; /* Ajoute une marge à droite de l'icône */
+}
+
 /* 
 .nav{
     display: flex;
