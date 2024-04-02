@@ -5,29 +5,42 @@
 </head>
 
 <header>
-    <nav >
-        <a href="{% url 'Main:home' %}">
-            <img class="h-16 w-auto" src="{% static '/img/logo1.jpeg' %}" alt="icon_home_page">
-        </a>
-
-        <div class="dropdown">
-            <a id="login-btn" class="flex items-center" href="{% url 'Administration:login' %}" style="display: {% if user.is_authenticated %}none{% endif %}">
-                <i class="fa fa-user mr-2"></i>
-                Login
+    <nav class="nav">
+        <div class="header_item">
+            <a href="{% url 'Main:home' %}">
+                <img src="{% static '/img/logo1.png' %}" alt="icon_home_page">
+                Film'prédict
             </a>
-            <button onclick="toggleDropdown()" id="user-btn" class="dropbtn" style="display: {% if not user.is_authenticated %}none{% endif %}">
-                Welcome! {{ user.get_username.capitalize }}
-                <i class="fa fa-caret-down"></i>
-            </button> 
-            <div id="dropdown-content" class="dropdown-content" style="display: none;">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'Administration:custom_logout' %}">Logout</a>
-                {% endif %}
-            </div>
+        </div>        
+        {% if user.is_authenticated %}
+        <div class="header_item">
+            <figure>
+                <img src="" alt="img_utilisateur">
+                <figcaption>
+                    <span>{{ user.get_username.capitalize }}</span>
+                </figcaption>
+            </figure>
         </div>
-    </nav>
-    <nav>
+        {% endif %}
+        <ul class="header_item">
+            <li><a href=""><Button>Nouveautés</Button></a></li>
+            <li><a href=""><Button>Prédiction</Button></a></li>
+            <li><a href=""><Button>Recettes</Button></a></li>
+            <li><a href=""><Button>Historique</Button></a></li>
+        </ul>
         
+        <div class="header_item">
+            {% if user.is_authenticated %}
+            <a href="{% url 'Administration:custom_logout' %}">
+                <button>Deconnexion</button>
+            </a>
+            {% else %}
+            <a href="{% url 'Administration:login' %}">
+                <button><i class="fa fa-user mr-2"></i>
+                    Login</button>
+            </a>
+            {% endif %}
+        </div>        
     </nav>
-    <script defer src="{% static 'js/header.js' %}"></script>
+    <!-- <script defer src="{% static 'js/header.js' %}"></script> -->
 </header>

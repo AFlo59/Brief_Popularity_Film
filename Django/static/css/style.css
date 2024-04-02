@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body, html {
+    width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -11,17 +12,17 @@ body, html {
 
 .container {
     display: flex;
-    flex-direction: column;
     height: 100%;
 }
 
-.header {
+.header_conteneur {
     flex: 0 0 30%; /* 30% width */
     height: 100%; /* 100% height */
-    background-color: #4e4444; /* For demonstration */
+    background-color: #2f2c2c82; /* For demonstration */
 }
 
 .content {
-    flex: 1; /* Takes remaining width and height */
-    background-color: #282940; /* For demonstration */
+    flex: 1; /* Takes remaining width */
+    height: 100%; /* 100% height */
+    background-color: #ffffff; /* For demonstration */
 }
