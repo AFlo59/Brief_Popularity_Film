@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block head_extrascripts %}
     <title>document</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% endblock head_extrascripts %}
     {% tailwind_css %}
 </head>
 <body>
-    <div class="h-screen">
-    {% include "includes/header.html" %}
-
-    <div class='max-w-7xl mx-auto my-10'>
-    {% block content %}
-    {% block messages %}
-    {% endblock messages %}
-    {% endblock content %}
-    </div>
-    {% include "includes/footer.html" %}
+    <div class="container">
+        <div class="header">
+            {% include "includes/header.html" %}
+        </div>
+        <div class="content">
+            {% block content %}
+                {% block messages %}
+                {% endblock messages %}
+            {% endblock content %}
+        </div>
     </div>
 
     <script src="{% static 'js/script.js' %}"></script>

@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* p {
-    color:green
-} */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Disable scrolling */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    flex: 0 0 30%; /* 30% width */
+    height: 100%; /* 100% height */
+    background-color: #4e4444; /* For demonstration */
+}
+
+.content {
+    flex: 1; /* Takes remaining width and height */
+    background-color: #282940; /* For demonstration */
+}
