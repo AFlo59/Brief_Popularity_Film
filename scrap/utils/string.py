@@ -22,7 +22,7 @@ def normalize(str: AnyStr) -> AnyStr:
 
 def convert_int(s: AnyStr, default=-1):
     if s is None:
-        return -1
+        return default
 
     if isinstance(s, int):
         return s
@@ -38,7 +38,7 @@ def convert_int(s: AnyStr, default=-1):
 
 def convert_float(s: AnyStr, default=-1):
     if s is None:
-        return -1
+        return default
 
     if isinstance(s, float):
         return s

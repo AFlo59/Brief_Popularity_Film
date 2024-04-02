@@ -127,29 +127,36 @@ class FilmAlloItem(Item):
         ld_json = response.xpath(
             '//script[@type="application/ld+json"]/text()'
         ).extract()
-        ld_json = json.loads(ld_json[0])
 
         casting = []
-        try:
-            casting = [actor["name"] for actor in ld_json["actor"]]
-        except KeyError:
-            pass
-
         synopsis = ""
-        try:
-            synopsis = ld_json["description"]
-        except KeyError:
-            pass
-
         rating_public = -1
-        try:
-            rating_public = ld_json["aggregateRating"]["ratingValue"]
-        except KeyError:
-            pass
+
+        if len(ld_json) > 0:
+            ld_json = json.loads(ld_json[0])
+
+            try:
+                casting = [actor["name"] for actor in ld_json["actor"]]
+            except Exception:
+                pass
+
+            try:
+                synopsis = ld_json["description"]
+            except Exception:
+                pass
+
+            try:
+                rating_public = ld_json["aggregateRating"]["ratingValue"]
+            except Exception:
+                pass
 
         rating_press = response.xpath(
-            '//div[contains(@class, "rating-item-content")]/children::div[@class="stareval stareval-small stareval-theme-default"]/div[@class="stareval-note"]/text()'
+            '//*[contains(@class, "rating-title") and contains(text(), "Presse")]/parent::div/div/span[@class="stareval-note"]/text()'
         ).get()
+        if rating_public == -1:
+            rating_public = response.xpath(
+                '//*[contains(@class, "rating-title") and contains(text(), "Spectateur")]/parent::div/div/span[@class="stareval-note"]/text()'
+            ).get()
         distributor = response.xpath(
             '//div[@class="item" and span[@class="what light" and contains(text(), "Distributeur")]]/span[contains(@class, "that blue-link")]/text()'
         ).get()
@@ -169,7 +176,6 @@ class FilmAlloItem(Item):
         # self["id"] = "sdfs"           -> dans le spider allocine
         # self["id_jp"] = "sdfsJP"      -> dans le spider allocine
         self["url_allo"] = response.url
-        print(rating_press)
         self["rating_press"] = convert_float(rating_press)
         self["rating_public"] = convert_float(rating_public)
         self["casting"] = casting
@@ -190,7 +196,7 @@ class FilmAlloItem(Item):
             except Exception:
                 award = 0
 
-        self["award"] = convert_int(award)
+        self["award"] = convert_int(award, 0)
 
-        print(self)
+        # print(self)
         yield self

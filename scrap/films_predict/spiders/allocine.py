@@ -20,7 +20,7 @@ class AlloCineMoviesSpider(scrapy.Spider):
         self.conn = engine.connect()
 
     def start_requests(self):
-        stmt = select(FilmModel.raw_title, FilmModel.id).limit(limit=30)
+        stmt = select(FilmModel.raw_title, FilmModel.id)  # .limit(limit=30)
         query = self.conn.execute(stmt)
         films = query.fetchall()
 
@@ -31,11 +31,6 @@ class AlloCineMoviesSpider(scrapy.Spider):
                 callback=self.parse,
                 cb_kwargs=dict(id_jp=item.id, raw_title=item.raw_title),
             )
-
-        # self.query = "SPIDER-MAN : NO WAY HOME - VERSION LONGUE"
-        # url = f"{BASE_URL}/_/autocomplete/{quote(self.query)}"
-
-        # yield scrapy.Request(url, callback=self.parse, cb_kwargs=dict(id_jp="testets"))
 
     def parse(self, response: Response, id_jp="-1", id="-1", raw_title=""):
         if "fichefilm_gen_cfilm" in response.url:

@@ -14,22 +14,22 @@ class TestAlloSpider(scrapy.Spider):
 
     def start_requests(self):
         # Les Ames soeurs
-        self.query = "Matrix"
+        self.query = "Détroit"
         url = f"{BASE_URL}/_/autocomplete/{quote(self.query)}"
 
         print("start")
-        yield scrapy.Request(url, callback=self.parse, cb_kwargs=dict(id_jp="testets"))
+        yield scrapy.Request(
+            url, callback=self.parse, cb_kwargs=dict(id_jp="testets", year=2017)
+        )
 
-    def parse(self, response: Response, id_jp="-1", id="-1"):
+    def parse(self, response: Response, id_jp="-1", id="-1", year=0):
         if "fichefilm_gen_cfilm" in response.url:
-            print("parse 2")
             item = FilmAlloItem()
             item["id_jp"] = id_jp
             item["id"] = id
             yield from item.parse(response)
             print("parsed URL", response.url)
         else:
-            print("parse 3")
             json = response.json()
             if json["error"] is False:
                 for result in json["results"]:
@@ -39,16 +39,19 @@ class TestAlloSpider(scrapy.Spider):
                         normalize(result["original_label"]) == query_normalized
                         or normalize(result["label"]) == query_normalized
                     ):
-                        print("okkokoko")
-                        yield self.create_request(result["entity_id"], id_jp)
+                        if year == result["data"]["year"]:
+                            yield self.create_request(result["entity_id"], id_jp, year)
+
                         return True
                     elif fuzz.ratio(result["original_label"], self.query) > 90:
-                        yield self.create_request(result["entity_id"], id_jp)
+                        if year == result["data"]["year"]:
+                            yield self.create_request(result["entity_id"], id_jp, year)
+
                         return True
 
-    def create_request(self, entity_id, id_jp):
+    def create_request(self, entity_id, id_jp, year):
         return scrapy.Request(
             f"{BASE_URL}/film/fichefilm_gen_cfilm={entity_id}.html",
             self.parse,
-            cb_kwargs=dict(id_jp=id_jp, id=entity_id),
+            cb_kwargs=dict(id_jp=id_jp, id=entity_id, year=year),
         )

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, text
-from sqlalchemy.dialects.mysql import TIMESTAMP, INTEGER, FLOAT, TEXT, JSON
+from sqlalchemy.dialects.mysql import TIMESTAMP, INTEGER, FLOAT, TEXT, JSON, BIGINT
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
@@ -54,7 +54,7 @@ class FilmAlloModel(Base):
     rating_press = Column(FLOAT)
     rating_public = Column(FLOAT)
     award = Column(INTEGER)
-    budget = Column(INTEGER)
+    budget = Column(BIGINT)
     lang = Column(JSON)
     visa = Column(INTEGER)
 
