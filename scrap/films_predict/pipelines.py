@@ -11,7 +11,7 @@ from db.database_mysql import engine
 
 import sqlalchemy.dialects.mysql as mysql
 from itemadapter import ItemAdapter
-from films_predict.migrations import FilmExtraModel as model_jp
+from films_predict.migrations import FilmModel as model_jp
 from films_predict.migrations import FilmAlloModel as model_allo
 
 from .items import FilmAlloItem, FilmItem

@@ -1,4 +1,5 @@
 import html
+from types import NoneType
 import unicodedata as ud
 import re
 from typing import AnyStr
@@ -20,20 +21,32 @@ def normalize(str: AnyStr) -> AnyStr:
 
 
 def convert_int(s: AnyStr, default=-1):
+    if s is None:
+        return -1
+
+    if isinstance(s, int):
+        return s
+
     s = normalize(s)
     try:
         s = s.replace(" ", "")
         i = int(s)
-    except ValueError:
+    except Exception:
         i = default
     return i
 
 
 def convert_float(s: AnyStr, default=-1):
+    if s is None:
+        return -1
+
+    if isinstance(s, float):
+        return s
+
     try:
         s = s.replace(" ", "")
         s = s.replace(",", ".")
         i = float(s)
-    except ValueError:
+    except Exception:
         i = default
     return i

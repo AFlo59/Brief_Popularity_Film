@@ -27,6 +27,7 @@ class FilmItem(Item):
     first_weekend = Field()
     first_week = Field()
     hebdo_rank = Field()
+    total_spectator = Field()
     copies = Field()
 
     def parse(self, response):
@@ -36,6 +37,7 @@ class FilmItem(Item):
         first_weekend = -1
         first_week = -1
         first_day = -1
+        total_spectator = -1
 
         title = response.xpath("//h1/text()").get()
         director = response.xpath("//h1/following-sibling::h4/a/text()").get()
@@ -76,13 +78,21 @@ class FilmItem(Item):
                 f'//h4/a[contains(text(), "{date_sortie}")]/ancestor::tr/td[6]/text()'
             ).get()
 
+        total_spectator = response.xpath(
+            '//td[@class="col_poster_titre"]/h4[contains(text(), "Entrées")]/parent::td/following-sibling::td/text()'
+        ).get()
+
         self["title"] = normalize(title)
         self["director"] = normalize(director)
         self["raw_title"] = title.strip()
         self["raw_director"] = director.strip()
         self["url_jp"] = response.url
         self["year"] = convert_int(normalize(block_year_duration[0]))
-        self["duration"] = TimeLength(block_year_duration[1]).to_seconds()
+        self["duration"] = (
+            -1
+            if len(block_year_duration) == 1
+            else TimeLength(block_year_duration[1]).to_seconds()
+        )
         self["country"] = block_country_genre[0]
         self["genre"] = block_country_genre[1]
         self["first_day"] = convert_int(normalize(first_day).replace(" ", ""))
@@ -90,6 +100,9 @@ class FilmItem(Item):
         self["first_week"] = convert_int(normalize(first_week).replace(" ", ""))
         self["hebdo_rank"] = convert_int(hebdo_rank)
         self["copies"] = convert_int(normalize(copies).replace(" ", ""))
+        self["total_spectator"] = convert_int(
+            normalize(total_spectator).replace(" ", "")
+        )
 
         # print("parse", self)
 
@@ -99,6 +112,7 @@ class FilmItem(Item):
 class FilmAlloItem(Item):
     id = Field()
     id_jp = Field()
+    url_allo = Field()
     rating_press = Field()
     rating_public = Field()
     casting = Field()
@@ -115,12 +129,26 @@ class FilmAlloItem(Item):
         ).extract()
         ld_json = json.loads(ld_json[0])
 
-        casting = [actor["name"] for actor in ld_json["actor"]]
-        synopsis = ld_json["description"]
-        rating_public = ld_json["aggregateRating"]["ratingValue"]
+        casting = []
+        try:
+            casting = [actor["name"] for actor in ld_json["actor"]]
+        except KeyError:
+            pass
+
+        synopsis = ""
+        try:
+            synopsis = ld_json["description"]
+        except KeyError:
+            pass
+
+        rating_public = -1
+        try:
+            rating_public = ld_json["aggregateRating"]["ratingValue"]
+        except KeyError:
+            pass
 
         rating_press = response.xpath(
-            '//div[@class="rating-mdl n25 stareval-stars"]/following-sibling::span[@class="stareval-note"]/text()'
+            '//div[contains(@class, "rating-item-content")]/children::div[@class="stareval stareval-small stareval-theme-default"]/div[@class="stareval-note"]/text()'
         ).get()
         distributor = response.xpath(
             '//div[@class="item" and span[@class="what light" and contains(text(), "Distributeur")]]/span[contains(@class, "that blue-link")]/text()'
@@ -138,14 +166,19 @@ class FilmAlloItem(Item):
             '//div[@class="item" and span[@class="what light" and contains(text(), "Visa")]]/span[@class="that"]/text()'
         ).get()
 
-        print(distributor)
-        self["id"] = "sdfs"
-        self["id_jp"] = "sdfsJP"
+        # self["id"] = "sdfs"           -> dans le spider allocine
+        # self["id_jp"] = "sdfsJP"      -> dans le spider allocine
+        self["url_allo"] = response.url
+        print(rating_press)
         self["rating_press"] = convert_float(rating_press)
         self["rating_public"] = convert_float(rating_public)
         self["casting"] = casting
-        self["synopsis"] = synopsis
-        self["distributor"] = distributor
+        self["synopsis"] = (
+            "" if isinstance(synopsis, str) is False else synopsis.strip()
+        )
+        self["distributor"] = (
+            "" if isinstance(distributor, str) is False else distributor.strip()
+        )
         self["budget"] = convert_int(budget)
         self["lang"] = [normalize(lang) for lang in lang.split(sep=",")]
         self["visa"] = convert_int(visa.strip())
@@ -154,7 +187,7 @@ class FilmAlloItem(Item):
             match = re.search(r"([0-9]+) ?prix", award)
             try:
                 award = match.groups()[0]
-            except NoneType:
+            except Exception:
                 award = 0
 
         self["award"] = convert_int(award)
