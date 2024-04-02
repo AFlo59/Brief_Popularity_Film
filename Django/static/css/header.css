@@ -15,6 +15,7 @@ header {
     justify-content: space-between; /* Espacement entre les éléments */
     height: 50%;
     width: 100%;
+    border: 1px solid white;
 }
 
 /* Espacement entre les éléments à l'intérieur de chaque section */
@@ -24,6 +25,8 @@ header {
 }
 
 .first_section > .header_item:first-child {
+    margin: 0;
+    padding: 0;
     border: 1px solid white;
     display: flex;
     flex-direction: row;
@@ -48,10 +51,11 @@ header {
 }
 .first_section > .header_item:last-child {
     border: 1px solid white;
-    height: 50%; /* Limite de hauteur */
+    height: 25%; /* Limite de hauteur */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 50%;
 }
 /* Style de la figure */
 .first_section > .header_item:last-child figure {
@@ -84,6 +88,35 @@ header {
     justify-content: center;
     align-items: center;
     border: 1px solid white;
+}
+/* Ajustement de l'espacement entre les éléments li à l'intérieur du premier enfant de second_section */
+.second_section > .header_item:first-child {
+    margin: 0;
+    padding: 0;
+    border: 1px solid white;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    list-style-type: none;
+    align-items: center; /* Alignement vertical des éléments */
+    text-align: center; /* Alignement horizontal des éléments */
+}
+
+/* Ajustement de l'espacement entre les éléments li */
+.second_section > .header_item:first-child li {
+    width: 100%;
+    height: 30px;
+    border: 1px solid green;
+}
+.second_section > .header_item:first-child li > a {
+    width: 100%;
+    border: 1px solid red;
+}
+.second_section > .header_item:first-child li > a > button{
+    width: 75%;
+    height: 100%;
+    border: 1px solid purple;
 }
 /* 
 .nav{

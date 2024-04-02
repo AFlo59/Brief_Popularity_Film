@@ -16,7 +16,7 @@ body, html {
 }
 
 .header_conteneur {
-    flex: 0 0 30%; /* 30% width */
+    flex: 0 0 20%; /* 30% width */
     height: 100%; /* 100% height */
     background-color: #393131; /* For demonstration */
     color: rgb(255, 255, 255);
