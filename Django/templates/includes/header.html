@@ -16,7 +16,7 @@
             {% if user.is_authenticated %}
             <div class="header_item">
                 <figure>
-                    <img src="" alt="img_utilisateur">
+                    <img src="{% static '/img/user.png' %}" alt="img_utilisateur">
                     <figcaption>
                         <span>{{ user.get_username.capitalize }}</span>
                     </figcaption>
