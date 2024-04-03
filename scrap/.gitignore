@@ -160,6 +160,7 @@ cython_debug/
 #.idea/
 
 postgres-data
+mysql-data
 .DS_Store
 deploy-aci.yaml
 api/secrets/service-account.json
