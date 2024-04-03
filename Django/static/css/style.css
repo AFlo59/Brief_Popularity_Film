@@ -18,13 +18,14 @@ body, html {
 }
 
 header {
+    min-width: 300px;
     width: 20vw;
     height: 100vh;
     border-right: 1px solid #ffffff;
 }
 
 .content {
-    width: 80vw;
+    flex: 1;
     height: 100vh;
     margin: 5vh;
 }
