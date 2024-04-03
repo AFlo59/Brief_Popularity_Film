@@ -48,6 +48,8 @@ class FilmAlloModel(Base):
     id = Column(String(255), primary_key=True, index=True)
     id_jp = Column(String(255), nullable=False)
     url_allo = Column(String(255), nullable=False)
+    director_allo = Column(JSON)
+    year_allo = Column(INTEGER(4), default=-1)
     synopsis = Column(TEXT)
     distributor = Column(String(100))
     casting = Column(JSON)

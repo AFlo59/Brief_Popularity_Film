@@ -1,5 +1,5 @@
 from urllib.parse import quote
-from utils.string import normalize
+from utils.string import convert_int, normalize
 from utils.environment import get_env
 import scrapy
 from films_predict.items import FilmAlloItem
@@ -13,16 +13,17 @@ class TestAlloSpider(scrapy.Spider):
     name = "test_allo"
 
     def start_requests(self):
-        # Les Ames soeurs
-        self.query = "Détroit"
+        self.query = "Samba"
         url = f"{BASE_URL}/_/autocomplete/{quote(self.query)}"
 
         print("start")
         yield scrapy.Request(
-            url, callback=self.parse, cb_kwargs=dict(id_jp="testets", year=2017)
+            url,
+            callback=self.parse,
+            cb_kwargs=dict(id_jp="testets", year=2000, director=""),
         )
 
-    def parse(self, response: Response, id_jp="-1", id="-1", year=0):
+    def parse(self, response: Response, id_jp="-1", id="-1", year=0, director=""):
         if "fichefilm_gen_cfilm" in response.url:
             item = FilmAlloItem()
             item["id_jp"] = id_jp
@@ -34,20 +35,25 @@ class TestAlloSpider(scrapy.Spider):
             if json["error"] is False:
                 for result in json["results"]:
                     query_normalized = normalize(self.query)
+                    director_allo = normalize(result["data"]["director_name"][0])
+                    if result["entity_type"] == "movie":
+                        if (
+                            normalize(result["original_label"]) == query_normalized
+                            or normalize(result["label"]) == query_normalized
+                        ):
+                            if director == director_allo:
+                                yield self.create_request(
+                                    result["entity_id"], id_jp, year
+                                )
 
-                    if (
-                        normalize(result["original_label"]) == query_normalized
-                        or normalize(result["label"]) == query_normalized
-                    ):
-                        if year == result["data"]["year"]:
-                            yield self.create_request(result["entity_id"], id_jp, year)
+                            return True
+                        elif fuzz.ratio(result["original_label"], self.query) > 90:
+                            if director == director_allo:
+                                yield self.create_request(
+                                    result["entity_id"], id_jp, year
+                                )
 
-                        return True
-                    elif fuzz.ratio(result["original_label"], self.query) > 90:
-                        if year == result["data"]["year"]:
-                            yield self.create_request(result["entity_id"], id_jp, year)
-
-                        return True
+                            return True
 
     def create_request(self, entity_id, id_jp, year):
         return scrapy.Request(

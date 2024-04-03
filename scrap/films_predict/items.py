@@ -113,6 +113,8 @@ class FilmAlloItem(Item):
     id = Field()
     id_jp = Field()
     url_allo = Field()
+    year_allo = Field()
+    director_allo = Field()
     rating_press = Field()
     rating_public = Field()
     casting = Field()
