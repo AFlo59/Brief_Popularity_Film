@@ -18,6 +18,7 @@ article {
    grid-template-rows: repeat(5, 1fr);
    grid-column-gap: 30px; /* Espacement horizontal entre les colonnes */
    grid-row-gap: 30px; /* Espacement vertical entre les lignes */
+   height: 70%;
 
 }
 /* Définissez le style pour les figures */
