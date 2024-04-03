@@ -21,7 +21,6 @@ header {
     justify-content: space-between; /* Espacement entre les éléments */
     height: 50%;
     width: 100%;
-    border: 1px solid white;
 }
 
 /* Espacement entre les éléments à l'intérieur de chaque section */
@@ -29,13 +28,14 @@ header {
 .second_section .header_item {
     margin: 0;
     padding: 0;
+    width: 100%;
     margin-top: 10px; /* Ajustez selon vos préférences */
 }
 
 .first_section > .header_item:first-child {
     margin: 0;
+    margin-top: 10%;
     padding: 0;
-    border: 1px solid white;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -44,7 +44,6 @@ header {
 .first_section > .header_item:first-child > a {
     margin: 0;
     padding: 0;
-    border: 1px solid white;
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -56,13 +55,11 @@ header {
 .first_section > .header_item:first-child img {
     margin: 0;
     padding: 0;
-    border: 1px solid white;
     width: 50px;
     height: 50px;
     object-fit: contain;
 }
 .first_section > .header_item:last-child {
-    border: 1px solid white;
     height: 25%; /* Limite de hauteur */
     display: flex;
     justify-content: center;
@@ -79,7 +76,6 @@ header {
     border-radius: 10px; /* Conteneur arrondi */
     overflow: hidden; /* Empêcher le débordement */
     flex-direction: column; /* Pour diviser en deux parties */
-    border: 1px solid white;
 }
 
 /* Style de l'image */
@@ -90,6 +86,7 @@ header {
     object-fit: contain; /* Ajustement de l'image */
     border: 1px solid white;
     border-radius: 50%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Style de figcaption */
@@ -99,7 +96,6 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid white;
     font-size: 20px;
     line-height: 50px;
 }
@@ -107,7 +103,6 @@ header {
 .second_section > .header_item:first-child {
     margin: 0;
     padding: 0;
-    border: 1px solid white;
     height: 50%;
     display: flex;
     flex-direction: column;
@@ -121,112 +116,37 @@ header {
 .second_section > .header_item:first-child li {
     width: 100%;
     height: 35px;
-    border: 1px solid green;
 }
 .second_section > .header_item:first-child li > a {
-    width: 100%;
-    border: 1px solid red;
+    height: 100%;
+    width: 75%;
 }
 .second_section > .header_item:first-child li > a > button{
     width: 75%;
     height: 100%;
-    border: 1px solid purple;
+    border: none; /* Supprime la bordure */
+    background-color: transparent; /* Rend le fond transparent */
+    color: white;
 }
-
-/* Ajustement de l'espacement et alignement des éléments li à l'intérieur du premier enfant de second_section */
-.second_section > .header_item:first-child {
-    margin: 0;
+/* Ajustement de la taille des icônes à l'intérieur des boutons */
+.second_section > .header_item:first-child li a button i {
+    display: block; /* Change le mode d'affichage en bloc */
+    margin-right: 0; /* Supprime la marge à droite pour aligner les icônes verticalement */
+}
+.second_section > .header_item:first-child li > a > button:hover, .second_section > .header_item:first-child li.active a button{
+    border: 1px solid transparent;
+    border-radius: 16px;
+    background-color: rgb(99, 99, 99);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Ajoute une ombre portée en dessous */
+    
+}
+.second_section > .header_item:last-child {
+    margin-bottom: 10%;
     padding: 0;
-    border: 1px solid white;
-    height: 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     list-style-type: none;
     align-items: center; /* Alignement vertical des éléments */
-    text-align: center; /* Alignement horizontal des éléments */
+    text-align: center; /
 }
-
-/* Ajustement de la taille des boutons */
-.second_section > .header_item:first-child li a button {
-    width: 75%; /* Prend toute la largeur disponible */
-}
-
-/* Ajustement de la taille des icônes à l'intérieur des boutons */
-.second_section > .header_item:first-child li a button i {
-    margin-right: 10px; /* Ajoute une marge à droite de l'icône */
-}
-
-/* 
-.nav{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-}
-.header_item {
-    margin: 10px 0; /* Ajoute de l'espace entre les éléments *//*
-}
-.header_item:first-child {
-    display: flex;
-    flex-direction: row; /* Changer la direction de flexbox à ligne *//*
-    justify-content: space-between; /* Ajouter de l'espace entre les éléments *//*
-}*//*
-.header_item:first-child a {
-    display: flex; /* Utiliser Flexbox pour aligner les éléments *//*
-    align-items: center; /* Aligner verticalement les éléments sur le centre *//*
-    text-decoration: none; /* Supprimer la décoration du texte *//*
-    color: rgb(255, 255, 255); /* Changer la couleur du texte *//*
-    font-size: 20px; /* Taille de la police de caractères *//*
-    line-height: 50px; /* Hauteur de ligne égale à la hauteur du logo *//*
-    margin-left: 10px; /* Marge à gauche pour séparer le texte du logo *//*
-}
-.header_item:first-child img {
-    width: 50px; /* Remplacez 50px par la taille désirée *//*
-    height: 50px; /* Ajoutez une hauteur fixe pour éviter la déformation *//*
-    object-fit: contain; /* Définit comment l'image doit s'adapter sans déformer *//*
-}
-.header_item figure {
-    width: 200px; /* Largeur de 200px *//*
-    height: 200px; /* Hauteur de 200px *//*
-    margin: 0 auto; /* Centrer horizontalement *//*
-}
-.nav ul {
-    list-style-type: none; /* Supprime les puces *//*
-    margin: 0; /* Réinitialise la marge *//*
-    padding: 0; /* Réinitialise le rembourrage *//*
-    display: flex; /* Utiliser Flexbox *//*
-    flex-direction: column; /* Définir la direction du flux en colonne *//*
-    align-items: center; /* Centrer horizontalement *//*
-    height: 100%; /* Pour que la liste occupe toute la hauteur de la nav *//*
-}
-
-.nav li {
-    margin: 5px; /* Réinitialise la marge *//*
-    padding: 0; /* Réinitialise le rembourrage *//*
-    width: 100%; /* Fait en sorte que chaque élément occupe toute la largeur de son parent *//*
-}
-
-ul.header_item li a button{
-    display: flex;
-    align-items: center; /* Aligne les éléments sur la ligne de base *//*
-    gap: 10px; /* Espace entre l'image et le texte *//*
-    width: 100%; /* Fait en sorte que chaque bouton occupe toute la largeur du parent *//*
-    justify-content: flex-start; /* Aligne les éléments à gauche *//*
-    text-align: left; /* Aligne le texte à gauche *//*
-}
-
-ul.header_item img {
-    width: 15px; /* Largeur de l'image *//*
-    height: 15px; /* Hauteur de l'image *//*
-    object-fit: contain; /* Ajuste la taille de l'image tout en conservant les proportions *//*
-}
-
-.nav button {
-    /* Vos autres styles CSS ici *//*
-    border-radius: 8px; /* Ajouter un bord arrondi *//*
-    padding: 5px 15px; /* Ajouter du padding à droite et à gauche *//*
-    background-color: #393131; /* For demonstration *//*
-    color: rgb(255, 255, 255); /* Changer la couleur du texte *//*
-} */

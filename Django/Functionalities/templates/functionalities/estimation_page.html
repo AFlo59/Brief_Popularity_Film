@@ -4,26 +4,29 @@
 {% load static widget_tweaks %}
 
 {% block head_extrascripts %}
-<title>Estimation</title>
-<style>
-
-</style>
+    <title>Estimation</title>
+    <style>
+    /* Add any custom styles here */
+    </style>
 {% endblock head_extrascripts %}
 
 {% block content %}
-{% block messages %}
-    {% if messages %}
-        <ul>{% for message in messages %}
-            <li>{% message %}</li>
-        </ul>
-    {% endif %}
-{% endblock messages %}
-<section>
-    <h1>Estimation !</h1>
-    <div>
-        <p>estimation somewhere here !</p>
-    </div>
-</section>
+    {% block messages %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock messages %}
+    
+    <section>
+        <h1>Estimation!</h1>
+        <div>
+            <p>Estimation somewhere here!</p>
+        </div>
+    </section>
 {% endblock content %}
 
 {% block extra_scripts %}
