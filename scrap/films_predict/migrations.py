@@ -69,3 +69,34 @@ class FilmAlloModel(Base):
         onupdate=func.now(),
         nullable=False,
     )
+
+
+class FilmSortieModel(Base):
+    __tablename__ = "films_sortie"
+    mysql_engine = "InnoDB"
+    mysql_charset = "utf8mb4"
+
+    id = Column(String(255), primary_key=True, index=True)
+    url_allo = Column(String(255), nullable=False)
+    director_allo = Column(JSON)
+    year_allo = Column(INTEGER(4), default=-1)
+    image = Column(String(255))
+    synopsis = Column(TEXT)
+    distributor = Column(String(100))
+    casting = Column(JSON)
+    rating_press = Column(FLOAT)
+    rating_public = Column(FLOAT)
+    award = Column(INTEGER)
+    budget = Column(BIGINT)
+    lang = Column(JSON)
+    visa = Column(INTEGER)
+
+    time_created = Column(
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
+    )
+    time_updated = Column(
+        TIMESTAMP,
+        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        onupdate=func.now(),
+        nullable=False,
+    )
