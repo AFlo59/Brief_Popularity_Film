@@ -1,0 +1,73 @@
+/* 
+.nav{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+.header_item {
+    margin: 10px 0; /* Ajoute de l'espace entre les éléments *//*
+}
+.header_item:first-child {
+    display: flex;
+    flex-direction: row; /* Changer la direction de flexbox à ligne *//*
+    justify-content: space-between; /* Ajouter de l'espace entre les éléments *//*
+}*//*
+.header_item:first-child a {
+    display: flex; /* Utiliser Flexbox pour aligner les éléments *//*
+    align-items: center; /* Aligner verticalement les éléments sur le centre *//*
+    text-decoration: none; /* Supprimer la décoration du texte *//*
+    color: rgb(255, 255, 255); /* Changer la couleur du texte *//*
+    font-size: 20px; /* Taille de la police de caractères *//*
+    line-height: 50px; /* Hauteur de ligne égale à la hauteur du logo *//*
+    margin-left: 10px; /* Marge à gauche pour séparer le texte du logo *//*
+}
+.header_item:first-child img {
+    width: 50px; /* Remplacez 50px par la taille désirée *//*
+    height: 50px; /* Ajoutez une hauteur fixe pour éviter la déformation *//*
+    object-fit: contain; /* Définit comment l'image doit s'adapter sans déformer *//*
+}
+.header_item figure {
+    width: 200px; /* Largeur de 200px *//*
+    height: 200px; /* Hauteur de 200px *//*
+    margin: 0 auto; /* Centrer horizontalement *//*
+}
+.nav ul {
+    list-style-type: none; /* Supprime les puces *//*
+    margin: 0; /* Réinitialise la marge *//*
+    padding: 0; /* Réinitialise le rembourrage *//*
+    display: flex; /* Utiliser Flexbox *//*
+    flex-direction: column; /* Définir la direction du flux en colonne *//*
+    align-items: center; /* Centrer horizontalement *//*
+    height: 100%; /* Pour que la liste occupe toute la hauteur de la nav *//*
+}
+
+.nav li {
+    margin: 5px; /* Réinitialise la marge *//*
+    padding: 0; /* Réinitialise le rembourrage *//*
+    width: 100%; /* Fait en sorte que chaque élément occupe toute la largeur de son parent *//*
+}
+
+ul.header_item li a button{
+    display: flex;
+    align-items: center; /* Aligne les éléments sur la ligne de base *//*
+    gap: 10px; /* Espace entre l'image et le texte *//*
+    width: 100%; /* Fait en sorte que chaque bouton occupe toute la largeur du parent *//*
+    justify-content: flex-start; /* Aligne les éléments à gauche *//*
+    text-align: left; /* Aligne le texte à gauche *//*
+}
+
+ul.header_item img {
+    width: 15px; /* Largeur de l'image *//*
+    height: 15px; /* Hauteur de l'image *//*
+    object-fit: contain; /* Ajuste la taille de l'image tout en conservant les proportions *//*
+}
+
+.nav button {
+    /* Vos autres styles CSS ici *//*
+    border-radius: 8px; /* Ajouter un bord arrondi *//*
+    padding: 5px 15px; /* Ajouter du padding à droite et à gauche *//*
+    background-color: #393131; /* For demonstration *//*
+    color: rgb(255, 255, 255); /* Changer la couleur du texte *//*
+} */
