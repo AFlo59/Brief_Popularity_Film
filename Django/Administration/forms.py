@@ -1,10 +1,7 @@
+#Administration/forms.py
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 
-class CustomUserCreationForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'role']
-
-class CustomUserActivationForm(forms.Form):
-    password = forms.CharField(widget=forms.PasswordInput)
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label='Email / Username')
