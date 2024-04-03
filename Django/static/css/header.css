@@ -1,152 +1,88 @@
-/* Alignement vertical des sections et espacement entre les éléments */
-header {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-.nav {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.first_section,
-.second_section {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Espacement entre les éléments */
-    height: 50%;
-    width: 100%;
-}
-
-/* Espacement entre les éléments à l'intérieur de chaque section */
-.first_section .header_item,
-.second_section .header_item {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    margin-top: 10px; /* Ajustez selon vos préférences */
-}
-
-.first_section > .header_item:first-child {
-    margin: 0;
-    margin-top: 10%;
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.first_section > .header_item:first-child > a {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: rgb(255, 255, 255);
-    font-size: 20px;
-    line-height: 50px;
-    gap: 10px;
-}
-.first_section > .header_item:first-child img {
-    margin: 0;
-    padding: 0;
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-}
-.first_section > .header_item:last-child {
-    height: 25%; /* Limite de hauteur */
+.header-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 50%;
-}
-/* Style de la figure */
-.first_section > .header_item:last-child figure {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%; /* Prend toute la hauteur de la header_item */
-    border-radius: 10px; /* Conteneur arrondi */
-    overflow: hidden; /* Empêcher le débordement */
-    flex-direction: column; /* Pour diviser en deux parties */
 }
 
-/* Style de l'image */
-.first_section > .header_item:last-child figure img {
-    width: auto;
-    height: 80%; /* 80% de la hauteur de la figure */
-    max-width: 100%;
-    object-fit: contain; /* Ajustement de l'image */
-    border: 1px solid white;
-    border-radius: 50%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Style de figcaption */
-.first_section > .header_item:last-child figure figcaption {
-    width: 100%;
-    height: 20%; /* 20% de la hauteur de la figure */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    line-height: 50px;
-}
-/* Ajustement de l'espacement entre les éléments li à l'intérieur du premier enfant de second_section */
-.second_section > .header_item:first-child {
-    margin: 0;
-    padding: 0;
-    height: 50%;
+.nav-container {
+    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    list-style-type: none;
-    align-items: center; /* Alignement vertical des éléments */
-    text-align: center; /* Alignement horizontal des éléments */
+    align-items: center;
+    height: 100vh; /* Prend 100% de la hauteur de la fenêtre */
 }
 
-/* Ajustement de l'espacement entre les éléments li */
-.second_section > .header_item:first-child li {
+.nav-item {
+    width: 15vw; /* 80% de la largeur du nav-container */
+    text-align: center; /* Centrer le contenu horizontalement */
+    height: 20vh; /* Chaque nav-item occupe 25% de la hauteur du nav-container */
+    overflow: hidden; /* Activer le défilement automatique si nécessaire */
+    border: 1px solid yellow;
+}
+.nav-item:first-child,.nav-item:last-child {
+    height: 10vh;
+}
+.nav-item:first-child {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    border: 1px solid orange;
+}
+.nav-item:first-child figure {
     width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-item:first-child img {
+    width: 35px;
     height: 35px;
+    object-fit: contain;
+    margin-right: 10px;
 }
-.second_section > .header_item:first-child li > a {
-    height: 100%;
-    width: 75%;
+
+.nav-item:first-child figcaption {
+    margin: 0;
 }
-.second_section > .header_item:first-child li > a > button{
-    width: 75%;
-    height: 100%;
-    border: none; /* Supprime la bordure */
-    background-color: transparent; /* Rend le fond transparent */
-    color: white;
+
+.nav-item:nth-child(3) {
+    height: 40vh;
 }
-/* Ajustement de la taille des icônes à l'intérieur des boutons */
-.second_section > .header_item:first-child li a button i {
-    display: block; /* Change le mode d'affichage en bloc */
-    margin-right: 0; /* Supprime la marge à droite pour aligner les icônes verticalement */
-}
-.second_section > .header_item:first-child li > a > button:hover, .second_section > .header_item:first-child li.active a button{
-    border: 1px solid transparent;
-    border-radius: 16px;
-    background-color: rgb(99, 99, 99);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Ajoute une ombre portée en dessous */
-    
-}
-.second_section > .header_item:last-child {
-    margin-bottom: 10%;
+.nav-item ul {
+    margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    list-style-type: none;
-    align-items: center; /* Alignement vertical des éléments */
-    text-align: center; /
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-item ul li {
+    list-style: none;
+    width: 100%;
+    height: 10%;
+}
+.nav-item ul li a {
+    width: 100%;
+    height: 100%;
+}
+.nav-item button {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    color: #ffffff;
+    border-radius: 15px;
+}
+
+.active button, .nav-item ul button:hover {
+    background-color: rgb(99, 99, 99);
+    box-shadow: 0 4px 8px black;
+}
+.nav-item:last-child button {
+    color: red;
 }
