@@ -21,12 +21,8 @@ class SortieMoviesSpider(AlloCineMoviesSpider):
         super().__init__()
 
     def start_requests(self):
-        stmt = select(FilmModel.raw_title, FilmModel.id)
-        query = self.conn.execute(stmt)
-        films = query.fetchall()
-
         for item in films:
-            url = f"{BASE_URL}/_/autocomplete/{quote(item.raw_title)}"
+            url = f"{BASE_URL}/film/sorties-semaine/"
             yield scrapy.Request(
                 url,
                 callback=self.parse,

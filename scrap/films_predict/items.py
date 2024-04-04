@@ -109,9 +109,8 @@ class FilmItem(Item):
         yield self
 
 
-class FilmAlloItem(Item):
+class BaseFilmAlloItem(Item):
     id = Field()
-    id_jp = Field()
     url_allo = Field()
     year_allo = Field()
     director_allo = Field()
@@ -133,6 +132,8 @@ class FilmAlloItem(Item):
         casting = []
         synopsis = ""
         rating_public = -1
+        year_allo = -1
+        director = []
 
         if len(ld_json) > 0:
             ld_json = json.loads(ld_json[0])
@@ -151,6 +152,14 @@ class FilmAlloItem(Item):
                 rating_public = ld_json["aggregateRating"]["ratingValue"]
             except Exception:
                 pass
+
+            if "director" in ld_json:
+                try:
+                    director = [
+                        normalize(director["name"]) for director in ld_json["director"]
+                    ]
+                except Exception:
+                    director = [normalize(ld_json["director"]["name"])]
 
         rating_press = response.xpath(
             '//*[contains(@class, "rating-title") and contains(text(), "Presse")]/parent::div/div/span[@class="stareval-note"]/text()'
@@ -175,8 +184,17 @@ class FilmAlloItem(Item):
             '//div[@class="item" and span[@class="what light" and contains(text(), "Visa")]]/span[@class="that"]/text()'
         ).get()
 
-        # self["id"] = "sdfs"           -> dans le spider allocine
-        # self["id_jp"] = "sdfsJP"      -> dans le spider allocine
+        year_allo = response.xpath(
+            '//div[contains(@class, "meta-body-info")]/span[contains(@class, "date")]/text()'
+        ).get()
+
+        if self["year_allo"] != -1 and year_allo is not None:
+            year_allo = re.findall("([0-9]{4})", year_allo)
+            try:
+                self["year_allo"] = convert_int(year_allo[0])
+            except Exception:
+                pass
+
         self["url_allo"] = response.url
         self["rating_press"] = convert_float(rating_press)
         self["rating_public"] = convert_float(rating_public)
@@ -190,6 +208,7 @@ class FilmAlloItem(Item):
         self["budget"] = convert_int(budget)
         self["lang"] = [normalize(lang) for lang in lang.split(sep=",")]
         self["visa"] = convert_int(visa.strip())
+        self["director_allo"] = director
 
         if award is not None:
             match = re.search(r"([0-9]+) ?prix", award)
@@ -202,3 +221,20 @@ class FilmAlloItem(Item):
 
         # print(self)
         yield self
+
+
+class FilmAlloSortieItem(BaseFilmAlloItem):
+    thumbnail = Field()
+
+    def parse(self, response):
+        yield from super().parse(response)
+        self.thumbnail = "ess"
+
+        yield self
+
+
+class FilmAlloItem(BaseFilmAlloItem):
+    id_jp = Field()
+
+    # self["id"] = "sdfs"           -> dans le spider allocine
+    # self["id_jp"] = "sdfsJP"      -> dans le spider allocine
