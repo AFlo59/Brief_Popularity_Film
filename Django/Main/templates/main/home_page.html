@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_extrascripts %}
+    <title>Home</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}"> -->
+    <style>
+
+    </style>
+{% endblock head_extrascripts %}
+{% block content %}
+    {% block messages %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock messages %}
+    <section>
+        <h1>Welcome to ours site ! </h1>
+        <article>
+
+        </article>
+    </section>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+
+</script>
+{% endblock extra_scripts %}

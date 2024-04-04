@@ -1,0 +1,134 @@
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-container {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-item {
+    width: 90%;
+    text-align: center;
+    height: 20vh; 
+    overflow: hidden;
+}
+.nav-item:first-child,.nav-item:last-child {
+    height: 10vh;
+}
+.nav-item:first-child {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.nav-item:first-child a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #ffffff;
+}
+.nav-item:first-child figure {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-item:first-child img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.nav-item:first-child figcaption {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold; 
+}
+.nav-item:nth-child(2) figure {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-item:nth-child(2) img {
+    width: 64px;
+    height: 64px;
+    border: 2px solid white;
+    border-radius: 50%;
+    object-fit: contain;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 8px black;
+}
+
+.nav-item:nth-child(2) figcaption {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.nav-item:nth-child(3) {
+    height: 40vh;
+}
+.nav-item ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-item ul li {
+    list-style: none;
+    width: 100%;
+    height: 10%;
+}
+.nav-item ul li a {
+    width: 100%;
+    height: 100%;
+}
+.nav-item button {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    color: #ffffff;
+    border-radius: 15px;
+}
+
+.active button, .nav-item ul button:hover {
+    background-color: rgb(99, 99, 99);
+    box-shadow: 0 4px 8px black;
+}
+
+.nav-item a.login-button button,
+.nav-item a.login-button i {
+    color: rgb(56, 112, 209);
+}
+
+
+.nav-item a.logout-button button,
+.nav-item a.logout-button i {
+    color: red;
+    margin-right: 5px;
+}

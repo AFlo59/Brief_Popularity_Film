@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Roboto', sans-serif;
+    background-color: #333333;
+    color: #ffffff; 
+    overflow-y: hidden;
+}
+
+.container {
+    display: flex;
+}
+
+header {
+    min-width: 300px;
+    width: 20vw;
+    height: 100vh;
+    border-right: 1px solid #ffffff;
+}
+
+.content {
+    flex: 1;
+    height: 100vh;
+    margin: 5vh;
+}

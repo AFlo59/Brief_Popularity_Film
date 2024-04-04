@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load static widget_tweaks %}
+
+{% block head_extrascripts %}
+    <title>Historique</title>
+    <style>
+    </style>
+{% endblock head_extrascripts %}
+
+{% block content %}
+    {% block messages %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock messages %}
+    
+    <section>
+        <h1>Historique des semaines prédédentes</h1>
+        <div>
+            <p>something here !</p>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+</script>
+{% endblock extra_scripts %}
