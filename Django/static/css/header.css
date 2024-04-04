@@ -10,11 +10,11 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 100vh;
+    height: 100%;
 }
 
 .nav-item {
-    width: 15vw; 
+    width: 90%;
     text-align: center;
     height: 20vh; 
     overflow: hidden;
@@ -27,14 +27,23 @@
     padding: 0;
     display: flex;
     align-items: center;
+    justify-content: center;
+
+}
+.nav-item:first-child a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #ffffff;
 }
 .nav-item:first-child figure {
-    margin-top: 0;
-    margin-bottom: 0;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .nav-item:first-child img {
@@ -71,9 +80,9 @@
 
 .nav-item:nth-child(2) figcaption {
     margin: 0;
-    font-family: "Roboto", sans-serif; /* Police de caractères Roboto */
-    font-size: 16px; /* Taille de la police */
-    font-weight: bold; /* Mettre le texte en gras */
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .nav-item:nth-child(3) {

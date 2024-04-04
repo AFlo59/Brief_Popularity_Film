@@ -9,10 +9,12 @@
         <div class="nav-container">
             <div class="nav-item">
                 <figure>
-                    <img src="{% static '/img/logo1.png' %}" alt="icon_home_page">
-                    <figcaption>
-                        Film'prédict
-                    </figcaption>
+                    <a href="{% url 'Main:home' %}">
+                        <img src="{% static '/img/logo1.png' %}" alt="icon_home_page">
+                        <figcaption>
+                            Film'prédict
+                        </figcaption>
+                    </a>
                 </figure>
             </div>
             <div class="nav-item">
@@ -27,17 +29,17 @@
             </div>
             <div class="nav-item">
                 <ul>
-                    <li class="{% if request.path == '/' %}active{% endif %}">
-                        <a href="{% url 'Main:home' %}"><Button><div><i class="fas fa-home"></i></div><div>Nouveautés</div></Button></a>
+                    <li class="{% if request.path == '/funct/' %}active{% endif %}">
+                        <a href="{% url 'Functionalities:nouveautés' %}"><Button><div><i class="fas fa-home"></i></div><div>Nouveautés</div></Button></a>
                     </li>
                     <li class="{% if request.path == '/funct/predict/' %}active{% endif %}">
                         <a href="{% url 'Functionalities:predict' %}"><Button><div><i class="fas fa-chart-line"></i></div><div>Prédiction</div></Button></a>
                     </li>
-                    <li class="{% if request.path == '/funct/estimation/' %}active{% endif %}">
-                        <a href="{% url 'Functionalities:estimation' %}"><Button><div><i class="fas fa-utensils"></i></div><div>Recettes</div></Button></a>
+                    <li class="{% if request.path == '/funct/recettes/' %}active{% endif %}">
+                        <a href="{% url 'Functionalities:recettes' %}"><Button><div><i class="fas fa-utensils"></i></div><div>Recettes</div></Button></a>
                     </li>
-                    <li>
-                        <a href=""><Button><div><i class="fas fa-history fa-spin fa-solid fa-clock-rotate-left fa-spin fa-spin-reverse"></i></div><div>Historique</div></Button></a>
+                    <li class="{% if request.path == '/funct/history/' %}active{% endif %}"">
+                        <a href="{% url 'Functionalities:historique' %}"><Button><div><i class="fas fa-history fa-spin fa-solid fa-clock-rotate-left fa-spin fa-spin-reverse"></i></div><div>Historique</div></Button></a>
                     </li>
                 </ul>
             </div>

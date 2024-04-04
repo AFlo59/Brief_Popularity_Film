@@ -4,6 +4,8 @@ from Functionalities import views
 app_name = 'Functionalities'
 
 urlpatterns = [
-    path("estimation/", views.estimation_page, name="estimation"),
+    path("recettes/", views.recettes_page, name="recettes"),
     path("predict/", views.predict_page, name="predict"),
+    path("history/", views.historique_page, name="historique"),
+    path("news/", views.nouveautes_page, name="nouveautés"),
 ]
