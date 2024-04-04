@@ -120,6 +120,15 @@
     background-color: rgb(99, 99, 99);
     box-shadow: 0 4px 8px black;
 }
-.nav-item:last-child button {
+
+.nav-item a.login-button button,
+.nav-item a.login-button i {
+    color: rgb(56, 112, 209);
+}
+
+
+.nav-item a.logout-button button,
+.nav-item a.logout-button i {
     color: red;
+    margin-right: 5px;
 }

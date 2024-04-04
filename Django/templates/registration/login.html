@@ -22,7 +22,7 @@
         </ul>
     {% endif %}
 {% endblock messages %}
-        <form class="space-y-4 md:space-y-6" method="post" action="{% url 'Administration:login' %}">    
+        <form  method="post" action="{% url 'Administration:login' %}">    
         {% csrf_token %}
         <div>
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="username">Your username</label>
