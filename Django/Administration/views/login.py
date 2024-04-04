@@ -11,7 +11,7 @@ class LoginView(auth_views.LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.error(request, "Vous êtes déjà connecté.")
-            return redirect('home')
+            return redirect('Main:home')
 
         return super().dispatch(request, *args, **kwargs)
 

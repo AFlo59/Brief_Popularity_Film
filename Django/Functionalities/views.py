@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .models import Film
 
 @login_required
 def recettes_page(request):
@@ -15,4 +16,6 @@ def historique_page(request):
 
 @login_required
 def nouveautes_page(request):
-    return render(request, "functionalities/nouveautes_page.html")
+    # Récupérer les 10 premiers films classés par ordre de classement
+    films = Film.objects.order_by('classement')[:10]
+    return render(request, 'functionalities/nouveautes_page.html', {'films': films})
