@@ -4,46 +4,57 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
 </head>
 
-<header>
-    <nav class="nav">
-        <section class="first_section">
-            <div class="header_item">
-                <a href="{% url 'Main:home' %}">
-                    <img src="{% static '/img/logo1.png' %}" alt="icon_home_page">
-                    Film'prédict
-                </a>
-            </div>        
-            {% if user.is_authenticated %}
-            <div class="header_item">
+<header class="header-container">
+    <nav>
+        <div class="nav-container">
+            <div class="nav-item">
                 <figure>
-                    <img src="" alt="img_utilisateur">
+                    <a href="{% url 'Main:home' %}">
+                        <img src="{% static '/img/logo1.png' %}" alt="icon_home_page">
+                        <figcaption>
+                            Film'prédict
+                        </figcaption>
+                    </a>
+                </figure>
+            </div>
+            <div class="nav-item">
+                {% if user.is_authenticated %}
+                <figure>
+                    <img src="{% static '/img/user.png' %}" alt="img_utilisateur">
                     <figcaption>
                         <span>{{ user.get_username.capitalize }}</span>
                     </figcaption>
                 </figure>
+                {% endif %}
             </div>
-            {% endif %}
-        </section>
-        <section class="second_section">
-            <ul class="header_item">
-                <li><a href=""><Button><i></i>Nouveautés</Button></a></li>
-                <li><a href=""><Button><i></i>Prédiction</Button></a></li>
-                <li><a href=""><Button><i></i>Recettes</Button></a></li>
-                <li><a href=""><Button><i class="fa-solid fa-clock-rotate-left fa-spin fa-spin-reverse"></i>Historique</Button></a></li>
-            </ul>
-            
-            <div class="header_item">
+            <div class="nav-item">
+                <ul>
+                    <li class="{% if request.path == '/funct/news/' %}active{% endif %}">
+                        <a href="{% url 'Functionalities:nouveautés' %}"><Button><div><i class="fas fa-home"></i></div><div>Nouveautés</div></Button></a>
+                    </li>
+                    <li class="{% if request.path == '/funct/predict/' %}active{% endif %}">
+                        <a href="{% url 'Functionalities:predict' %}"><Button><div><i class="fas fa-chart-line"></i></div><div>Prédiction</div></Button></a>
+                    </li>
+                    <li class="{% if request.path == '/funct/recettes/' %}active{% endif %}">
+                        <a href="{% url 'Functionalities:recettes' %}"><Button><div><i class="fas fa-utensils"></i></div><div>Recettes</div></Button></a>
+                    </li>
+                    <li class="{% if request.path == '/funct/history/' %}active{% endif %}"">
+                        <a href="{% url 'Functionalities:historique' %}"><Button><div><i class="fas fa-history fa-spin fa-solid fa-clock-rotate-left fa-spin fa-spin-reverse"></i></div><div>Historique</div></Button></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-item">
                 {% if user.is_authenticated %}
-                <a href="{% url 'Administration:custom_logout' %}">
-                    <button>Deconnexion</button>
+                <a href="{% url 'Administration:custom_logout' %}" class="logout-button">
+                    <button><i class="fas fa-sign-out-alt mr-2"></i>Deconnexion</button>
                 </a>
                 {% else %}
-                <a href="{% url 'Administration:login' %}">
+                <a href="{% url 'Administration:login' %}" class="login-button">
                     <button><i class="fa fa-user mr-2"></i>
                         Login</button>
                 </a>
                 {% endif %}
             </div>
-        </section>
+        </div>
     </nav>
 </header>
