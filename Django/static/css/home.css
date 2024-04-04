@@ -1,0 +1,52 @@
+.section {
+    
+}
+h1 {
+    height: 10%;
+    margin-top: 2.5%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+}
+
+article {
+   margin-top: 7.5%;
+   margin-bottom: 2.5%;
+   margin-right: 2.5%;
+   margin-left: 2.5%;
+   display: grid; /* Utilisez une disposition de grille */
+   grid-template-columns: repeat(2, 1fr); /* Deux colonnes égales */
+   grid-template-rows: repeat(5, 1fr);
+   grid-column-gap: 30px; /* Espacement horizontal entre les colonnes */
+   grid-row-gap: 30px; /* Espacement vertical entre les lignes */
+   height: 70%;
+
+}
+/* Définissez le style pour les figures */
+article figure {
+    margin: auto;
+    display: grid;
+    grid-template-columns: 100px auto; /* Première colonne de 100px pour l'image, deuxième colonne pour la légende */
+    grid-column-gap: 10px; /* Réduisez l'espacement entre les colonnes */
+    align-items: center; /* Centrez verticalement le contenu */
+    height: 100px; /* Limitez la hauteur des figures à 100 pixels */
+    width: 100%;
+    border: 0px solid transparent;
+    border-radius: 35px;
+    background-color: rgb(99, 99, 99);
+    box-shadow: 0px 4px 8px black;
+}
+
+/* Définissez le style pour l'image */
+article figure img {
+    width: 100%; /* La largeur de l'image est automatiquement ajustée pour maintenir les proportions */
+    height: 100%; /* La hauteur de l'image est de 100% de la hauteur de la figure */
+    object-fit: contain; /* Remplir complètement la zone de l'image */
+    border: 0px solid transparent;
+    border-radius: 35px;
+}
+table {
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    color: white;
+}

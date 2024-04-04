@@ -11,7 +11,7 @@ class LoginView(auth_views.LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.error(request, "Vous êtes déjà connecté.")
-            return redirect('home')
+            return redirect('Main:home')
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -22,8 +22,3 @@ class LoginView(auth_views.LoginView):
     def form_invalid(self, form):
         messages.error(self.request, "Vos informations de connexion sont incorrectes. Veuillez réessayer.")
         return super().form_invalid(form)
-
-    def get_success_url(self):
-        url = super().get_success_url()
-        messages.success(self.request, "Vous vous êtes connecté avec succès.")
-        return url
