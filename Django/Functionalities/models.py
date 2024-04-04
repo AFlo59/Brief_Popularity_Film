@@ -4,7 +4,7 @@ from django.conf import settings
 user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class Film(models.Model):
-    titre = models.CharField()
+    titre = models.CharField(max_length=100)
     classement = models.IntegerField()
     portrait = models.URLField() 
     duration = models.IntegerField()
@@ -19,16 +19,16 @@ class Film(models.Model):
         return self.titre
 
 class Genre(models.Model):
-    nom = models.CharField()
+    nom = models.CharField(max_length=100)
 
     def str(self):
         return self.nom
 
 class Casting(models.Model):
-    nom = models.CharField()
+    nom = models.CharField(max_length=100)
 
     def str(self):
         return self.nom
 
 class Country(models.Model):
-    nom = models.CharField()
+    nom = models.CharField(max_length=100)
