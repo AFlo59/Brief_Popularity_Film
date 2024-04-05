@@ -35,3 +35,6 @@ traitlets==5.14.2
 typing_extensions==4.10.0
 tzdata==2024.1
 wcwidth==0.2.13
+sqlalchemy
+python-dotenv
+pymysql
