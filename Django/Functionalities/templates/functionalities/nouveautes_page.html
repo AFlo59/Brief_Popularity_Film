@@ -4,7 +4,30 @@
 {% block head_extrascripts %}
     <title>Nouveautés</title>
     <style>
+        section > article {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: #ffffff;
+            border: 1px solid yellow;
+            padding: 0;
+            margin: 0;
+        }
+        section article figure {
+            margin: 0;
+            padding: 0;
+            width: 45%;
+            height: 20%;
+            border: 1px solid green;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+        
     </style>
 {% endblock head_extrascripts %}
 
@@ -23,24 +46,36 @@
         <h1>Sorties de la Semaine</h1>
         <article>
             {% for film in films %}
-            <figure>
-                <img src="{{ film.portrait }}" alt="{{ film.titre }}">
-                <figcaption>
-                    <table>
-                        <tr>
-                            <td>Titre : {{ film.titre }}</td>
-                            <td>Réalisateur : {{ film.realisateur }}</td>
-                        </tr>
-                        <tr>
-                            <td>Durée : {{ film.duration }}</td>
-                            <td>Genre : {{ film.genre }}</td>
-                        </tr>
-                        <tr>
-                            <td>Acteurs: {{ film.acteur }}</td>
-                        </tr>
-                    </table>
-                </figcaption>
-            </figure>
+                <figure>
+                    <img src="{{ film.portrait }}" alt="{{ film.titre }}">
+                    <figcaption>
+                        <table>
+                            <tr>
+                                <td colspan="2">Titre : {{ film.titre }}</td>
+                            </tr>
+                            <tr>
+                                <td>Réalisateur : {{ film.realisateur }}</td>
+                                <td>Durée : {{ film.duration }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Acteurs: {{ film.acteur }}</td>
+                            </tr>
+                        </table>
+                    </figcaption>
+                </figure>
+            {% empty %}
+                {% if forloop.counter0 < 10 %}
+                    <figure>
+                        <img src="{% static 'img/default.jpg' %}" alt="Empty">
+                        <figcaption>
+                            <table>
+                                <tr>
+                                    <td colspan="2">Aucun film disponible</td>
+                                </tr>
+                            </table>
+                        </figcaption>
+                    </figure>
+                {% endif %}
             {% endfor %}
         </article>
     </section>
