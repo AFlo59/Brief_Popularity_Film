@@ -12,6 +12,8 @@ def normalize(str: AnyStr) -> AnyStr:
     str = str.lower()
     # remove punctuation
     str = re.sub(r"[^\w\s]", "", str)
+    # char special
+    str = re.sub(r"[œ]", "oe", str)
     # remove multiple space
     str = re.sub(r"\s\s+", " ", str)
     # remove white spaces

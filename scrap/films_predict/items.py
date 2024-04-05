@@ -185,10 +185,11 @@ class BaseFilmAlloItem(Item):
         ).get()
 
         year_allo = response.xpath(
-            '//div[contains(@class, "meta-body-info")]/span[contains(@class, "date")]/text()'
+            #'//div[contains(@class, "meta-body-info")]/span[contains(@class, "date")]/text()'
+            '//div[@class="item" and span[@class="what light" and contains(text(), "de production")]]/span[@class="that"]/text()'
         ).get()
 
-        if self["year_allo"] != -1 and year_allo is not None:
+        if year_allo is not None:
             year_allo = re.findall("([0-9]{4})", year_allo)
             try:
                 self["year_allo"] = convert_int(year_allo[0])
@@ -219,7 +220,6 @@ class BaseFilmAlloItem(Item):
 
         self["award"] = convert_int(award, 0)
 
-        # print(self)
         yield self
 
 
