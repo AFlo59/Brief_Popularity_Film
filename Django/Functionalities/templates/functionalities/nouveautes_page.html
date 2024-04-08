@@ -57,6 +57,15 @@
             height: 100%;
             width: 65%;
         }
+        section > article > figure > figcaption > ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 2px;
+        }
+        section > article > figure > figcaption > ul li{
+            margin-right: 10px;
+        }
 
         @media screen and (max-width: 1024px) { 
             section > article {
@@ -107,23 +116,14 @@
                 <figure>
                     <img src="{{ film.portrait }}" alt="{{ film.titre }}">
                     <figcaption>
-                        <table>
-                            <tr>
-                                <td colspan="2">Titre : {{ film.titre }}</td>
-                                <td>Classement: {{ film.classement }}</td>
-                            </tr>
-                            <tr>
-                                <td>Réalisateur : {{ film.realisateurs.first.nom }}</td>
-                                <td>Durée : {{ film.duration }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">Acteurs:
-                                    {% for casting in film.castings.all|slice:":3" %}
-                                        {{ casting.nom }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        </table>
+                        <ul>
+                            <li>#: {{ film.classement }}</li>
+                            <li>Titre : {{ film.titre }}</li>
+                            <li>Durée : {{ film.duration }}</li>
+                            <li>Réalisateur : {{ film.realisateurs.first.nom }}</li>
+                            <li>Acteurs: {% for casting in film.castings.all|slice:":3" %}{{ casting.nom }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                            </li>
+                        </ul>
                     </figcaption>
                 </figure>
             {% endfor %}
