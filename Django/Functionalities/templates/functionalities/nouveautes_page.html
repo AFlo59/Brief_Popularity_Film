@@ -62,18 +62,30 @@
 
         @media screen and (max-width: 1024px) { /* ajustements pour tablette et mobile */
             section > article {
-                flex-flow: column nowrap; /* Afficher en colonne */
-                align-items: center; /* Centrer les éléments */
-                height: 80vh; /* Hauteur maximale de 80% de la hauteur de la fenêtre */
-                overflow-y: auto; /* Activer le défilement vertical */
+                flex-flow: column nowrap;
+                align-items: center; 
+                overflow-y: auto; 
+                top: auto;
+                padding-top: 500px;
+
             }
 
             section > article > figure {
                 max-width: 350px;
                 min-width: 300px;
-                
                 max-height: 120px;
                 min-height: 100px
+            }
+        }
+        @media screen and (max-width: 376px) { /* ajustements pour tablette et mobile */
+            section > article {
+                max-width: 355px;
+                min-width: 300px;
+            }
+            section > article> figure {
+                max-width: 320px;
+                min-width: 280px;
+                min-height: 100px;
             }
         }
     </style>

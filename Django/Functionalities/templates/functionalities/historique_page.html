@@ -7,7 +7,7 @@
     <title>Historique</title>
     <style>
         section {
-            min-width: 320px;
+            min-width: 300px;
             height: 100%;
             width: 100%;
             margin: 0;
@@ -22,6 +22,16 @@
             width: 100%;
             margin: 0;
             padding: 0;
+        }
+        @media screen and (max-width: 1024px) { /* ajustements pour tablette et mobile */
+            section > article {
+                flex-flow: column nowrap;
+                align-items: center; 
+                overflow-y: auto; 
+                top: auto;
+            }
+
+           
         }
     </style>
 {% endblock head_extrascripts %}

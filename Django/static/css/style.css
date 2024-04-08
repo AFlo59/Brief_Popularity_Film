@@ -35,6 +35,8 @@ body, html {
 #toggleHeaderButton {
     display: none;
     writing-mode: vertical-lr;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Media query pour les écrans de taille inférieure à 1024px */
@@ -97,4 +99,14 @@ body, html {
         
     }
 
+}
+@media screen and (max-width: 376px) { /* ajustements pour tablette et mobile */
+    #toggleHeaderButton {
+        width: 20px;
+    }
+    .content{
+        width: 300px;
+        margin: 0;
+        padding: 0;
+    }
 }
