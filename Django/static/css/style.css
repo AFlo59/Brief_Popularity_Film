@@ -102,4 +102,7 @@ body, html {
         margin: 0;
         padding: 0;
     }
+    .header_conteneur.show {
+        width: 100vw;
+    }
 }
