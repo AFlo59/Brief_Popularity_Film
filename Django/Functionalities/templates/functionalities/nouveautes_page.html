@@ -15,7 +15,6 @@
             justify-content: space-between;
         }
         article {
-            border: 1px solid yellow;
             height: 100%;
             width: 100%;
             margin: 0;
@@ -39,12 +38,11 @@
         border-radius: 20px;
         background-color: rgb(99, 99, 99);
         box-shadow: 0 4px 8px black;
-        transition: transform 0.3s ease; /* Ajoute une transition fluide */
+        transition: transform 0.3s ease;
         }
 
-        /* Effet de décollage lors du survol */
         section > article > figure:hover {
-            transform: translateY(-5px); /* Déplace l'élément vers le haut de 5 pixels */
+            transform: translateY(-5px); 
         }
 
         section > article > figure > img {
@@ -60,7 +58,7 @@
             width: 65%;
         }
 
-        @media screen and (max-width: 1024px) { /* ajustements pour tablette et mobile */
+        @media screen and (max-width: 1024px) { 
             section > article {
                 flex-flow: column nowrap;
                 align-items: center; 
@@ -77,7 +75,7 @@
                 min-height: 100px
             }
         }
-        @media screen and (max-width: 376px) { /* ajustements pour tablette et mobile */
+        @media screen and (max-width: 376px) { 
             section > article {
                 max-width: 355px;
                 min-width: 300px;
