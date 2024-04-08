@@ -36,10 +36,14 @@
             </ul>
         {% endif %}
     {% endblock messages %}
-    
     <section>
         <h1>Historique des semaines prédédentes</h1>
         <article>
+            <ul>
+                {% for historique in historiques %}
+                    <li>{{ historique.date_semaine }}</li>
+                {% endfor %}
+            </ul>
         </article>
     </section>
 {% endblock content %}

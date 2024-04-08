@@ -28,7 +28,7 @@ class HistoriqueFilm(models.Model):
     historique = models.ForeignKey(Historique, on_delete=models.CASCADE)
     film = models.ForeignKey('Film', on_delete=models.CASCADE)
 
-class HistoriqueCasting(models.Model):
+class HistoriqueRealisateur(models.Model):
     historique = models.ForeignKey(Historique, on_delete=models.CASCADE)
     realisateur = models.ForeignKey('Realisateur', on_delete=models.CASCADE)
 
