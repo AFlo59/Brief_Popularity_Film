@@ -3,6 +3,7 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
+import datetime
 import json
 import re
 from types import NoneType
@@ -110,7 +111,6 @@ class FilmItem(Item):
 
 
 class BaseFilmAlloItem(Item):
-    id = Field()
     url_allo = Field()
     year_allo = Field()
     director_allo = Field()
@@ -204,7 +204,7 @@ class BaseFilmAlloItem(Item):
             "" if isinstance(synopsis, str) is False else synopsis.strip()
         )
         self["distributor"] = (
-            "" if isinstance(distributor, str) is False else distributor.strip()
+            "" if isinstance(distributor, str) is False else normalize(distributor)
         )
         self["budget"] = convert_int(budget)
         self["lang"] = [normalize(lang) for lang in lang.split(sep=",")]
@@ -223,18 +223,72 @@ class BaseFilmAlloItem(Item):
         yield self
 
 
-class FilmAlloSortieItem(BaseFilmAlloItem):
-    thumbnail = Field()
-
-    def parse(self, response):
-        yield from super().parse(response)
-        self.thumbnail = "ess"
-
-        yield self
-
-
 class FilmAlloItem(BaseFilmAlloItem):
+    id = Field()
     id_jp = Field()
 
     # self["id"] = "sdfs"           -> dans le spider allocine
     # self["id_jp"] = "sdfsJP"      -> dans le spider allocine
+
+
+class FilmAlloSortieItem(BaseFilmAlloItem):
+    thumbnail = Field()
+    title = Field()
+    director_raw = Field()
+    duration = Field()
+    genre = Field()
+
+    def parse(self, response):
+        year_allo = response.xpath(
+            '//div[@class="item" and span[@class="what light" and contains(text(), "de production")]]/span[@class="that"]/text()'
+        ).get()
+
+        if year_allo is not None:
+            year_allo = re.findall("([0-9]{4})", year_allo)
+            try:
+                year_allo = convert_int(year_allo[0])
+            except Exception:
+                pass
+
+        if year_allo == datetime.datetime.now().year:
+            ld_json = response.xpath(
+                '//script[@type="application/ld+json"]/text()'
+            ).extract()
+
+            if len(ld_json) > 0:
+                ld_json = json.loads(ld_json[0])
+
+                if "director" in ld_json:
+                    try:
+                        self["director_raw"] = ld_json["director"]["name"]
+                    except Exception:
+                        self["director_raw"] = [ld_json["director"]["name"]]
+
+                if "genre" in ld_json:
+                    try:
+                        self["genre"] = ld_json["genre"]
+                    except Exception:
+                        self["genre"] = [
+                            response.xpath(
+                                '//a[contains(@href, "genre-") and contains(@clas, "dark-grey-link")]/text()'
+                            ).get()
+                        ]
+
+            self["thumbnail"] = response.xpath(
+                '//section/div//img[@class="thumbnail-img"]/@src'
+            ).get()
+            self["title"] = response.xpath(
+                '//main//div[@class="titlebar-title titlebar-title-xl"]/text()'
+            ).get()
+
+            duration = response.xpath(
+                '//div[@class="meta-body-item meta-body-info"]/strong/following-sibling::span/following-sibling::text()'
+            ).get()
+
+            self["duration"] = (
+                TimeLength(duration).to_seconds() if len(duration) >= 1 else None
+            )
+
+            return super().parse(response)
+
+        return True

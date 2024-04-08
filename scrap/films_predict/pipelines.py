@@ -13,8 +13,9 @@ import sqlalchemy.dialects.mysql as mysql
 from itemadapter import ItemAdapter
 from films_predict.migrations import FilmModel as model_jp
 from films_predict.migrations import FilmAlloModel as model_allo
+from films_predict.migrations import FilmSortieModel as model_allo_sortie
 
-from .items import FilmAlloItem, FilmItem
+from .items import FilmAlloItem, FilmItem, FilmAlloSortieItem
 
 
 class FilmsPipeline:
@@ -37,6 +38,8 @@ class FilmsPipeline:
             return self.handle_jp(item, spider)
         if isinstance(item, FilmAlloItem):
             return self.handle_allo(item, spider)
+        if isinstance(item, FilmAlloSortieItem):
+            return self.handle_allo_sortie(item, spider)
 
     def handle_jp(self, item: FilmItem, spider):
         film_item = ItemAdapter(item)
@@ -59,6 +62,18 @@ class FilmsPipeline:
         save_item = film_item.asdict()
 
         ups_stmt = mysql.insert(model_allo).values(save_item)
+        ups_stmt = ups_stmt.on_duplicate_key_update(**save_item)
+
+        self.conn.execute(ups_stmt)
+        self.conn.commit()
+
+        return item
+
+    def handle_allo_sortie(self, item: FilmAlloItem, spider):
+        film_item = ItemAdapter(item)
+        save_item = film_item.asdict()
+
+        ups_stmt = mysql.insert(model_allo_sortie).values(save_item)
         ups_stmt = ups_stmt.on_duplicate_key_update(**save_item)
 
         self.conn.execute(ups_stmt)
