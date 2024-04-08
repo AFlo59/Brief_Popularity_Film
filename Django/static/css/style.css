@@ -27,5 +27,6 @@ body, html {
 .content {
     flex: 1;
     margin: 5vh;
+    height: 90vh;
     border: 1px solid green;
 }

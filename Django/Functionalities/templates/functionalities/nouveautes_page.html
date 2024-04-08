@@ -4,27 +4,43 @@
 {% block head_extrascripts %}
     <title>Nouveautés</title>
     <style>
+        section {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0;
+            padding: 0;
+
+        }
         section > article {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             width: 100%;
-            height: 80%;
+            height: 89%;
             border: 1px solid yellow;
+            padding-bottom: 1%;
         }
 
         section > article > figure {
-            width: 40%;
-            height: 15%;
-            margin: 10px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between; 
-            align-items: center;
-            border: 1px solid green;
-            border-radius: 20px;
-            background-color: rgb(99, 99, 99);
-            box-shadow: 0 4px 8px black;
+        width: 45%;
+        height: 17.5%;
+        margin: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 20px;
+        background-color: rgb(99, 99, 99);
+        box-shadow: 0 4px 8px black;
+        transition: transform 0.3s ease; /* Ajoute une transition fluide */
+        }
+
+        /* Effet de décollage lors du survol */
+        section > article > figure:hover {
+            transform: translateY(-5px); /* Déplace l'élément vers le haut de 5 pixels */
         }
 
         section > article > figure > img {
@@ -34,7 +50,6 @@
             border-radius: 20px;
             margin: 0;
             padding: 0;
-            border: 1px solid red;
         }
         section > article > figure > figcaption {
             height: 100%;
