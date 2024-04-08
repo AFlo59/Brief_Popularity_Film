@@ -6,28 +6,55 @@
     <style>
         section > article {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
+            flex-wrap: wrap;
             width: 100%;
-            height: 100%;
-            color: #ffffff;
+            height: 80%;
             border: 1px solid yellow;
-            padding: 0;
-            margin: 0;
-        }
-        section article figure {
-            margin: 0;
-            padding: 0;
-            width: 45%;
-            height: 20%;
-            border: 1px solid green;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        
+        section > article > figure {
+            width: 40%;
+            height: 15%;
+            margin: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between; 
+            align-items: center;
+            border: 1px solid green;
+            border-radius: 20px;
+            background-color: rgb(99, 99, 99);
+            box-shadow: 0 4px 8px black;
+        }
+
+        section > article > figure > img {
+            height: 100%;
+            width: 30%;
+            object-fit:cover;
+            border-radius: 20px;
+            margin: 0;
+            padding: 0;
+            border: 1px solid red;
+        }
+        section > article > figure > figcaption {
+            height: 100%;
+            width: 65%;
+        }
+
+        @media screen and (max-width: 1024px) { /* ajustements pour tablette et mobile */
+            section > article {
+                flex-direction: column; /* Afficher en colonne */
+                align-items: center; /* Centrer les éléments */
+                height: 80vh; /* Hauteur maximale de 80% de la hauteur de la fenêtre */
+                overflow-y: auto; /* Activer le défilement vertical */
+            }
+
+            section > article > figure {
+                width: 90%;
+                min-width: 300px;
+                height: 15%;
+            }
+        }
     </style>
 {% endblock head_extrascripts %}
 
@@ -45,9 +72,10 @@
     <section>
         <h1>Sorties de la Semaine</h1>
         <article>
-            {% for film in films %}
+            {% for film in films|slice:":10" %} {# Afficher uniquement les dix premiers films #}
                 <figure>
-                    <img src="{{ film.portrait }}" alt="{{ film.titre }}">
+                    <!-- <img src="{{ film.portrait }}" alt="{{ film.titre }}"> -->
+                    <img src="{% static '/img/5.jpeg' %}" alt="film_affiche">
                     <figcaption>
                         <table>
                             <tr>
@@ -63,19 +91,6 @@
                         </table>
                     </figcaption>
                 </figure>
-            {% empty %}
-                {% if forloop.counter0 < 10 %}
-                    <figure>
-                        <img src="{% static 'img/default.jpg' %}" alt="Empty">
-                        <figcaption>
-                            <table>
-                                <tr>
-                                    <td colspan="2">Aucun film disponible</td>
-                                </tr>
-                            </table>
-                        </figcaption>
-                    </figure>
-                {% endif %}
             {% endfor %}
         </article>
     </section>
