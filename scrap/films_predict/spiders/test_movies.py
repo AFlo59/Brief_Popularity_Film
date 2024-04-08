@@ -10,11 +10,13 @@ SCRAP_ALLO = get_env("SCRAP_ALLO")
 class TestMoviesSpider(scrapy.Spider):
     name = "test_movies"
     start_urls = [
-        f"{SCRAP_JP}/fichfilm.php?id=2561&view=2",
-        # "{SCRAP_ALLO}/film/fichefilm_gen_cfilm=59308.html"
+        # f"{SCRAP_JP}/fichfilm.php?id=2561&view=2",
+        f"{SCRAP_ALLO}/film/fichefilm_gen_cfilm=28546.html"
     ]
 
     def parse(self, response: Response):
-        item = FilmItem()
-        # item = FilmAlloItem()
+        # item = FilmItem()
+        item = FilmAlloItem()
+        item["id_jp"] = "testidjp"
+        item["id"] = "testid"
         yield from item.parse(response=response)
