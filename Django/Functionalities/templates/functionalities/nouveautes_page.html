@@ -112,11 +112,15 @@
                                 <td colspan="2">Titre : {{ film.titre }}</td>
                             </tr>
                             <tr>
-                                <td>Réalisateur : {{ film.realisateur }}</td>
+                                <td>Réalisateur : {{ film.realisateurs.first.nom }}</td>
                                 <td>Durée : {{ film.duration }}</td>
                             </tr>
                             <tr>
-                                <td colspan="2">Acteurs: {{ film.acteur }}</td>
+                                <td colspan="2">Acteurs:
+                                    {% for casting in film.castings.all|slice:":3" %}
+                                        {{ casting.nom }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
                             </tr>
                         </table>
                     </figcaption>
