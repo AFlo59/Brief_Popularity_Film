@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from utils.environment import get_env
 import urllib.parse
@@ -22,3 +22,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionMaker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 session = SessionMaker()
+
+@event.listens_for(engine, "connect", insert=True)
+def connect(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))")
