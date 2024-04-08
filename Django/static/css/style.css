@@ -69,9 +69,8 @@ body, html {
         border-right: 1px solid #ffffff;
         position: absolute;
         top: 0;
-        left: 0;
-        z-index: -1;
-        transition: width 0.3s ease; 
+        left: -100vw; 
+        z-index: 0;
     }
     
     .content {
@@ -80,10 +79,6 @@ body, html {
         height: 90vh;
         z-index: 0;
         transition: width 0.3s ease; 
-    }
-    .header_conteneur {
-        width: 0; 
-        z-index: -1;
     }
 
     .content {
@@ -95,7 +90,6 @@ body, html {
         width: 20vw; 
         z-index: 1;
         background-color: #333333;
-        
     }
 
 }
