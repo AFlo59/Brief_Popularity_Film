@@ -95,7 +95,7 @@
         <article>
             {% for film in films|slice:":10" %} {# Afficher uniquement les dix premiers films #}
                 <figure>
-                    <img src="{% static '/img/5.jpeg' %}" alt="{{ film.titre }}">
+                    <img src="{{ film.portrait }}" alt="{{ film.titre }}">
                     <figcaption>
                         <table>
                             <tr>

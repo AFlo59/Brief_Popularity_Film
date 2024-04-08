@@ -28,6 +28,10 @@ class HistoriqueFilm(models.Model):
     historique = models.ForeignKey(Historique, on_delete=models.CASCADE)
     film = models.ForeignKey('Film', on_delete=models.CASCADE)
 
+class HistoriqueCasting(models.Model):
+    historique = models.ForeignKey(Historique, on_delete=models.CASCADE)
+    realisateur = models.ForeignKey('Realisateur', on_delete=models.CASCADE)
+
 class HistoriqueGenre(models.Model):
     historique = models.ForeignKey(Historique, on_delete=models.CASCADE)
     genre = models.ForeignKey('Genre', on_delete=models.CASCADE)
@@ -49,6 +53,7 @@ class Film(models.Model):
     description = models.TextField()
     date_sortie = models.DateField()
     synopsis = models.TextField()
+    realisateurs = models.ManyToManyField('Realisateur', related_name='films')
     genres = models.ManyToManyField('Genre', related_name='films')
     castings = models.ManyToManyField('Casting', related_name='films')
     countries = models.ManyToManyField('Country', related_name='films')
@@ -57,6 +62,11 @@ class Film(models.Model):
         return self.titre
 
 
+class Realisateur(models.Model):
+    nom = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nom
 class Genre(models.Model):
     nom = models.CharField(max_length=100)
 
@@ -69,7 +79,7 @@ class Casting(models.Model):
 
     def __str__(self):
         return self.nom
-
+    
 
 class Country(models.Model):
     nom = models.CharField(max_length=100)
