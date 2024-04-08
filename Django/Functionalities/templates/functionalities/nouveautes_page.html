@@ -5,28 +5,31 @@
     <title>Nouveautés</title>
     <style>
         section {
-            width: 100%;
+            min-width: 320px;
             height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        article {
+            border: 1px solid yellow;
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
-
         }
         section > article {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            width: 100%;
-            height: 89%;
-            border: 1px solid yellow;
-            padding-bottom: 1%;
         }
 
         section > article > figure {
         width: 45%;
-        height: 17.5%;
+        height: 15%;
         margin: 10px;
         display: flex;
         flex-direction: row;
@@ -58,7 +61,7 @@
 
         @media screen and (max-width: 1024px) { /* ajustements pour tablette et mobile */
             section > article {
-                flex-direction: column; /* Afficher en colonne */
+                flex-flow: column nowrap; /* Afficher en colonne */
                 align-items: center; /* Centrer les éléments */
                 height: 80vh; /* Hauteur maximale de 80% de la hauteur de la fenêtre */
                 overflow-y: auto; /* Activer le défilement vertical */
@@ -68,6 +71,7 @@
                 width: 90%;
                 min-width: 300px;
                 height: 15%;
+                min-height: 90px
             }
         }
     </style>
@@ -89,8 +93,7 @@
         <article>
             {% for film in films|slice:":10" %} {# Afficher uniquement les dix premiers films #}
                 <figure>
-                    <!-- <img src="{{ film.portrait }}" alt="{{ film.titre }}"> -->
-                    <img src="{% static '/img/5.jpeg' %}" alt="film_affiche">
+                    <img src="{{ film.portrait }}" alt="{{ film.titre }}">
                     <figcaption>
                         <table>
                             <tr>

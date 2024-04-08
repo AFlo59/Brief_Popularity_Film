@@ -17,6 +17,7 @@ body, html {
     display: flex;
 }
 
+
 .header_conteneur {
     min-width: 300px;
     width: 20vw;
@@ -29,4 +30,71 @@ body, html {
     margin: 5vh;
     height: 90vh;
     border: 1px solid green;
+}
+
+#toggleHeaderButton {
+    display: none;
+    writing-mode: vertical-lr;
+}
+
+/* Media query pour les écrans de taille inférieure à 1024px */
+@media screen and (max-width: 1024px) {
+    #toggleHeaderButton {
+        display: flex;
+        z-index: 2;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+        font-family: 'Roboto', sans-serif;
+        background-color: #333333;
+        color: #ffffff; 
+        overflow-y: hidden;
+    }
+    
+    .container {
+        display: flex;
+        position: relative; /* Ajout de position relative pour référencer les éléments enfants absolus */
+    }
+    
+    .header_conteneur {
+        min-width: 300px;
+        width: 0;
+        height: 100vh;
+        border-right: 1px solid #ffffff;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        transition: width 0.3s ease; /* Transition pour l'animation */
+    }
+    
+    .content {
+        flex: 1;
+        margin: 5vh;
+        height: 90vh;
+        border: 1px solid green;
+        z-index: 0;
+        transition: width 0.3s ease; /* Transition pour l'animation */
+    }
+    .header_conteneur {
+        width: 0; /* Largeur à 0 lorsque la taille de l'écran est inférieure à 1024px */
+        z-index: -1;
+    }
+
+    .content {
+        width: 100vw; /* Largeur à 100vw */
+        z-index: 0;
+    }
+
+    .header_conteneur.show {
+        width: 20vw; /* Largeur du header_conteneur lorsqu'il est affiché */
+        z-index: 1;
+        background-color: #333333;
+        
+    }
+
 }
