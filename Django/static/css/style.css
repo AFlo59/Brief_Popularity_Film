@@ -93,16 +93,30 @@ body, html {
     }
 
 }
-@media screen and (max-width: 376px) { 
-    #toggleHeaderButton {
-        width: 20px;
+@media screen and (max-width: 540px) { 
+    .container {
+        display: flex;
+        flex-direction: column;
     }
-    .content{
-        width: 300px;
+    
+    #toggleHeaderButton {
+        width: auto; /* Réinitialise la largeur */
+        height: 40px; /* Ajoute une hauteur pour s'adapter en mode colonne */
+        writing-mode: horizontal-tb; /* Réinitialise l'orientation */
+        align-items: center; /* Centrer verticalement le contenu */
+        justify-content: flex-start; /* Aligner le contenu en haut */
+        padding: 0 10px; /* Ajouter un peu de marge */
+        margin: 10px 0; /* Ajouter de l'espace autour du bouton */
+    }
+    
+    .content {
+        width: auto;
         margin: 0;
         padding: 0;
     }
+    
     .header_conteneur.show {
         width: 100vw;
     }
 }
+

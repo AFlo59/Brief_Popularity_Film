@@ -25,12 +25,20 @@
             justify-content: center;
             flex-wrap: wrap;
         }
-
-        section > article > figure {
+        section > article > a {
         width: 40%;
         height: 15%;
         max-height: 120px;
         margin: 10px;
+        text-decoration: none;
+        
+        }
+
+        section > article > a > figure {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -41,11 +49,11 @@
         transition: transform 0.3s ease;
         }
 
-        section > article > figure:hover {
+        section > article > a > figure:hover {
             transform: translateY(-5px); 
         }
 
-        section > article > figure > img {
+        section > article > a > figure > img {
             height: 100%;
             width: 30%;
             object-fit:cover;
@@ -53,47 +61,77 @@
             margin: 0;
             padding: 0;
         }
-        section > article > figure > figcaption {
+        section > article > a > figure > figcaption {
             height: 100%;
             width: 65%;
         }
-        section > article > figure > figcaption > ul {
-        list-style: none;
-        display: flex;
-        flex-wrap: wrap;
-        padding: 2px;
+        section > article > a > figure > figcaption > table {
+        width: 100%;
+        height: 100%;
         }
-        section > article > figure > figcaption > ul li{
-            margin-right: 10px;
-        }
+        
+        
 
-        @media screen and (max-width: 1024px) { 
+        @media screen and (max-width: 1440px) { 
             section > article {
                 flex-flow: column nowrap;
                 align-items: center; 
-                overflow-y: auto; 
-                top: 0;
-                padding-top: 60vh;
+                position: relative;
+                padding-top: 0;
+                overflow-y: auto;
 
             }
+            section > article > a {
+                min-width: 420px;
+                min-height: 120px;
+                position: relative;
+                top: 0;
+            }
 
-            section > article > figure {
-                max-width: 350px;
-                min-width: 300px;
-                max-height: 120px;
-                min-height: 100px
+            section > article > a > figure {
+                width: 100%;
+                height: 100%;
             }
         }
-        @media screen and (max-width: 376px) { 
+        @media screen and (max-width: 540px) {
+            section {
+                display: flex;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+            }
             section > article {
-                max-width: 355px;
-                min-width: 300px;
+               width: 100%;
+               height: 100%;
+               flex-flow: column nowrap;
+               align-items: center; 
+               overflow-y: auto;
+               position: relative;
+               padding-top: 0;
+
             }
-            section > article> figure {
-                max-width: 320px;
+            section > article > a {
                 min-width: 280px;
-                min-height: 100px;
+                height: 100px;
+                padding: 0;
+                margin-left: 0;
+                margin-right: 0;
+                position: relative;
+                top: 0;
             }
+            section > article > a > figure {
+                width: 100%;
+                height: 100%;
+                padding: 2px;
+            }
+            section > article > a > figure > img {
+                display: none;
+                width: 0;
+            }
+            section > article > a > figure > figcaption {
+                width: 100%;
+            }
+
         }
     </style>
 {% endblock head_extrascripts %}
@@ -113,18 +151,32 @@
     <h1>Sorties de la Semaine</h1>
     <article>
         {% for film in films|slice:":10" %}
-        <figure>
-            <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
-            <figcaption>
-                <ul>
-                    <li>#: {{ film.classement}}</li>
-                    <li>Titre : {{ film.title }}</li>
-                    <li>Réalisateur : {{ film.director_raw }}</li>
-                    <li>Durée : {{ film.duration }}</li>
-                    <li>Genre : {{ film.genre }}</li>
-                </ul>
-            </figcaption>
-        </figure>
+        <a href="{{ film.url_allo }}">
+            <figure>
+                <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
+                <figcaption>
+                    <table>
+                        <tr>
+                            <td colspan="2">#{{ film.classement}}. {{ film.title }}</td>
+                        </tr>
+                        <tr>
+                            <td>Durée : {{ film.duration }}</td>
+                            <td>{% if film.genre %}
+                                    Genre : {% for genre in film.genre|slice:":02" %}{{ genre }}{% if not forloop.last and not forloop.first %}{% if forloop.counter == 2 %}, ...{% else %},{% endif %}{% endif %}{% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {% if film.director_raw %}
+                                    Réalisateur : {{ film.director_raw }} 
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </figcaption>
+            </figure>
+        </a>
         {% endfor %}
     </article>
 </section>
