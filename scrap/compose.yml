@@ -37,8 +37,8 @@ services:
     build: .
     env_file:
       - .env
-    command: python -m http.server 8000
+    command: python -m http.server 8080
     volumes:
       - .:/home/app
     ports:
-      - 8000:8000
+      - 8080:8080

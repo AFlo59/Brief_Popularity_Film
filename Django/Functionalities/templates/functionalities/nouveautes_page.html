@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_extrascripts %}
-    <title>Nouveautés</title>
+<title>Nouveautés</title>
     <style>
         section {
             min-width: 320px;
@@ -99,34 +99,39 @@
 {% endblock head_extrascripts %}
 
 {% block content %}
-    {% block messages %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endblock messages %}
+{% block messages %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock messages %}
 
-    <section>
-        <h1>Sorties de la Semaine</h1>
-        <article>
-            {% for film in films|slice:":10" %} {# Afficher uniquement les dix premiers films #}
-                <figure>
-                    <img src="{{ film.portrait }}" alt="{{ film.titre }}">
-                    <figcaption>
-                        <ul>
-                            <li>#: {{ film.classement }}</li>
-                            <li>Titre : {{ film.titre }}</li>
-                            <li>Durée : {{ film.duration }}</li>
-                            <li>Réalisateur : {{ film.realisateurs.first.nom }}</li>
-                            <li>Acteurs: {% for casting in film.castings.all|slice:":3" %}{{ casting.nom }}{% if not forloop.last %}, {% endif %}{% endfor %}
-                            </li>
-                        </ul>
-                    </figcaption>
-                </figure>
-            {% endfor %}
-        </article>
-    </section>
+<section>
+    <h1>Sorties de la Semaine</h1>
+    <article>
+        {% for film in films %}
+        <figure>
+            <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
+            <figcaption>
+                <table>
+                    <tr>
+                        <td>Titre : {{ film.title }}</td>
+                        <td>Réalisateur : {{ film.director_raw }}</td>
+                    </tr>
+                    <tr>
+                        <td>Durée : {{ film.duration }}</td>
+                        <td>Genre : {{ film.genre }}</td>
+                    </tr>
+                    <tr>
+                        <td>Acteurs: {{ film.casting }}</td>
+                    </tr>
+                </table>
+            </figcaption>
+        </figure>
+        {% endfor %}
+    </article>
+</section>
 {% endblock content %}
