@@ -70,13 +70,11 @@ def classifier_distributor(distributor):
 
 def prediction(data: FeaturesInput):
     model = load_model()
-    print(model)
     classification_acteurs = classifier_acteurs(data.casting)
     classification_director = classifier_directors(data.director)
     classification_distributor = classifier_distributor(data.distributor)
 
     values = {}
-    print(data.__dict__)
     for key, value in data.__dict__.items():
         if key != "casting":
             values[key] = [value]
@@ -87,4 +85,4 @@ def prediction(data: FeaturesInput):
     df = pd.DataFrame.from_dict(values)
 
     prediction = model.predict(df)
-    return prediction[0]
+    return int(prediction[0])
