@@ -112,23 +112,17 @@
 <section>
     <h1>Sorties de la Semaine</h1>
     <article>
-        {% for film in films %}
+        {% for film in films|slice:":10" %}
         <figure>
             <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
             <figcaption>
-                <table>
-                    <tr>
-                        <td>Titre : {{ film.title }}</td>
-                        <td>Réalisateur : {{ film.director_raw }}</td>
-                    </tr>
-                    <tr>
-                        <td>Durée : {{ film.duration }}</td>
-                        <td>Genre : {{ film.genre }}</td>
-                    </tr>
-                    <tr>
-                        <td>Acteurs: {{ film.casting }}</td>
-                    </tr>
-                </table>
+                <ul>
+                    <li>#: {{ film.classement}}</li>
+                    <li>Titre : {{ film.title }}</li>
+                    <li>Réalisateur : {{ film.director_raw }}</li>
+                    <li>Durée : {{ film.duration }}</li>
+                    <li>Genre : {{ film.genre }}</li>
+                </ul>
             </figcaption>
         </figure>
         {% endfor %}
