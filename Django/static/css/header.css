@@ -133,3 +133,8 @@
     color: red;
     margin-right: 5px;
 }
+@media screen and (max-width: 540px) { 
+    .nav-item button {
+        min-height: 40px;
+    }
+}

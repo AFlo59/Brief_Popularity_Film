@@ -100,13 +100,13 @@ body, html {
     }
     
     #toggleHeaderButton {
-        width: auto; /* Réinitialise la largeur */
-        height: 40px; /* Ajoute une hauteur pour s'adapter en mode colonne */
-        writing-mode: horizontal-tb; /* Réinitialise l'orientation */
-        align-items: center; /* Centrer verticalement le contenu */
-        justify-content: flex-start; /* Aligner le contenu en haut */
-        padding: 0 10px; /* Ajouter un peu de marge */
-        margin: 10px 0; /* Ajouter de l'espace autour du bouton */
+        width: auto; 
+        height: 40px; 
+        writing-mode: horizontal-tb; 
+        align-items: center; 
+        justify-content: flex-start; 
+        padding: 0 10px; 
+        margin: 10px 0; 
     }
     
     .content {
