@@ -17,7 +17,8 @@ body, html {
     display: flex;
 }
 
-header {
+
+.header_conteneur {
     min-width: 300px;
     width: 20vw;
     height: 100vh;
@@ -26,6 +27,82 @@ header {
 
 .content {
     flex: 1;
-    height: 100vh;
     margin: 5vh;
+    height: 90vh;
+    box-shadow: 0 4px 8px black;
+}
+
+#toggleHeaderButton {
+    display: none;
+    writing-mode: vertical-lr;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media screen and (max-width: 1024px) {
+    #toggleHeaderButton {
+        display: flex;
+        z-index: 2;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+        font-family: 'Roboto', sans-serif;
+        background-color: #333333;
+        color: #ffffff; 
+        overflow-y: hidden;
+    }
+    
+    .container {
+        display: flex;
+        position: relative; 
+    }
+    
+    .header_conteneur {
+        min-width: 300px;
+        width: 0;
+        height: 100vh;
+        border-right: 1px solid #ffffff;
+        position: absolute;
+        top: 0;
+        left: -100vw; 
+        z-index: 0;
+    }
+    
+    .content {
+        flex: 1;
+        margin: 5vh;
+        height: 90vh;
+        z-index: 0;
+        transition: width 0.3s ease; 
+    }
+
+    .content {
+        width: 100vw; 
+        z-index: 0;
+    }
+
+    .header_conteneur.show {
+        width: 20vw; 
+        z-index: 1;
+        background-color: #333333;
+    }
+
+}
+@media screen and (max-width: 376px) { 
+    #toggleHeaderButton {
+        width: 20px;
+    }
+    .content{
+        width: 300px;
+        margin: 0;
+        padding: 0;
+    }
+    .header_conteneur.show {
+        width: 100vw;
+    }
 }

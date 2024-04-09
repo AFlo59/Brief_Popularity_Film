@@ -3,9 +3,99 @@
 
 {% block head_extrascripts %}
 <title>Nouveautés</title>
-<style>
+    <style>
+        section {
+            min-width: 320px;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        article {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        section > article {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-</style>
+        section > article > figure {
+        width: 40%;
+        height: 15%;
+        max-height: 120px;
+        margin: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 20px;
+        background-color: rgb(99, 99, 99);
+        box-shadow: 0 4px 8px black;
+        transition: transform 0.3s ease;
+        }
+
+        section > article > figure:hover {
+            transform: translateY(-5px); 
+        }
+
+        section > article > figure > img {
+            height: 100%;
+            width: 30%;
+            object-fit:cover;
+            border-radius: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        section > article > figure > figcaption {
+            height: 100%;
+            width: 65%;
+        }
+        section > article > figure > figcaption > ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 2px;
+        }
+        section > article > figure > figcaption > ul li{
+            margin-right: 10px;
+        }
+
+        @media screen and (max-width: 1024px) { 
+            section > article {
+                flex-flow: column nowrap;
+                align-items: center; 
+                overflow-y: auto; 
+                top: 0;
+                padding-top: 60vh;
+
+            }
+
+            section > article > figure {
+                max-width: 350px;
+                min-width: 300px;
+                max-height: 120px;
+                min-height: 100px
+            }
+        }
+        @media screen and (max-width: 376px) { 
+            section > article {
+                max-width: 355px;
+                min-width: 300px;
+            }
+            section > article> figure {
+                max-width: 320px;
+                min-width: 280px;
+                min-height: 100px;
+            }
+        }
+    </style>
 {% endblock head_extrascripts %}
 
 {% block content %}

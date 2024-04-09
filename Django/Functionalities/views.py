@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Film, FilmScrap
-
+from .models import Film, FilmScrap, Historique
 
 @login_required
 def recettes_page(request):
@@ -15,7 +14,9 @@ def predict_page(request):
 
 @login_required
 def historique_page(request):
-    return render(request, "functionalities/historique_page.html")
+
+    historiques = Historique.objects.all()
+    return render(request, 'functionalities/historique_page.html', {'historiques': historiques})
 
 
 @login_required
