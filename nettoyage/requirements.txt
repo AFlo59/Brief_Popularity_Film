@@ -38,3 +38,4 @@ wcwidth==0.2.13
 sqlalchemy
 python-dotenv
 pymysql
+catboost
