@@ -39,3 +39,5 @@ sqlalchemy
 python-dotenv
 pymysql
 catboost
+vacances-scolaires-france
+xgboost
