@@ -161,9 +161,12 @@ class FilmImdbItem(Item):
         budget = response.xpath(
             "//li[@data-testid='title-boxoffice-budget']//ul//span/text()"
         ).get()
-        budget = normalize(budget)
-        budget = re.sub(r"\s?[a-z]+", "", budget)
-        self["budget"] = convert_int(budget)
+
+        self["budget"] = -1
+        if budget is not None:
+            budget = normalize(budget)
+            budget = re.sub(r"\s?[a-z]+", "", budget)
+            self["budget"] = convert_int(budget)
 
         distributor = response.xpath(
             "//li[@data-testid='title-details-companies']//ul//a/text()"
@@ -181,7 +184,7 @@ class FilmImdbItem(Item):
             match = re.search(r"^[0-9]+", award)
             self["award"] = convert_int(match[0]) if match is not None else 0
 
-        print(self)
+        # print(self)
         yield self
 
 

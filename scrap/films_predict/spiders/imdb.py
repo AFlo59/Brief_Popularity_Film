@@ -3,14 +3,14 @@ from films_predict.migrations import FilmModel
 from utils.string import convert_int, normalize
 from utils.environment import get_env
 import scrapy
-from films_predict.items import FilmAlloItem
+from films_predict.items import FilmImdbItem
 from scrapy.http import Response
 from thefuzz import fuzz
 
 from sqlalchemy import select
 from db.database_mysql import engine
 
-BASE_URL = get_env("SCRAP_ALLO")
+BASE_URL = get_env("SCRAP_IMDB")
 
 
 class ImdbMoviesSpider(scrapy.Spider):
@@ -21,109 +21,80 @@ class ImdbMoviesSpider(scrapy.Spider):
 
     def start_requests(self):
         stmt = select(
-            FilmModel.id, FilmModel.raw_title, FilmModel.year, FilmModel.director
+            FilmModel.id, FilmModel.raw_title, FilmModel.year
         )  # .limit(limit=3)
         query = self.conn.execute(stmt)
         films = query.fetchall()
 
-        for item in films:
-            url = f"{BASE_URL}/_/autocomplete/{quote(item.raw_title)}"
+        for film in films:
+            url = f"https://v3.sg.media-imdb.com/suggestion/x/{quote(film.raw_title)}.json?includeVideos=0"
+
             yield scrapy.Request(
                 url,
                 callback=self.parse,
                 cb_kwargs=dict(
-                    id_jp=item.id,
-                    raw_title=item.raw_title,
-                    year=item.year,
-                    director=item.director,
+                    id_jp=film.id,
+                    raw_title=film.raw_title,
+                    year_jp=film.year,
                 ),
             )
 
     def parse(
-        self, response: Response, id_jp="-1", id="-1", raw_title="", year=0, director=""
+        self,
+        response: Response,
+        id_jp="-1",
+        id="-1",
+        year_jp=0,
+        raw_title="",
     ):
-        if "fichefilm_gen_cfilm" in response.url:
-            item = FilmAlloItem()
+        if f"{BASE_URL}/title" in response.url:
+            item = FilmImdbItem()
             item["id_jp"] = id_jp
             item["id"] = id
             yield from item.parse(response)
             print("parsed URL", response.url)
         else:
             json = response.json()
-            if json["error"] is False:
-                for result in json["results"]:
-                    if (
-                        "director_name" in result["data"]
-                        and len(result["data"]["director_name"]) > 0
-                    ):
-                        # print(result)
-                        # year_allo = convert_int(result["data"]["year"])
-                        # director_allo = normalize(result["data"]["director_name"][0])
+            if json["v"] == 1:
+                for result in json["d"]:
+                    if "qid" in result and result["qid"] == "movie" and "y" in result:
+                        id_imdb = result["id"]
+                        year = convert_int(result["y"])
+                        title_l_norm = normalize(result["l"])
                         query_normalized = normalize(raw_title)
-                        if result["entity_type"] == "movie":
-                            if (
-                                normalize(result["original_label"]) == query_normalized
-                                or normalize(result["label"]) == query_normalized
-                            ):
-                                # print("search equality")
+                        if title_l_norm == query_normalized:
+                            # print("search equality")
+                            if year == year_jp:
                                 yield self.create_request(
-                                    result["entity_id"],
+                                    id_imdb,
                                     id_jp,
-                                    year,
-                                    raw_title,
-                                    director,
+                                    year_jp=year,
+                                    raw_title=raw_title,
                                 )
                                 return True
-                            elif (
-                                fuzz.ratio(
-                                    normalize(result["original_label"]),
-                                    query_normalized,
-                                )
-                                > 85
-                            ):
-                                # print("search original_label")
-                                yield self.create_request(
-                                    result["entity_id"],
-                                    id_jp,
-                                    year,
-                                    raw_title,
-                                    director,
-                                )
-                                return True
-                            else:
-                                if (
-                                    "text_search_data" in result
-                                    and len(result["text_search_data"]) > 0
-                                ):
-                                    search_string = result["text_search_data"][0]
-
-                                    if search_string is not None:
-                                        for item_string in search_string.split(","):
-                                            ratio = fuzz.ratio(
-                                                normalize(item_string), query_normalized
-                                            )
-                                            # print(
-                                            #     "search string",
-                                            #     ratio,
-                                            #     normalize(item_string),
-                                            #     query_normalized,
-                                            # )
-                                            if ratio > 85:
-                                                yield self.create_request(
-                                                    result["entity_id"],
-                                                    id_jp,
-                                                    year,
-                                                    raw_title,
-                                                    director,
-                                                )
-                    # print()
+                        elif (
+                            fuzz.ratio(
+                                title_l_norm,
+                                query_normalized,
+                            )
+                            > 85
+                            and year == year_jp
+                        ):
+                            print("search original_label")
+                            yield self.create_request(
+                                id_imdb,
+                                id_jp,
+                                year_jp=year,
+                                raw_title=raw_title,
+                            )
+                            return True
             return True
 
-    def create_request(self, entity_id, id_jp, year=0, raw_title="", director=""):
+    def create_request(self, id_imdb, id_jp, year_jp=0, raw_title=""):
         return scrapy.Request(
-            f"{BASE_URL}/film/fichefilm_gen_cfilm={entity_id}.html",
+            f"{BASE_URL}/title/{id_imdb}",
             self.parse,
             cb_kwargs=dict(
-                id_jp=id_jp, id=entity_id, raw_title=raw_title, year=0, director=""
+                id_jp=id_jp, id=id_imdb, year_jp=year_jp, raw_title=raw_title
             ),
         )
