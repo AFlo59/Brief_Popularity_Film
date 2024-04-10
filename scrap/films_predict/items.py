@@ -4,6 +4,7 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import datetime
+import html
 import json
 import re
 from types import NoneType
@@ -113,6 +114,74 @@ class FilmItem(Item):
         print(self["raw_title"])
         # print("parse", self)
 
+        yield self
+
+
+class FilmImdbItem(Item):
+    id = Field()
+    id_jp = Field()
+    url = Field()
+    director = Field()
+    rating_press = Field()
+    rating_public = Field()
+    casting = Field()
+    synopsis = Field()
+    distributor = Field()
+    budget = Field()
+    lang = Field()
+    award = Field()
+    date = Field()
+
+    def parse(self, response):
+        data = response.xpath('//script[@type="application/ld+json"]/text()').get()
+        data = json.loads(data)
+
+        self["url"] = data["url"] if "url" in data else None
+        self["date"] = data["datePublished"] if "datePublished" in data else None
+        self["rating_press"] = (
+            convert_float(data["aggregateRating"]["ratingValue"])
+            if "aggregateRating" in data
+            else -1
+        )
+        self["synopsis"] = (
+            html.unescape(data["description"]) if "description" in data else None
+        )
+        self["director"] = (
+            normalize(data["director"][0]["name"]) if "director" in data else None
+        )
+        self["casting"] = (
+            [normalize(a["name"]) for a in data["actor"]] if "actor" in data else []
+        )
+
+        lang = response.xpath(
+            "//li[@data-testid='title-details-languages']/descendant::li/a/text()"
+        ).extract()
+        self["lang"] = [normalize(a) for a in lang] if len(lang) > 0 else []
+
+        budget = response.xpath(
+            "//li[@data-testid='title-boxoffice-budget']//ul//span/text()"
+        ).get()
+        budget = normalize(budget)
+        budget = re.sub(r"\s?[a-z]+", "", budget)
+        self["budget"] = convert_int(budget)
+
+        distributor = response.xpath(
+            "//li[@data-testid='title-details-companies']//ul//a/text()"
+        ).extract()
+        self["distributor"] = (
+            [normalize(a) for a in distributor] if len(distributor) > 0 else []
+        )
+
+        award = response.xpath(
+            "//li[@data-testid='award_information']//span/text()"
+        ).get()
+
+        self["award"] = 0
+        if award is not None:
+            match = re.search(r"^[0-9]+", award)
+            self["award"] = convert_int(match[0]) if match is not None else 0
+
+        print(self)
         yield self
 
 

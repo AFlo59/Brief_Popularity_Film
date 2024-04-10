@@ -16,7 +16,7 @@ Base = declarative_base()
 
 
 class FilmModel(Base):
-    __tablename__ = "films_jp_2"
+    __tablename__ = "films_jp"
     mysql_engine = "InnoDB"
     mysql_charset = "utf8mb4"
 
@@ -37,6 +37,36 @@ class FilmModel(Base):
     total_spectator = Column(INTEGER(9), default=-1)
     copies = Column(INTEGER(6), default=-1)
     date = Column(DATE)
+
+    time_created = Column(
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
+    )
+    time_updated = Column(
+        TIMESTAMP,
+        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+
+class FilmImdbModel(Base):
+    __tablename__ = "films_imdb"
+    mysql_engine = "InnoDB"
+    mysql_charset = "utf8mb4"
+
+    id = Column(String(255), primary_key=True, index=True)
+    id_jp = Column(String(255), nullable=False)
+    url = Column(String(255), nullable=False)
+    date = Column(DATE)
+    director = Column(JSON)
+    synopsis = Column(TEXT)
+    distributor = Column(JSON)
+    casting = Column(JSON)
+    rating_press = Column(FLOAT)
+    rating_public = Column(FLOAT)
+    award = Column(INTEGER)
+    budget = Column(BIGINT)
+    lang = Column(JSON)
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
