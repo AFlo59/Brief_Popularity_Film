@@ -23,7 +23,7 @@ class AllMoviesSpider(scrapy.Spider):
             item = FilmItem()
             yield from item.parse(response)
             print("parsed URL", response.url)
-        except TypeError:
+        except Exception:
             pass
 
         links = extractor.extract_links(response)

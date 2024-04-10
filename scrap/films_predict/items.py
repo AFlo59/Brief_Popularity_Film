@@ -30,6 +30,7 @@ class FilmItem(Item):
     hebdo_rank = Field()
     total_spectator = Field()
     copies = Field()
+    date = Field()
 
     def parse(self, response):
         hebdo_rank = -1
@@ -79,14 +80,17 @@ class FilmItem(Item):
                 f'//h4/a[contains(text(), "{date_sortie}")]/ancestor::tr/td[6]/text()'
             ).get()
 
+            d = datetime.datetime.strptime(date_sortie, "%d/%m/%Y")
+            date_sortie = f"{d.year}-{d.month}-{d.day}"
+
         total_spectator = response.xpath(
             '//td[@class="col_poster_titre"]/h4[contains(text(), "Entrées")]/parent::td/following-sibling::td/text()'
         ).get()
 
         self["title"] = normalize(title)
-        self["director"] = normalize(director)
+        self["director"] = normalize(director) if director is not None else None
+        self["raw_director"] = director.strip() if director is not None else None
         self["raw_title"] = title.strip()
-        self["raw_director"] = director.strip()
         self["url_jp"] = response.url
         self["year"] = convert_int(normalize(block_year_duration[0]))
         self["duration"] = (
@@ -104,7 +108,9 @@ class FilmItem(Item):
         self["total_spectator"] = convert_int(
             normalize(total_spectator).replace(" ", "")
         )
+        self["date"] = date_sortie
 
+        print(self["raw_title"])
         # print("parse", self)
 
         yield self

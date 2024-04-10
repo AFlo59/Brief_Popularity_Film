@@ -1,5 +1,13 @@
 from sqlalchemy import Column, String, text
-from sqlalchemy.dialects.mysql import TIMESTAMP, INTEGER, FLOAT, TEXT, JSON, BIGINT
+from sqlalchemy.dialects.mysql import (
+    TIMESTAMP,
+    INTEGER,
+    FLOAT,
+    TEXT,
+    JSON,
+    BIGINT,
+    DATE,
+)
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
@@ -8,7 +16,7 @@ Base = declarative_base()
 
 
 class FilmModel(Base):
-    __tablename__ = "films_jp"
+    __tablename__ = "films_jp_2"
     mysql_engine = "InnoDB"
     mysql_charset = "utf8mb4"
 
@@ -28,6 +36,7 @@ class FilmModel(Base):
     hebdo_rank = Column(INTEGER(9), default=-1)
     total_spectator = Column(INTEGER(9), default=-1)
     copies = Column(INTEGER(6), default=-1)
+    date = Column(DATE)
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
