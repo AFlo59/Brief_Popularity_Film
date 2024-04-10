@@ -5,132 +5,107 @@
 <title>Nouveautés</title>
     <style>
         section {
-            min-width: 320px;
-            height: 100%;
-            width: 100%;
+            max-width: 100%;
+            min-width: 300px;
+            max-height: 100%;
+            min-height: 667px;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        article {
-            height: 100%;
-            width: 100%;
+        section > h1 {
             margin: 0;
             padding: 0;
-        }
-        section > article {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
         }
-        section > article > a {
-        width: 40%;
-        height: 15%;
-        max-height: 120px;
-        margin: 10px;
-        text-decoration: none;
-        
+        section > article {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+            min-width: 320px;
+            max-height: 90vh;
+            min-height: 550px;
+            border: 1px solid red;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-y: scroll;
         }
+        section > article> button {
+            margin: 0;
+            padding: 0;
+            max-width: 90%;
+            min-width: 300px;
+            max-height: 20%;
+            min-height: 100px;
+            background-color: #333333;
+            border: 1px solid yellow;
+            display: flex;
+            justify-content: center;
+            width: calc(33.33% - 20px); /* Ajustez la largeur pour s'adapter à l'écran */
+            margin-bottom: 20px; /* Espacement entre les boutons */
 
-        section > article > a > figure {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 20px;
-        background-color: rgb(99, 99, 99);
-        box-shadow: 0 4px 8px black;
-        transition: transform 0.3s ease;
         }
-
-        section > article > a > figure:hover {
-            transform: translateY(-5px); 
-        }
-
-        section > article > a > figure > img {
+        section > article > button > figure {
+            margin: 0;
+            padding: 0;
+            width: 100%;
             height: 100%;
-            width: 30%;
-            object-fit:cover;
-            border-radius: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        section > article > button > figure > img {
+            margin: 0;
+            padding: 0;
+            object-fit: contain;
+            max-width: 40%;
+            min-width: 70px;
+            max-height: 100%;
+            min-height: 100px;
+            border-radius: 20%;
+        }
+        section > article > button > figure > figcaption {
+            margin: 0;
+            padding: 0;
+            margin-left: 2px;
+            border: 1px solid orange;
+            max-width: 60%;
+            min-width: 250px;
+            max-height: 100%;
+            min-height: 100px;
+        }
+        section > article > button > figure > figcaption > table {
+            margin: 0;
+            padding: 0;
+            border: 1px solid green;
+            max-width: 100%;
+            min-width: 248px;
+            height: 100%;
+        }
+        section > article > button > figure > figcaption > table > tbody {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+            min-width: 248px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        section > article > button > figure > figcaption > table > tr {
+            max-width: 100%;
+            min-width: 248px;
+            max-height: 33%;
+            min-height: 33px;
             margin: 0;
             padding: 0;
         }
-        section > article > a > figure > figcaption {
-            height: 100%;
-            width: 65%;
-        }
-        section > article > a > figure > figcaption > table {
-        width: 100%;
-        height: 100%;
-        }
-        
-        
-
-        @media screen and (max-width: 1440px) { 
-            section > article {
-                flex-flow: column nowrap;
-                align-items: center; 
-                position: relative;
-                padding-top: 80vh;
-                overflow-y: auto;
-
-            }
-            section > article > a {
-                min-width: 420px;
-                min-height: 120px;
-                position: relative;
-                top: 0;
-            }
-
-            section > article > a > figure {
-                width: 100%;
-                height: 100%;
-            }
-        }
-        @media screen and (max-width: 540px) {
-            section {
-                display: flex;
-                align-items: center;
-                margin: 0;
-                padding: 0;
-            }
-            section > article {
-               width: 100%;
-               height: 100vh;
-               flex-flow: column nowrap;
-               align-items: center; 
-               overflow-y: scroll;
-               padding-top: 70vh;
-
-            }
-            section > article > a {
-                min-width: 280px;
-                height: 100px;
-                padding: 0;
-                margin-left: 0;
-                margin-right: 0;
-                position: relative;
-                bottom: -75vh;
-            }
-            section > article > a > figure {
-                width: 100%;
-                height: 100%;
-                padding: 2px;
-            }
-            section > article > a > figure > img {
-                display: none;
-                width: 0;
-            }
-            section > article > a > figure > figcaption {
-                width: 100%;
-            }
-
+        .popup {
+            display: none;
         }
     </style>
 {% endblock head_extrascripts %}
@@ -150,33 +125,78 @@
     <h1>Sorties de la Semaine</h1>
     <article>
         {% for film in films|slice:":10" %}
-        <a href="{{ film.url_allo }}">
+        <button id="btnPopup" class="btnPopup">
             <figure>
                 <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
                 <figcaption>
                     <table>
-                        <tr>
-                            <td colspan="2">#{{ film.classement}}. {{ film.title }}</td>
-                        </tr>
-                        <tr>
-                            <td>Durée : {{ film.duration }}</td>
-                            <td>{% if film.genre %}
-                                    Genre : {% for genre in film.genre|slice:":02" %}{{ genre }}{% if not forloop.last and not forloop.first %}{% if forloop.counter == 2 %}, ...{% else %},{% endif %}{% endif %}{% endfor %}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                {% if film.director_raw %}
-                                    Réalisateur : {{ film.director_raw }} 
-                                {% endif %}
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">#{{ film.id }}. {{ film.title }}</td>
+                            </tr>
+                            <tr>
+                                <td>Durée : {{ film.duration }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {% if film.genre %}
+                                        Genre : {% for genre in film.genre|slice:":02" %} {{ genre }} {% if not forloop.last and not forloop.first %}{% if forloop.counter == 2 %}, ...{% else %},{% endif %}{% endif %}{% endfor %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </figcaption>
             </figure>
-        </a>
+        </button>
+        <div id="overlay" class="overlay">
+            <div id="popup" class="popup">
+                <span id="btnClose" class="btnClose">&times;</span>
+                <figure>
+                    <img src="" alt="">
+                    <figcaption>
+                        <table>
+                            <tr>
+                                <td colspan="2">{{ film.title }}</td>
+                            </tr>
+                            <tr>
+                                <td>classement : {{ film.classement}}</td>
+                                <td>Durée : {{ film.duration }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {% if film.genre %}
+                                        Genre : {% for genre in film.genre|slice:":5" %}
+                                                {{ genre }}
+                                            {% if not forloop.last and not forloop.first %}{% if forloop.counter == 2 %}, ...{% else %},{% endif %}{% endif %}{% endfor %}
+                                    {% endif %}
+                            </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {% if film.director_raw %}
+                                        Réalisateur : {{ film.director_raw }} 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {% if film.casting %}
+                                        Castings : {{ film.casting }} 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><button><a href="#">Allociné</a></button></td>
+                            </tr>
+                        </table>
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
         {% endfor %}
     </article>
 </section>
 {% endblock content %}
+<script>
+</script>
