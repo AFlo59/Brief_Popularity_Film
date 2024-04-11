@@ -2,9 +2,8 @@
 {% load static %}
 {% block head_extrascripts %}
     <title>Home</title>
-    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}">
     <style>
-
     </style>
 {% endblock head_extrascripts %}
 {% block content %}
@@ -26,6 +25,20 @@
 {% endblock content %}
 {% block extra_scripts %}
 <script>
+    var btnPopup = document.getElementById('btnPopup');
+var overlay = document.getElementById('overlay');
+var btnClose = document.getElementById('btnClose');
 
+btnPopup.addEventListener('click',openModal);
+btnClose.addEventListener('click',closePopup)
+
+function openModal(){
+ overlay.style.display = 'block';
+
+}
+
+function closePopup(){
+ overlay.style.display = 'none';
+}
 </script>
 {% endblock extra_scripts %}
