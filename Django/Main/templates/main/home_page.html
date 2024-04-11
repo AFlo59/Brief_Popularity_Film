@@ -2,72 +2,8 @@
 {% load static %}
 {% block head_extrascripts %}
     <title>Home</title>
-    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}">
     <style>
-        .btnPopup{
-        background-color:white;
-        border: none;
-        font-size: 60pt;
-        font-size: max(5vw,35px);
-        color:black;
-        cursor: pointer;
-        display: inline-block;
-        position: relative;
-        }
-
-        .overlay{
-        position: fixed;
-        left:5px;
-        top:0px;
-        font-size: 20pt;
-        color: white;
-        width:40%;
-        height: 60%;
-        display: none;
-        z-index: 8;
-        }
-
-        @media only screen and (max-width: 600px) {
-        .popup{
-            width:20%;
-            }
-        }
-        .popup{
-
-        margin:20% auto;
-        width:90%;
-        max-width: 800px;
-        min-width: 300px;
-        background-color: blue;
-        padding: 1em;
-        }
-
-        .btnClose {
-        float: right;
-        cursor: pointer;
-        } 
-
-        /* BOUTON hover */
-
-
-        .btnPopup::after{
-        content:'';
-        display:block;
-        width:0%;
-        height: 10px;
-        background:black;
-        position: absolute;
-        bottom: 45%;
-        -webkit-transition: width 0.5s;
-        -moz-transition: width 0.5s;
-        -o-transition: width 0.5s;
-        transition: width 0.5s;
-        }
-
-        .btnPopup:hover::after{
-        width:100%;
-
-        } 
     </style>
 {% endblock head_extrascripts %}
 {% block content %}
@@ -83,7 +19,7 @@
     <section>
         <h1>Welcome to ours site ! </h1>
         <article>
-           
+
         </article>
     </section>
 {% endblock content %}
