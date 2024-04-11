@@ -22,6 +22,8 @@ class FilmModel(Base):
 
     id = Column(String(255), primary_key=True, index=True)
     title = Column(String(255), nullable=False)
+    original_title = Column(String(255))
+    date = Column(DATE)
     director = Column(String(255), nullable=False)
     raw_title = Column(String(255), nullable=False)
     raw_director = Column(String(255), nullable=False)
@@ -36,7 +38,7 @@ class FilmModel(Base):
     hebdo_rank = Column(INTEGER(9), default=-1)
     total_spectator = Column(INTEGER(9), default=-1)
     copies = Column(INTEGER(6), default=-1)
-    date = Column(DATE)
+    scraped = Column(INTEGER(1), default=0)
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False

@@ -10,7 +10,7 @@ SCRAP_ALLO = get_env("SCRAP_ALLO")
 class TestMoviesSpider(scrapy.Spider):
     name = "test_movies"
     start_urls = [
-        f"{SCRAP_JP}/fichfilm.php?id=16474&view=2",
+        f"{SCRAP_JP}/fichfilm.php?id=19753&view=2",
         # f"{SCRAP_ALLO}/film/fichefilm_gen_cfilm=28546.html"
     ]
 

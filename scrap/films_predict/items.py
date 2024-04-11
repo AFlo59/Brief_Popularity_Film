@@ -17,6 +17,7 @@ from timelength import TimeLength
 class FilmItem(Item):
     id = Field()
     title = Field()
+    original_title = Field()
     director = Field()
     raw_title = Field()
     raw_director = Field()
@@ -43,6 +44,7 @@ class FilmItem(Item):
         total_spectator = -1
 
         title = response.xpath("//h1/text()").get()
+        original_title = response.xpath("//h1/following-sibling::h2/text()").get()
         director = response.xpath("//h1/following-sibling::h4/a/text()").get()
 
         block_year_duration = response.xpath(
@@ -89,6 +91,9 @@ class FilmItem(Item):
         ).get()
 
         self["title"] = normalize(title)
+        self["original_title"] = (
+            normalize(original_title) if original_title is not None else self["title"]
+        )
         self["director"] = normalize(director) if director is not None else None
         self["raw_director"] = director.strip() if director is not None else None
         self["raw_title"] = title.strip()
