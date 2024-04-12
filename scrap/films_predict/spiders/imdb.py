@@ -37,7 +37,7 @@ class ImdbMoviesSpider(scrapy.Spider):
         print("nb films : ", len(films))
 
         for film in films:
-            url = f"https://www.imdb.com/find/?q={quote(film.original_title)}&ref_=nv_sr_sm"
+            url = f"https://www.imdb.com/find/?q={quote(film.original_title)}&s=tt&exact=true&ref_=fn_tt_ex"
             yield scrapy.Request(
                 url,
                 callback=self.parse,
@@ -49,7 +49,7 @@ class ImdbMoviesSpider(scrapy.Spider):
                 ),
             )
 
-            time.sleep(0.2)
+            # time.sleep(0.2)
 
     def parse(
         self,
@@ -75,6 +75,20 @@ class ImdbMoviesSpider(scrapy.Spider):
 
             results = data["props"]["pageProps"]["titleResults"]["results"]
 
+            if len(results) == 0:
+                url = f"https://www.imdb.com/find/?q={quote(original_title)}&ref_=nv_sr_sm"
+                yield scrapy.Request(
+                    url,
+                    callback=self.parse,
+                    cb_kwargs=dict(
+                        id_jp=id_jp,
+                        raw_title=raw_title,
+                        original_title=original_title,
+                        year_jp=year_jp,
+                    ),
+                )
+                return None
+
             if len(results) == 1:
                 id_imdb = results[0]["id"]
                 year = (
@@ -91,6 +105,7 @@ class ImdbMoviesSpider(scrapy.Spider):
                 )
                 return None
 
+            similarities = []
             for result in results:
                 if "imageType" in result and result["imageType"] == "movie":
                     id_imdb = result["id"]
@@ -101,20 +116,20 @@ class ImdbMoviesSpider(scrapy.Spider):
                     )
                     title_l_norm = normalize(result["titleNameText"])
 
+                    params = dict(
+                        id_imdb=id_imdb,
+                        id_jp=id_jp,
+                        year_jp=year,
+                        raw_title=raw_title,
+                        original_title=original_title,
+                    )
+
                     if (
                         title_l_norm == query_normalized
                         or title_l_norm == raw_title_normalized
                     ):
-                        print("search equality", raw_title, id_jp)
-                        # if year == year_jp:
-                        yield self.create_request(
-                            id_imdb,
-                            id_jp,
-                            year_jp=year,
-                            raw_title=raw_title,
-                            original_title=original_title,
-                        )
-                        return None
+                        # print("search equality", raw_title, id_jp)
+                        similarities.append(params)
                     elif (
                         fuzz.ratio(
                             title_l_norm,
@@ -126,17 +141,17 @@ class ImdbMoviesSpider(scrapy.Spider):
                             raw_title_normalized,
                         )
                         > 60
-                        # and year == year_jp
                     ):
-                        print("search fuzz", raw_title, id_jp)
-                        yield self.create_request(
-                            id_imdb,
-                            id_jp,
-                            year_jp=year,
-                            raw_title=raw_title,
-                            original_title=original_title,
-                        )
-                        return None
+                        # print("search fuzz", raw_title, id_jp)
+                        similarities.append(params)
+
+            if len(similarities) == 1:
+                yield self.create_request(**similarities[0])
+            if len(similarities) > 1:
+                for sim in similarities:
+                    # print(sim, year_jp)
+                    if sim["year_jp"] is not None and int(sim["year_jp"]) == year_jp:
+                        yield self.create_request(**sim)
 
             return None
 
