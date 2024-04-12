@@ -1,7 +1,8 @@
+import json
 import time
 from urllib.parse import quote
 from films_predict.migrations import FilmModel
-from utils.string import convert_int, normalize
+from utils.string import normalize
 from utils.environment import get_env
 import scrapy
 from films_predict.items import FilmImdbItem
@@ -21,18 +22,22 @@ class ImdbMoviesSpider(scrapy.Spider):
         self.conn = engine.connect()
 
     def start_requests(self):
-        stmt = select(
-            FilmModel.id, FilmModel.raw_title, FilmModel.original_title, FilmModel.year
-        ).where(FilmModel.scraped == 0)
-
+        stmt = (
+            select(
+                FilmModel.id,
+                FilmModel.raw_title,
+                FilmModel.original_title,
+                FilmModel.year,
+            )
+            .where(FilmModel.scraped == 0)
+            .order_by(FilmModel.total_spectator.desc())
+        )
         query = self.conn.execute(stmt)
         films = query.fetchall()
+        print("nb films : ", len(films))
+
         for film in films:
-            url = f"https://v3.sg.media-imdb.com/suggestion/x/{quote(film.raw_title)}.json?includeVideos=0"
-
-            if film.original_title is not None:
-                url = f"https://v3.sg.media-imdb.com/suggestion/x/{quote(film.original_title)}.json?includeVideos=0"
-
+            url = f"https://www.imdb.com/find/?q={quote(film.original_title)}&ref_=nv_sr_sm"
             yield scrapy.Request(
                 url,
                 callback=self.parse,
@@ -59,46 +64,81 @@ class ImdbMoviesSpider(scrapy.Spider):
             item = FilmImdbItem()
             item["id_jp"] = id_jp
             item["id"] = id
-            yield from item.parse(response)
-            print("** parsed URL", response.url)
+            yield from item.parse(response, raw_title, id_jp)
+            print("parsed URL", response.url, raw_title)
         else:
-            json = response.json()
-            if json["v"] == 1:
-                for result in json["d"]:
-                    if "qid" in result and result["qid"] == "movie" and "y" in result:
-                        id_imdb = result["id"]
-                        year = convert_int(result["y"])
-                        title_l_norm = normalize(result["l"])
-                        query_normalized = original_title
-                        if title_l_norm == query_normalized:
-                            # print("search equality", original_title)
-                            # if year == year_jp:
-                            yield self.create_request(
-                                id_imdb,
-                                id_jp,
-                                year_jp=year,
-                                raw_title=raw_title,
-                                original_title=original_title,
-                            )
-                            return True
-                        elif (
-                            fuzz.ratio(
-                                title_l_norm,
-                                query_normalized,
-                            )
-                            > 50
-                            # and year == year_jp
-                        ):
-                            # print("search original_label")
-                            yield self.create_request(
-                                id_imdb,
-                                id_jp,
-                                year_jp=year,
-                                raw_title=raw_title,
-                                original_title=original_title,
-                            )
-                            return True
-            return True
+            query_normalized = original_title
+            raw_title_normalized = normalize(raw_title)
+
+            data = response.xpath('//script[@type="application/json"]/text()').get()
+            data = json.loads(data)
+
+            results = data["props"]["pageProps"]["titleResults"]["results"]
+
+            if len(results) == 1:
+                id_imdb = results[0]["id"]
+                year = (
+                    results[0]["titleReleaseText"]
+                    if "titleReleaseText" in results[0]
+                    else None
+                )
+                yield self.create_request(
+                    id_imdb,
+                    id_jp,
+                    year_jp=year,
+                    raw_title=raw_title,
+                    original_title=original_title,
+                )
+                return None
+
+            for result in results:
+                if "imageType" in result and result["imageType"] == "movie":
+                    id_imdb = result["id"]
+                    year = (
+                        result["titleReleaseText"]
+                        if "titleReleaseText" in result
+                        else None
+                    )
+                    title_l_norm = normalize(result["titleNameText"])
+
+                    if (
+                        title_l_norm == query_normalized
+                        or title_l_norm == raw_title_normalized
+                    ):
+                        print("search equality", raw_title, id_jp)
+                        # if year == year_jp:
+                        yield self.create_request(
+                            id_imdb,
+                            id_jp,
+                            year_jp=year,
+                            raw_title=raw_title,
+                            original_title=original_title,
+                        )
+                        return None
+                    elif (
+                        fuzz.ratio(
+                            title_l_norm,
+                            query_normalized,
+                        )
+                        > 60
+                        or fuzz.ratio(
+                            title_l_norm,
+                            raw_title_normalized,
+                        )
+                        > 60
+                        # and year == year_jp
+                    ):
+                        print("search fuzz", raw_title, id_jp)
+                        yield self.create_request(
+                            id_imdb,
+                            id_jp,
+                            year_jp=year,
+                            raw_title=raw_title,
+                            original_title=original_title,
+                        )
+                        return None
+
+            return None
 
     def create_request(
         self, id_imdb, id_jp, year_jp=0, raw_title="", original_title=""

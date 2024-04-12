@@ -59,6 +59,8 @@ class FilmImdbModel(Base):
     id = Column(String(255), primary_key=True, index=True)
     id_jp = Column(String(255), nullable=False)
     url = Column(String(255), nullable=False)
+    title = Column(String(255), nullable=True)
+    original_title = Column(String(255), nullable=True)
     date = Column(DATE)
     director = Column(JSON)
     synopsis = Column(TEXT)

@@ -126,6 +126,8 @@ class FilmImdbItem(Item):
     id = Field()
     id_jp = Field()
     url = Field()
+    title = Field()
+    original_title = Field()
     director = Field()
     rating_press = Field()
     rating_public = Field()
@@ -137,10 +139,17 @@ class FilmImdbItem(Item):
     award = Field()
     date = Field()
 
-    def parse(self, response):
+    def parse(self, response, raw_title, id_jp):
+        # print("***** item", raw_title, id_jp)
         data = response.xpath('//script[@type="application/ld+json"]/text()').get()
         data = json.loads(data)
 
+        self["original_title"] = html.unescape(data["name"]) if "name" in data else None
+        self["title"] = (
+            html.unescape(data["alternateName"])
+            if "alternateName" in data
+            else self["original_title"]
+        )
         self["url"] = data["url"] if "url" in data else None
         self["date"] = data["datePublished"] if "datePublished" in data else None
         self["rating_press"] = (
@@ -152,7 +161,9 @@ class FilmImdbItem(Item):
             html.unescape(data["description"]) if "description" in data else None
         )
         self["director"] = (
-            normalize(data["director"][0]["name"]) if "director" in data else None
+            normalize(data["director"][0]["name"]).strip('"')
+            if "director" in data
+            else None
         )
         self["casting"] = (
             [normalize(a["name"]) for a in data["actor"]] if "actor" in data else []
@@ -189,7 +200,6 @@ class FilmImdbItem(Item):
             match = re.search(r"^[0-9]+", award)
             self["award"] = convert_int(match[0]) if match is not None else 0
 
-        # print(self)
         yield self
 
 
