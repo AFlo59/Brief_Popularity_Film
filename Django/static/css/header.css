@@ -116,6 +116,7 @@
     border-radius: 15px;
 }
 
+
 .active button, .nav-item ul button:hover {
     background-color: rgb(99, 99, 99);
     box-shadow: 0 4px 8px black;
@@ -131,4 +132,9 @@
 .nav-item a.logout-button i {
     color: red;
     margin-right: 5px;
+}
+@media screen and (max-width: 540px) { 
+    .nav-item button {
+        min-height: 40px;
+    }
 }

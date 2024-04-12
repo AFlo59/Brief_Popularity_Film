@@ -93,16 +93,30 @@ body, html {
     }
 
 }
-@media screen and (max-width: 376px) { 
-    #toggleHeaderButton {
-        width: 20px;
+@media screen and (max-width: 540px) { 
+    .container {
+        display: flex;
+        flex-direction: column;
     }
-    .content{
-        width: 300px;
+    
+    #toggleHeaderButton {
+        width: auto; 
+        height: 40px; 
+        writing-mode: horizontal-tb; 
+        align-items: center; 
+        justify-content: flex-start; 
+        padding: 0 10px; 
+        margin: 10px 0; 
+    }
+    
+    .content {
+        width: auto;
         margin: 0;
         padding: 0;
     }
+    
     .header_conteneur.show {
         width: 100vw;
     }
 }
+
