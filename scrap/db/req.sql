@@ -29,3 +29,17 @@ FROM films_jp as jp
 LEFT JOIN films_imdb im ON im.id_jp = jp.id 
 where im.id_jp is not null and im.date = jp.date
 order by jp.first_week desc
+
+-- get list of unique actors
+use films_db;
+SELECT distinct(actor)
+ FROM films_imdb as im
+ join
+   JSON_TABLE(
+     im.casting,
+     "$[*]"
+     COLUMNS(
+       actor VARCHAR(255) PATH "$"
+     )
+   ) as aa
+   order by actor

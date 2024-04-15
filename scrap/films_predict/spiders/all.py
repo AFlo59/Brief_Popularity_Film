@@ -3,7 +3,7 @@ from utils.environment import get_env
 import scrapy
 from scrapy.http import Response
 from scrapy.linkextractors import LinkExtractor
-from films_predict.items import FilmItem
+from films_predict.items.jpbox import FilmItem
 
 from sqlalchemy import select
 from db.database_mysql import engine

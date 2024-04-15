@@ -4,7 +4,7 @@ from films_predict.migrations import FilmModel
 from utils.string import convert_int, normalize
 from utils.environment import get_env
 import scrapy
-from films_predict.items import FilmImdbItem
+from films_predict.items.imdb import FilmImdbItem
 from scrapy.http import Response
 from thefuzz import fuzz
 
