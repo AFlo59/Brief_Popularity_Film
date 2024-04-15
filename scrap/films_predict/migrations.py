@@ -71,6 +71,8 @@ class FilmImdbModel(Base):
     award = Column(INTEGER)
     budget = Column(BIGINT)
     lang = Column(JSON)
+    genre = Column(JSON)
+    genre_raw = Column(JSON)
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
@@ -137,7 +139,9 @@ class FilmSortieModel(Base):
     thumbnail = Column(String(255))
     copies = Column(BIGINT)
     score_pred = Column(FLOAT)
-    genre = Column(String(255))
+    duration = Column(INTEGER)
+    genre = Column(JSON)
+    genre_raw = Column(JSON)
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False

@@ -63,6 +63,3 @@ class ImdbTop10MoviesSpider(scrapy.Spider):
                                 thumbnail=thumbnail,
                             ),
                         )
-
-
-# @._V1_QL100_UY100_CR1,20,120,100_.jpg

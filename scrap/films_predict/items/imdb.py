@@ -3,15 +3,14 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import datetime
 import html
 import json
 import re
-from types import NoneType
 from utils.string import convert_float, convert_int, normalize
 from scrapy.item import Item, Field
 import isodate
 from timelength import TimeLength
+from thefuzz import fuzz
 
 
 class BaseImdbItem(Item):
@@ -29,6 +28,8 @@ class BaseImdbItem(Item):
     lang = Field()
     award = Field()
     date = Field()
+    genre = Field()
+    genre_raw = Field()
 
     def parse(self, response):
         # print("***** item", raw_title, id_jp)
@@ -92,6 +93,11 @@ class BaseImdbItem(Item):
             match = re.search(r"^[0-9]+", award)
             self["award"] = convert_int(match[0]) if match is not None else 0
 
+        self["genre_raw"] = (
+            [html.unescape(g) for g in data["genre"]] if "genre" in data else []
+        )
+        self["genre"] = [normalize(g) for g in self["genre_raw"]]
+
         yield self
 
 
@@ -106,14 +112,27 @@ class SortieImdbItem(BaseImdbItem):
     thumbnail = Field()
     copies = Field()
     score_pred = Field()
-    genre = Field()
     duration = Field()
 
     def parse(self, response, date=None, thumbnail=""):
+        data = response.xpath('//script[@type="application/ld+json"]/text()').extract()
+        data = json.loads(data[0])
+
+        duration = response.xpath(
+            '//*[@data-testid="hero__pageTitle"]/following::ul/child::li[last()]/text()'
+        ).get()
+        duration = TimeLength(duration).to_seconds() if duration is not None else None
+
+        if duration is None:
+            duration = (
+                isodate.parse_duration(data["duration"]).total_seconds()
+                if "duration" in data
+                else -1
+            )
+
         self["date"] = date
         self["thumbnail"] = thumbnail
-        self["genre"] = ""
-        self["duration"] = 0
+        self["duration"] = int(duration)
 
         return super().parse(response)
 
@@ -121,38 +140,46 @@ class SortieImdbItem(BaseImdbItem):
 class CopiesFromAllocine(Item):
     copies = Field()
 
-    def parse(
-        self,
-        response,
-        id=None,
-        title="",
-        original_title="",
-        date=None,
-        director="",
-    ):
-        item = SortieImdbItem()
-        item["id"] = id
+    def parse(self, response, films):
+        path_title = "//div[contains(@class, 'gd-col-left')]//a[contains(@href, 'fichefilm') and contains(@class, 'meta-title-link')]/text()"
+        all_title = response.xpath(f"{path_title}").extract()
 
-        path = "//div[contains(@class, 'gd-col-left')]//a[contains(@href, 'fichefilm') and contains(@class, 'meta-title-link')]/text()"
+        all = []
+        for titre in all_title:
+            titre = titre[: titre.index('"')] if '"' in titre else titre
+            path = f'//a[contains(@class, "meta-title-link") and contains(@href, "fiche") and starts-with(text(), "{titre}")]'
+            copies = response.xpath(
+                f'{path}/parent::h2/parent::div/following-sibling::div/span/span[contains(text(), "Séance")]/text()'
+            ).get()
 
-        all_links = response.xpath(f"{path}").extract()
-        print(date, all_links)
+            if copies is not None:
+                match = re.search(r"([0-9]+)", copies)
+                copies = convert_int(match[0]) if match is not None else -1
+                all.append({"title": normalize(titre), "copies": copies})
 
-        # path = f'//a[contains(@class, "meta-title-link") and contains(@href, "fiche") and contains(text(), "{title}")]'
-        # has_title = response.xpath(f"{path}/text()").get()
-        # print(date, title, has_title)
-        # if has_title is not None:
-        #     copies = response.xpath(
-        #         f'{path}/parent::h2/parent::div/following-sibling::div/span/span[contains(text(), "Séance")]/text()'
-        #     ).get()
+        for film in films:
+            item_sortie = SortieImdbItem()
+            item_sortie["id"] = film.id
+            item_sortie["copies"] = -1
 
-        #     if copies is not None:
-        #         match = re.search(r"([0-9]+)", copies)
-        #         item["copies"] = convert_int(match[0]) if match is not None else -1
+            title = normalize(film.title)
+            original_title = normalize(film.original_title)
 
-        #         yield item
+            for item in all:
+                if item["title"] == title or item["title"] == original_title:
+                    item_sortie["copies"] = item["copies"]
+                elif (
+                    fuzz.ratio(
+                        item["title"],
+                        title,
+                    )
+                    > 60
+                    or fuzz.ratio(
+                        item["title"],
+                        original_title,
+                    )
+                    > 60
+                ):
+                    item_sortie["copies"] = item["copies"]
 
-        yield None
-
-
-# @._V1_QL75_UY74_CR1,0,50,74_.jpg
+            yield item_sortie if item_sortie["copies"] != -1 else None
