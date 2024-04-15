@@ -262,7 +262,7 @@
             </div>
         </div>
         {% for film in films|slice:":10" %}
-        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director_raw }}" data-castings="{{ film.castings }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-allo-cine-link="{{ film.url_allo }}">
+        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director }}" data-casting="{{ film.casting }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-link="{{ film.url }}">
             <figure>
                 <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
                 <figcaption>
@@ -311,7 +311,7 @@
                 modalCasting.textContent = this.dataset.casting;
                 modalRatingPress.textContent = this.dataset.ratingPress;
                 modalRatingPublic.textContent = this.dataset.ratingPublic;
-                modalAlloCineLink.innerHTML = "<a href='" + this.dataset.alloCineLink + "'>Lien AlloCiné</a>";
+                modalAlloCineLink.innerHTML = "<a href='" + this.dataset.url + "'>Lien Imdb</a>";
                 modal.classList.add("open");
             });
         });
