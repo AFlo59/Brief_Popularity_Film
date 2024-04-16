@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import model_utils
+from model_utils import prediction, load_model
 
 
 app = FastAPI()
-model = model_utils.load_model()
+model = load_model()
 
 
 # Modèle Pydantic pour la structure de donnée d'entrée
@@ -25,6 +26,7 @@ class FeaturesInput(BaseModel):
 class PredictionOutput(BaseModel):
     category: int
 
+model = load_model()
 
 @app.post("/predict")
 def prediction_root(feature_input: FeaturesInput):
