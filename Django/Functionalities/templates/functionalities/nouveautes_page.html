@@ -4,7 +4,6 @@
 {% block head_extrascripts %}
 <title>Nouveautés</title>
 <style>
-    /* Vos styles CSS ici */
     section {
         max-width: 100%;
         min-width: 300px;
@@ -76,11 +75,12 @@
         padding: 0;
         object-fit: contain;
         width: 40%;
-        min-width: 70px;
+        max-width: 100px;
+        min-width: 100px;
         max-height: 100%;
         min-height: 100px;
         border-radius: 20%;
-    }
+        }
 
     section > article > button > figure > figcaption {
         margin: 0;
@@ -240,8 +240,8 @@
                         <tr>
                             <td>Acteurs</td>
                             <td id="filmCasting">
-                                {% for actor in film.castings %}
-                                    {{ actor }},
+                                {% for actor in film.casting|slice:":03" %}
+                                    {{ actor }}
                                 {% endfor %}
                             </td>
                         </tr>
@@ -254,27 +254,33 @@
                             <td id="filmRatingPublic"></td>
                         </tr>
                         <tr>
-                            <td>Lien AlloCiné</td>
-                            <td id="filmAlloCineLink"></td>
+                            <td>Lien IMDb</td>
+                            <td id="filmImdbLink"></td>
                         </tr>
                     </table>
                     <a href="#" class="close">&times;</a>
             </div>
         </div>
         {% for film in films|slice:":10" %}
-        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director_raw }}" data-castings="{{ film.castings }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-allo-cine-link="{{ film.url_allo }}">
+        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director }}" data-casting="{{ film.casting }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-link="{{ film.url }}">
             <figure>
-                <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
+                <img {% if film.thumbnail %}
+                        src="{% if film.thumbnail.height > film.thumbnail.width %}
+                                    {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,100,70.jpg
+                                {% else %}
+                                    {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,70,100.jpg
+                                {% endif %}"
+                        alt="{{ film.title }}"
+                    {% endif %}>
                 <figcaption>
                     <ul>
                         <li>#{{ film.classement }}. {{ film.title }}</li>
+                        <li>{% if film.date %}{{ film.date }}{% endif %}</li>
                         <li>Durée : {{ film.duration }}</li>
                         {% if film.genre %}
                         <li>
                             Genre :
-                            {% for genre in film.genre|slice:":02" %}
-                            {{ genre }}
-                            {% endfor %}
+                            {{ film.genre }}
                         </li>
                         {% endif %}
                     </ul>
@@ -287,7 +293,7 @@
 {% endblock content %}
 {% block extra_scripts %}
 <script>
-     document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         var buttons = document.querySelectorAll(".btnPopup");
         var modal = document.getElementById("modal");
         var modalTitle = document.getElementById("filmTitle");
@@ -298,29 +304,29 @@
         var modalCasting = document.getElementById("filmCasting");
         var modalRatingPress = document.getElementById("filmRatingPress");
         var modalRatingPublic = document.getElementById("filmRatingPublic");
-        var modalAlloCineLink = document.getElementById("filmAlloCineLink");
+        var modalImdbLink = document.getElementById("filmImdbLink");
         var closeModal = modal.querySelector(".close");
-
+    
         buttons.forEach(function(button) {
             button.addEventListener("click", function() {
                 modalTitle.textContent = this.dataset.title;
                 modalClassement.textContent = this.dataset.classement;
                 modalDuration.textContent = this.dataset.duration;
-                modalGenre.textContent = this.dataset.genre;
-                modalRealisateur.textContent = this.dataset.realisateur;
-                modalCasting.textContent = this.dataset.casting;
+                modalGenre.textContent = this.dataset.genre.split(', ').join(', '); 
+                modalRealisateur.textContent = this.dataset.realisateur.split(', ').join(', ');
+                modalCasting.textContent = this.dataset.casting.split(', ').join(', ');
                 modalRatingPress.textContent = this.dataset.ratingPress;
                 modalRatingPublic.textContent = this.dataset.ratingPublic;
-                modalAlloCineLink.innerHTML = "<a href='" + this.dataset.alloCineLink + "'>Lien AlloCiné</a>";
+                modalImdbLink.innerHTML = "<a href='" + this.dataset.link + "'>Lien IMDb</a>";
                 modal.classList.add("open");
             });
         });
-
+    
         modal.addEventListener("click", function(event) {
             if (event.target === modal || event.target === closeModal) {
                 modal.classList.remove("open");
             }
         });
     });
-</script>
+    </script>
 {% endblock extra_scripts %}
