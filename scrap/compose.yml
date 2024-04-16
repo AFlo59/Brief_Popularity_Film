@@ -1,20 +1,5 @@
 version: '3.8'
 services:
-  # dbpg:
-  #   container_name: pdb
-  #   image: postgres:latest
-  #   ports:
-  #     - "5432:5432"
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     POSTGRES_USER: ${FILM_USER}
-  #     POSTGRES_PASSWORD: ${FILM_PWD}
-  #     POSTGRES_DB: ${FILM_DB}
-  #   volumes:
-  #     - ./postgres-data:/var/lib/postgresql/data
-
   db:
     container_name: mysql
     image: mysql
@@ -33,11 +18,11 @@ services:
 
   scrap:
     container_name: scrap
-    # image: 
     build: .
     env_file:
       - .env
-    command: python -m http.server 8080
+    stdin_open: true
+    tty: true
     volumes:
       - .:/home/app
     ports:

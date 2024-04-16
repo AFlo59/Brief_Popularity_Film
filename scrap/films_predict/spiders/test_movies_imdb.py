@@ -54,7 +54,7 @@ class TestImdbSpider(scrapy.Spider):
             item = FilmImdbItem()
             item["id_jp"] = id_jp
             item["id"] = id
-            yield from item.parse(response, raw_title, id_jp)
+            yield from item.parse(response)
             print("parsed URL", response.url)
         else:
             query_normalized = original_title

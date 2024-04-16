@@ -5,9 +5,6 @@ ENV PYTHONUNBUFFERED 1
 # create directory for the app user
 RUN mkdir -p /home/app
 
-# create the app user
-RUN addgroup --system app && adduser --system --group app
-
 # create the appropriate directories
 ENV HOME=/home/app
 WORKDIR $HOME
@@ -19,12 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . $HOME
 
-# chown all the files to the app user
-RUN chown -R app:app $HOME
+# CRON
+RUN chmod 755 /home/app/cron/*.sh
+RUN apt-get update && apt-get -y install cron
+COPY cron/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab
+RUN crontab /etc/cron.d/crontab
+RUN touch /var/log/cron-log.log
 
-# change to the app user
-USER app
-CMD ["bash"]
-
-RUN chmod +x /home/app/entrypoint.sh
-ENTRYPOINT ["sh","/home/app/entrypoint.sh"]
+CMD ["cron", "-f"]

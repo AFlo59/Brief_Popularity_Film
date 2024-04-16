@@ -27,8 +27,7 @@ services:
     build: ../scrap
     env_file:
       - ../.env
-    command: python -m http.server 8080
+    stdin_open: true
+    tty: true
     volumes:
       - ../scrap:/home/app
-    ports:
-      - 8080:8080

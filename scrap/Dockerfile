@@ -1,3 +1,4 @@
+#FROM ubuntu:latest
 FROM python:3.11.0-slim
 
 ENV PYTHONUNBUFFERED 1
@@ -24,12 +25,14 @@ COPY . $HOME
 
 # change to the app user
 # USER app
-#CMD ["bash"]
 
 # CRON
+RUN chmod 755 /home/app/cron/*.sh
 RUN apt-get update && apt-get -y install cron
-COPY crontab /etc/cron.d/crontab
+COPY cron/crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
-RUN /usr/bin/crontab /etc/cron.d/crontab
+RUN crontab /etc/cron.d/crontab
+RUN touch /var/log/cron-log.log
+#RUN (crontab -l ; echo "* * * * * /home/app/cron/cron.sh  > /proc/1/fd/1 2>/proc/1/fd/2") | crontab -u root -
+
 CMD ["cron", "-f"]
-# END CRON
