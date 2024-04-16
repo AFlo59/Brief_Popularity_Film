@@ -2,7 +2,7 @@ from sqlalchemy import text
 from films_predict.migrations import FilmSortieModel
 from utils.environment import get_env
 import scrapy
-from films_predict.items import FilmAlloSortieItem
+from films_predict.items.allocine import FilmAlloSortieItem
 from scrapy.http import Response
 from scrapy.linkextractors import LinkExtractor
 from db.database_mysql import engine

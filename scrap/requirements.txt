@@ -8,3 +8,4 @@ sqlalchemy
 psycopg2-binary
 pymysql
 thefuzz
+dateparser

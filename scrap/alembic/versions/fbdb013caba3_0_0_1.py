@@ -1,8 +1,8 @@
-"""first
+"""0.0.1
 
-Revision ID: da110afa99b8
-Revises: dd70dd059cf8
-Create Date: 2024-04-05 09:02:23.452763
+Revision ID: fbdb013caba3
+Revises: 
+Create Date: 2024-04-10 19:11:28.064403
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = 'da110afa99b8'
-down_revision: Union[str, None] = 'dd70dd059cf8'
+revision: str = 'fbdb013caba3'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -40,6 +40,26 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_films_allo_id'), 'films_allo', ['id'], unique=False)
+    op.create_table('films_imdb',
+    sa.Column('id', sa.String(length=255), nullable=False),
+    sa.Column('id_jp', sa.String(length=255), nullable=False),
+    sa.Column('url', sa.String(length=255), nullable=False),
+    sa.Column('director', mysql.JSON(), nullable=True),
+    sa.Column('year', mysql.INTEGER(display_width=4), nullable=True),
+    sa.Column('synopsis', mysql.TEXT(), nullable=True),
+    sa.Column('distributor', sa.String(length=100), nullable=True),
+    sa.Column('casting', mysql.JSON(), nullable=True),
+    sa.Column('rating_press', mysql.FLOAT(), nullable=True),
+    sa.Column('rating_public', mysql.FLOAT(), nullable=True),
+    sa.Column('award', mysql.INTEGER(), nullable=True),
+    sa.Column('budget', mysql.BIGINT(), nullable=True),
+    sa.Column('lang', mysql.JSON(), nullable=True),
+    sa.Column('visa', mysql.INTEGER(), nullable=True),
+    sa.Column('time_created', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
+    sa.Column('time_updated', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_films_imdb_id'), 'films_imdb', ['id'], unique=False)
     op.create_table('films_jp',
     sa.Column('id', sa.String(length=255), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
@@ -57,40 +77,46 @@ def upgrade() -> None:
     sa.Column('hebdo_rank', mysql.INTEGER(display_width=9), nullable=True),
     sa.Column('total_spectator', mysql.INTEGER(display_width=9), nullable=True),
     sa.Column('copies', mysql.INTEGER(display_width=6), nullable=True),
+    sa.Column('date', sa.DATE(), nullable=True),
     sa.Column('time_created', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('time_updated', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_films_jp_id'), 'films_jp', ['id'], unique=False)
-    op.create_table('films_sortie',
+    op.create_table('functionalities_filmscrap',
     sa.Column('id', sa.String(length=255), nullable=False),
     sa.Column('url_allo', sa.String(length=255), nullable=False),
-    sa.Column('director_allo', mysql.JSON(), nullable=True),
-    sa.Column('year_allo', mysql.INTEGER(display_width=4), nullable=True),
-    sa.Column('image', sa.String(length=255), nullable=True),
+    sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('synopsis', mysql.TEXT(), nullable=True),
-    sa.Column('distributor', sa.String(length=100), nullable=True),
-    sa.Column('casting', mysql.JSON(), nullable=True),
+    sa.Column('year_allo', mysql.INTEGER(display_width=4), nullable=True),
+    sa.Column('director_allo', mysql.JSON(), nullable=True),
+    sa.Column('director_raw', mysql.JSON(), nullable=True),
+    sa.Column('genre', mysql.JSON(), nullable=True),
+    sa.Column('duration', mysql.INTEGER(display_width=6), nullable=True),
     sa.Column('rating_press', mysql.FLOAT(), nullable=True),
     sa.Column('rating_public', mysql.FLOAT(), nullable=True),
-    sa.Column('award', mysql.INTEGER(), nullable=True),
+    sa.Column('image', sa.String(length=255), nullable=True),
+    sa.Column('casting', mysql.JSON(), nullable=True),
+    sa.Column('distributor', sa.String(length=255), nullable=True),
     sa.Column('budget', mysql.BIGINT(), nullable=True),
     sa.Column('lang', mysql.JSON(), nullable=True),
     sa.Column('visa', mysql.INTEGER(), nullable=True),
-    sa.Column('time_created', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
-    sa.Column('time_updated', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=False),
+    sa.Column('award', mysql.INTEGER(), nullable=True),
+    sa.Column('thumbnail', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_films_sortie_id'), 'films_sortie', ['id'], unique=False)
+    op.create_index(op.f('ix_functionalities_filmscrap_id'), 'functionalities_filmscrap', ['id'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_films_sortie_id'), table_name='films_sortie')
-    op.drop_table('films_sortie')
+    op.drop_index(op.f('ix_functionalities_filmscrap_id'), table_name='functionalities_filmscrap')
+    op.drop_table('functionalities_filmscrap')
     op.drop_index(op.f('ix_films_jp_id'), table_name='films_jp')
     op.drop_table('films_jp')
+    op.drop_index(op.f('ix_films_imdb_id'), table_name='films_imdb')
+    op.drop_table('films_imdb')
     op.drop_index(op.f('ix_films_allo_id'), table_name='films_allo')
     op.drop_table('films_allo')
     # ### end Alembic commands ###
