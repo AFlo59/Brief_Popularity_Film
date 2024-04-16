@@ -18,27 +18,27 @@ def predict_page(request):
 
     for film in films:
         if film.score_pred is not None:
-            film.score_pred_divided = film.score_pred / 2000
+            film.score_pred_divided = round(film.score_pred / 2000, 2)
         else:
             film.score_pred_divided = None
 
         if film.score_pred_divided is not None:
-            film.score_pred_divided_divided = film.score_pred_divided / 7
+            film.score_pred_divided_divided = round(film.score_pred_divided / 7, 2)
         else:
             film.score_pred_divided_divided = None
 
         if film.score_pred_divided_divided is not None:
-            film.recette_journaliere = min(film.score_pred_divided_divided * 10, 2000)
+            film.recette_journaliere = round(min(film.score_pred_divided_divided * 10, 2000), 2)
         else:
             film.recette_journaliere = None
 
         if film.recette_journaliere is not None:
-             film.recette_hebdomadaire = film.recette_journaliere * 7
+             film.recette_hebdomadaire = round(film.recette_journaliere * 7, 2)
         else:
              film.recette_hebdomadaire = None
         
         if film.recette_hebdomadaire is not None:
-            film.benefice_hebdomadaire = film.recette_hebdomadaire - 4900
+            film.benefice_hebdomadaire = round(film.recette_hebdomadaire - 4900, 2)
         else:
             film.benefice_hebdomadaire = None
     
