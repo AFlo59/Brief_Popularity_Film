@@ -37,22 +37,27 @@ class BaseImdbItem(Item):
         data = json.loads(data)
 
         self["original_title"] = html.unescape(data["name"]) if "name" in data else None
+
         self["title"] = (
             html.unescape(data["alternateName"])
             if "alternateName" in data
             else self["original_title"]
         )
         self["url"] = data["url"] if "url" in data else None
-        if self["date"] is None:
-            self["date"] = data["datePublished"] if "datePublished" in data else None
+
+        # if self["date"] is None:
+        self["date"] = data["datePublished"] if "datePublished" in data else None
+
         self["rating_press"] = (
             convert_float(data["aggregateRating"]["ratingValue"])
             if "aggregateRating" in data
             else -1
         )
+
         self["synopsis"] = (
             html.unescape(data["description"]) if "description" in data else None
         )
+
         self["director"] = (
             normalize(data["director"][0]["name"]).strip('"')
             if "director" in data

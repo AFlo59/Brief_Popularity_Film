@@ -23,7 +23,7 @@ SELECT jp.id, jp.url_jp, im.url as url_im, jp.raw_title,
 		YEAR(jp.date) AS year, 
 		MONTH(jp.date) AS month, 
 		DAY(jp.date) AS day, 
-        im.director, im.casting, im.distributor, jp.country, jp.duration, jp.genre, jp.first_day, jp.first_week, jp.first_weekend, jp.hebdo_rank, 
+        im.director, im.casting, im.distributor, im.genre, im.genre_raw, jp.country, jp.duration, jp.first_day, jp.first_week, jp.first_weekend, jp.hebdo_rank, 
 jp.total_spectator, jp.copies, im.rating_press, im.budget, im.lang, im.award 
 FROM films_jp as jp
 LEFT JOIN films_imdb im ON im.id_jp = jp.id 
