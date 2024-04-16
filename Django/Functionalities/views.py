@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import FilmScrap
@@ -25,6 +26,10 @@ def nouveautes_page(request):
     for film in films:
         if film.duration is not None:
             film.duration = fmt.format(rd(seconds=film.duration))
-        if isinstance(film.genre, str):
-            film.genre = [genre.strip() for genre in film.genre.strip('[]').split(',')]
+        if isinstance(film.genre, list):
+            film.genre = ', '.join(film.genre)
+        if isinstance(film.casting, list):
+            film.casting = ', '.join(film.casting)
+        if isinstance(film.director, list):
+            film.director = ', '.join(film.director)
     return render(request, "functionalities/nouveautes_page.html", {"films": films})
