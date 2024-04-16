@@ -1,0 +1,3 @@
+# START CRON JOB
+* * * * * scrapy crawl test_imdb >> /var/log/scrap_top10.log 2>&1
+# END CRON JOB

@@ -16,14 +16,14 @@
         justify-content: space-between;
     }
 
-    section > h1 {
+    section>h1 {
         margin: 0;
         padding: 0;
         display: flex;
         justify-content: center;
     }
 
-    section > article {
+    section>article {
         margin: 0;
         padding: 0;
         max-width: 100%;
@@ -40,7 +40,7 @@
         overflow-y: scroll;
     }
 
-    section > article > button {
+    section>article>button {
         margin: 0;
         padding: 0;
         max-width: 300px;
@@ -57,11 +57,12 @@
         margin-bottom: 10px;
         margin-top: 10px;
     }
-    section > article > button:hover{
+
+    section>article>button:hover {
         background-color: #444444;
     }
 
-    section > article > button > figure {
+    section>article>button>figure {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -71,7 +72,7 @@
         justify-content: space-between;
     }
 
-    section > article > button > figure > img {
+    section>article>button>figure>img {
         margin: 0;
         padding: 0;
         object-fit: contain;
@@ -82,7 +83,7 @@
         border-radius: 20%;
     }
 
-    section > article > button > figure > figcaption {
+    section>article>button>figure>figcaption {
         margin: 0;
         padding: 2px;
         width: 60%;
@@ -91,7 +92,7 @@
         min-height: 100px;
     }
 
-    section > article > button > figure > figcaption > ul {
+    section>article>button>figure>figcaption>ul {
         list-style: none;
         color: #ffffff;
         width: 100%;
@@ -100,7 +101,7 @@
         padding: 5px;
     }
 
-    section > article > button > figure > figcaption > ul > li {
+    section>article>button>figure>figcaption>ul>li {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -111,7 +112,7 @@
     }
 
     @media screen and (min-width: 1024px) {
-        section > article {
+        section>article {
             height: 90%;
             overflow-y: hidden;
             display: flex;
@@ -119,7 +120,7 @@
             flex-wrap: wrap;
         }
 
-        section > article > button {
+        section>article>button {
             margin: 10px;
             padding: 0;
             max-width: calc(40% - 20px);
@@ -128,7 +129,7 @@
             height: calc(20% - 20px);
         }
 
-        section > article > button > figure > img {
+        section>article>button>figure>img {
             margin: 0;
             padding: 0;
             object-fit: contain;
@@ -139,13 +140,15 @@
             min-height: 100px;
             border-radius: 20%;
         }
-        section > article > button > figure > figcaption {
+
+        section>article>button>figure>figcaption {
             margin: 0;
             padding: 0;
             flex: 1;
             font-size: 1.1rem;
         }
     }
+
     #modal {
         display: none;
     }
@@ -185,18 +188,19 @@
         padding: 8px;
         border: 1px solid #ddd;
     }
-    #modal .container .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: red;
-    font-size: 2em;
-    text-decoration: none;
-}
 
-#modal .container .close:hover {
-    color: darkred;
-}
+    #modal .container .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: red;
+        font-size: 2em;
+        text-decoration: none;
+    }
+
+    #modal .container .close:hover {
+        color: darkred;
+    }
 </style>
 {% endblock head_extrascripts %}
 
@@ -216,53 +220,57 @@
     <article>
         <div id="modal">
             <div class="container">
-                    <table>
-                        <tr>
-                            <td>Titre</td>
-                            <td id="filmTitle"></td>
-                        </tr>
-                        <tr>
-                            <td>Classement</td>
-                            <td id="filmClassement"></td>
-                        </tr>
-                        <tr>
-                            <td>Durée</td>
-                            <td id="filmDuration"></td>
-                        </tr>
-                        <tr>
-                            <td>Genre</td>
-                            <td id="filmGenre"></td>
-                        </tr>
-                        <tr>
-                            <td>Réalisateur</td>
-                            <td id="filmRealisateur"></td>
-                        </tr>
-                        <tr>
-                            <td>Acteurs</td>
-                            <td id="filmCasting">
-                                {% for actor in film.castings %}
-                                    {{ actor }},
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Rating Press</td>
-                            <td id="filmRatingPress"></td>
-                        </tr>
-                        <tr>
-                            <td>Rating Public</td>
-                            <td id="filmRatingPublic"></td>
-                        </tr>
-                        <tr>
-                            <td>Lien AlloCiné</td>
-                            <td id="filmAlloCineLink"></td>
-                        </tr>
-                    </table>
-                    <a href="#" class="close">&times;</a>
+                <table>
+                    <tr>
+                        <td>Titre</td>
+                        <td id="filmTitle"></td>
+                    </tr>
+                    <tr>
+                        <td>Classement</td>
+                        <td id="filmClassement"></td>
+                    </tr>
+                    <tr>
+                        <td>Durée</td>
+                        <td id="filmDuration"></td>
+                    </tr>
+                    <tr>
+                        <td>Genre</td>
+                        <td id="filmGenre"></td>
+                    </tr>
+                    <tr>
+                        <td>Réalisateur</td>
+                        <td id="filmRealisateur"></td>
+                    </tr>
+                    <tr>
+                        <td>Acteurs</td>
+                        <td id="filmCasting">
+                            {% for actor in film.castings %}
+                            {{ actor }},
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rating Press</td>
+                        <td id="filmRatingPress"></td>
+                    </tr>
+                    <tr>
+                        <td>Rating Public</td>
+                        <td id="filmRatingPublic"></td>
+                    </tr>
+                    <tr>
+                        <td>Lien AlloCiné</td>
+                        <td id="filmAlloCineLink"></td>
+                    </tr>
+                </table>
+                <a href="#" class="close">&times;</a>
             </div>
         </div>
         {% for film in films|slice:":10" %}
-        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director_raw }}" data-castings="{{ film.castings }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-allo-cine-link="{{ film.url_allo }}">
+        <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}"
+            data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director_raw }}"
+            data-castings="{{ film.castings }}" data-rating-press="{{ film.rating_press }}"
+            data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}"
+            data-allo-cine-link="{{ film.url }}">
             <figure>
                 <img src="{{ film.thumbnail }}" alt="{{ film.title }}">
                 <figcaption>
@@ -287,7 +295,7 @@
 {% endblock content %}
 {% block extra_scripts %}
 <script>
-     document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         var buttons = document.querySelectorAll(".btnPopup");
         var modal = document.getElementById("modal");
         var modalTitle = document.getElementById("filmTitle");
@@ -301,8 +309,8 @@
         var modalAlloCineLink = document.getElementById("filmAlloCineLink");
         var closeModal = modal.querySelector(".close");
 
-        buttons.forEach(function(button) {
-            button.addEventListener("click", function() {
+        buttons.forEach(function (button) {
+            button.addEventListener("click", function () {
                 modalTitle.textContent = this.dataset.title;
                 modalClassement.textContent = this.dataset.classement;
                 modalDuration.textContent = this.dataset.duration;
@@ -316,7 +324,7 @@
             });
         });
 
-        modal.addEventListener("click", function(event) {
+        modal.addEventListener("click", function (event) {
             if (event.target === modal || event.target === closeModal) {
                 modal.classList.remove("open");
             }

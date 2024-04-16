@@ -34,7 +34,6 @@ class AlloCineSeancesSpider(scrapy.Spider):
         dates = query.fetchall()
 
         for date in dates:
-            print(date.date)
             stmt = select(
                 FilmSortieModel.id,
                 FilmSortieModel.title,
