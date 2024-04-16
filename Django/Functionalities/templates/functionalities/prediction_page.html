@@ -21,6 +21,14 @@
             width: 100%;
             margin: 0;
             padding: 0;
+            overflow: auto;
+        }
+        table {
+            width: 100%;
+            height: 100%;
+        }
+        table > tbody > tr {
+            color: black;
         }
         @media screen and (max-width: 1024px) { 
             section > article {
@@ -52,12 +60,88 @@
             </ul>
         {% endif %}
     {% endblock messages %}
-    
     <section>
         <h1>Prédiction de la Semaine</h1>
-        <div>
-            <p>something here !</p>
-        </div>
+        <article>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classement</th>
+                        <th>Sortie</th>
+                        <th>Title</th>
+                        <th>Spectateur 1ere Semaine</th>
+                        <th>Spectateur Hebdomadaire</th>
+                        <th>Spectateur Journalier</th>
+                        <th>Rct Journaliere</th>
+                        <th>Rct Hebdo</th>
+                        <th>Bnf Hebdo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for film in films %}
+                    <tr style="background-color:
+                    {% if film.score_pred_divided_divided >= 200 %}
+                        rgb(190, 150, 50);
+                    {% elif film.score_pred_divided_divided >= 120 %}
+                        rgb(200, 30, 200);
+                    {% elif film.score_pred_divided_divided >= 80 %}
+                        rgb(40, 100, 220);
+                    {% elif film.score_pred_divided_divided >= 40 %}
+                        rgb(50, 180, 50);
+                    {% else %}
+                        white;
+                    {% endif %}">
+                        <td>
+                            {% if film.classement %}
+                                {{ film.classement }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.date %}
+                                {{ film.date }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.title %}
+                                {{ film.title }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.score_pred %}
+                                {{ film.score_pred }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.score_pred_divided %}
+                                {{ film.score_pred_divided }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.score_pred_divided_divided %}
+                                {{ film.score_pred_divided_divided }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.recette_journaliere %}
+                                {{ film.recette_journaliere }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.recette_hebdomadaire %}
+                                {{ film.recette_hebdomadaire }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if film.benefice_hebdomadaire %}
+                                {{ film.benefice_hebdomadaire }}
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
     </section>
 {% endblock content %}
 

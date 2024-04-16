@@ -269,6 +269,7 @@
                 <figcaption>
                     <ul>
                         <li>#{{ film.classement }}. {{ film.title }}</li>
+                        <li>{% if film.date %}{{ film.date }}{% endif %}</li>
                         <li>Durée : {{ film.duration }}</li>
                         {% if film.genre %}
                         <li>
