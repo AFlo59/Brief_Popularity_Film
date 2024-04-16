@@ -7,49 +7,54 @@
     <title>Prédiction</title>
     <style>
         section {
+            max-width: 100%;
             min-width: 300px;
             height: 100%;
-            width: 100%;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        article {
-            height: 100%;
-            width: 100%;
+        section > h1 {
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        section > article {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+            min-width: 320px;
+            max-height: 80vh;
+            min-height: 250px;
+            border: 0px solid transparent;
+            border-top: 1px solid white;
+            border-bottom: 1px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: safe center;
+            align-items: center;
             overflow: auto;
         }
-        table {
+        article > table {
+            margin: auto;
             width: 100%;
             height: 100%;
+            text-align: center;
         }
-        table > tbody > tr {
+        article > table > tbody {
             color: black;
         }
-        table > tbody > tr > td {
-        text-align: center;
+        @media screen and (min-width: 1024px) {
+        section > article {
+            height: 90%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
         }
-        @media screen and (max-width: 1024px) { 
-            section > article {
-                flex-flow: column nowrap;
-                align-items: center; 
-                overflow-y: auto; 
-                top: auto;
-            }
-
-           
-        }
-        @media screen and (max-width: 376px) { 
-            section > article {
-                max-width: 355px;
-                min-width: 300px;
-            }
-            
-        }
+    }
     </style>
 {% endblock head_extrascripts %}
 
