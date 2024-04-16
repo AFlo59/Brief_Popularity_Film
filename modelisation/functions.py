@@ -75,6 +75,74 @@ def classify_entrees_year(df,column):
     return df
 
 
+def classify_season(df,column):
+    for index, valeur in df[column].items():
+        if valeur == 12 or valeur == 1 or valeur == 2:
+            df.at[index, 'season'] = 'winter'
+        elif valeur == 3 or valeur == 4 or valeur == 5:
+            df.at[index, 'season'] = 'spring'
+        elif valeur == 6 or valeur == 7 or valeur == 8:
+            df.at[index, 'season'] = 'summer'
+        elif valeur == 9 or valeur == 10 or valeur == 11:
+            df.at[index, 'season'] = 'autumn'
+    
+    return df
+
+def classify_month_name(df,column):
+    for index, valeur in df[column].items():
+        if valeur == 12:
+            df.at[index, 'month_name'] = 'december'
+        elif valeur == 11:
+            df.at[index, 'month_name'] = 'novembre'
+        elif valeur == 10:
+            df.at[index, 'month_name'] = 'october'
+        elif valeur == 9:
+            df.at[index, 'month_name'] = 'september'
+        elif valeur == 8:
+            df.at[index, 'month_name'] = 'august'
+        elif valeur == 7:
+            df.at[index, 'month_name'] = 'july'
+        elif valeur == 6:
+            df.at[index, 'month_name'] = 'june'
+        elif valeur == 5:
+            df.at[index, 'month_name'] = 'may'
+        elif valeur == 4:
+            df.at[index, 'month_name'] = 'april'
+        elif valeur == 3:
+            df.at[index, 'month_name'] = 'march'
+        elif valeur == 2:
+            df.at[index, 'month_name'] = 'february'
+        elif valeur == 1:
+            df.at[index, 'month_name'] = 'january'
+    return df
+
+from vacances_scolaires_france import SchoolHolidayDates
+import datetime
+
+def is_holiday(df):
+    holiday_dates = SchoolHolidayDates()
+
+    df['is_holiday'] = df.apply(lambda row: holiday_dates.is_holiday_for_zone(datetime.date(row['year'], row['month'], row['day']), 'B'), axis=1)
+    df['is_holiday'] = df['is_holiday'].astype(int)
+    return df
+
+
+def nettoyer_genre(df):
+    df['genre'] = df['genre'].apply(lambda x: x.split()[0] if x else None)
+    df['genre'] = df['genre'].str.replace('"', '')
+    df['genre'] = df['genre'].str.replace('[', '')
+    df['genre'] = df['genre'].str.replace(']', '')
+    df['genre'] = df['genre'].str.replace(',', '')
+    return df
+
+
+
+
+# ---------------------------------------------------
+
+
+
+
 def calculate_director_scores(df):
     # 1. Fréquence de réalisation
     frequency = df['director'].value_counts()
@@ -149,7 +217,7 @@ def calculate_distributor_scores(df):
     return df
 
 
-def calculate_actor_scores(df):
+def calculate_actor_scores(df, writefile=False):
     # Convert actors strings to list and clean the data
     df['actor_list'] = df['casting'].str.strip('[]').str.split(',')
     df['actor_list'] = df['actor_list'].apply(lambda x: [actor.strip().strip('"') for actor in x])
@@ -188,9 +256,9 @@ def calculate_actor_scores(df):
     # Apply the summing function to calculate total_actor_scores
     df['total_actor_scores'] = df['actor_list'].apply(sum_actor_scores)
 
+    # if writefile:
+
     return df
-
-
 
 
 
@@ -249,73 +317,7 @@ def calculate_country_scores(df):
     return df
 
 
-def split_date(df):
-    df['date'] = pd.to_datetime(df['date'])
 
-    df['day'] = df['date'].dt.day
-    df['month'] = df['date'].dt.month
-    df['year'] = df['date'].dt.year
-
-    df.drop("date", axis=1, inplace=True)
-
-    return df
-
-def classify_season(df,column):
-    for index, valeur in df[column].items():
-        if valeur == 12 or valeur == 1 or valeur == 2:
-            df.at[index, 'season'] = 'winter'
-        elif valeur == 3 or valeur == 4 or valeur == 5:
-            df.at[index, 'season'] = 'spring'
-        elif valeur == 6 or valeur == 7 or valeur == 8:
-            df.at[index, 'season'] = 'summer'
-        elif valeur == 9 or valeur == 10 or valeur == 11:
-            df.at[index, 'season'] = 'autumn'
-    
-    return df
-
-def classify_month_name(df,column):
-    for index, valeur in df[column].items():
-        if valeur == 12:
-            df.at[index, 'month_name'] = 'december'
-        elif valeur == 11:
-            df.at[index, 'month_name'] = 'novembre'
-        elif valeur == 10:
-            df.at[index, 'month_name'] = 'october'
-        elif valeur == 9:
-            df.at[index, 'month_name'] = 'september'
-        elif valeur == 8:
-            df.at[index, 'month_name'] = 'august'
-        elif valeur == 7:
-            df.at[index, 'month_name'] = 'july'
-        elif valeur == 6:
-            df.at[index, 'month_name'] = 'june'
-        elif valeur == 5:
-            df.at[index, 'month_name'] = 'may'
-        elif valeur == 4:
-            df.at[index, 'month_name'] = 'april'
-        elif valeur == 3:
-            df.at[index, 'month_name'] = 'march'
-        elif valeur == 2:
-            df.at[index, 'month_name'] = 'february'
-        elif valeur == 1:
-            df.at[index, 'month_name'] = 'january'
-    return df
-
-from vacances_scolaires_france import SchoolHolidayDates
-import datetime
-
-def is_holiday(df):
-    holiday_dates = SchoolHolidayDates()
-
-    df['is_holiday'] = df.apply(lambda row: holiday_dates.is_holiday_for_zone(datetime.date(row['year'], row['month'], row['day']), 'B'), axis=1)
-    df['is_holiday'] = df['is_holiday'].astype(int)
-    return df
-
-
-def nettoyer_genre(df):
-    df['genre'] = df['genre'].apply(lambda x: x.split()[0] if x else None)
-    df['genre'] = df['genre'].str.replace('"', '')
-    df['genre'] = df['genre'].str.replace('[', '')
-    df['genre'] = df['genre'].str.replace(']', '')
-    df['genre'] = df['genre'].str.replace(',', '')
+def drop_temp(df):
+    df = df.drop(['actor_list','month','day',"casting",'director','raw_title','distributor',"award","lang",'first_day','first_weekend','hebdo_rank','total_spectator','rating_press','budget'], axis=1)
     return df
