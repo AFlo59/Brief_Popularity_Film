@@ -149,6 +149,51 @@ def calculate_distributor_scores(df):
     return df
 
 
+def calculate_actor_scores(df):
+    # Convert actors strings to list and clean the data
+    df['actor_list'] = df['casting'].str.strip('[]').str.split(',')
+    df['actor_list'] = df['actor_list'].apply(lambda x: [actor.strip().strip('"') for actor in x])
+
+    # Explode the DataFrame on actor_list for per-actor operations
+    expanded_df = df.explode('actor_list')
+
+    # Count the frequency of each actor
+    actor_counts = expanded_df['actor_list'].value_counts()
+
+    # Calculate the average rating and performance for each actor
+    avg_rating_by_actor = expanded_df.groupby('actor_list')['rating_press'].mean()
+    performance_by_actor = expanded_df.groupby('actor_list').apply(
+        lambda x: (x['total_spectator'].sum() / x['budget'].sum()) if x['budget'].sum() > 0 else 0)
+
+    # Creating DataFrame for scores
+    scores = pd.DataFrame({
+        'frequency': actor_counts,
+        'avg_rating_press': avg_rating_by_actor,
+        'performance': performance_by_actor
+    })
+
+    # Normalize the scores
+    normalized_scores = scores.apply(lambda x: x / x.max())
+
+    # Calculate the combined score
+    normalized_scores['combined_score'] = normalized_scores.mean(axis=1)
+
+    # Create a dictionary of actor scores
+    actor_scores_dict = normalized_scores['combined_score'].to_dict()
+
+    # Sum actor scores based on the casting list
+    def sum_actor_scores(casting_list):
+        return sum(actor_scores_dict.get(actor, 0) for actor in casting_list)
+
+    # Apply the summing function to calculate total_actor_scores
+    df['total_actor_scores'] = df['actor_list'].apply(sum_actor_scores)
+
+    return df
+
+
+
+
+
 def calculate_year_scores(df):
     # 1. Fréquence de distribution
     frequency = df['year'].value_counts()
@@ -264,4 +309,13 @@ def is_holiday(df):
 
     df['is_holiday'] = df.apply(lambda row: holiday_dates.is_holiday_for_zone(datetime.date(row['year'], row['month'], row['day']), 'B'), axis=1)
     df['is_holiday'] = df['is_holiday'].astype(int)
+    return df
+
+
+def nettoyer_genre(df):
+    df['genre'] = df['genre'].apply(lambda x: x.split()[0] if x else None)
+    df['genre'] = df['genre'].str.replace('"', '')
+    df['genre'] = df['genre'].str.replace('[', '')
+    df['genre'] = df['genre'].str.replace(']', '')
+    df['genre'] = df['genre'].str.replace(',', '')
     return df
