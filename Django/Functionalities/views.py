@@ -13,7 +13,20 @@ def capitalize_name(name):
 
 @login_required
 def recettes_page(request):
-    return render(request, "functionalities/recettes_page.html")
+    today = datetime.now().date()
+    one_week_later = today + timedelta(days=7)
+    films = FilmScrap.objects.filter(date__range=(today, one_week_later))
+    
+    for film in films:
+        if film.score_pred is not None:
+            film.pred_spectateur = round((film.score_pred / 2000) / 7)
+        else:
+            film.pred_spectateur = None
+            
+
+    jours_semaine = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    
+    return render(request, "functionalities/recettes_page.html", {"films": films, "jours_semaine": jours_semaine})
 
 
 @login_required
