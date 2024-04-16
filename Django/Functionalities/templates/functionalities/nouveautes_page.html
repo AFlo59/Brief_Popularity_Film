@@ -4,7 +4,6 @@
 {% block head_extrascripts %}
 <title>Nouveautés</title>
 <style>
-    /* Vos styles CSS ici */
     section {
         max-width: 100%;
         min-width: 300px;
@@ -76,11 +75,12 @@
         padding: 0;
         object-fit: contain;
         width: 40%;
-        min-width: 70px;
+        max-width: 100px;
+        min-width: 100px;
         max-height: 100%;
         min-height: 100px;
         border-radius: 20%;
-    }
+        }
 
     section > article > button > figure > figcaption {
         margin: 0;
@@ -138,7 +138,6 @@
             max-height: 100%;
             min-height: 100px;
             border-radius: 20%;
-            overflow: hidden;
         }
         section > article > button > figure > figcaption {
             margin: 0;
@@ -265,7 +264,14 @@
         {% for film in films|slice:":10" %}
         <button class="btnPopup" data-title="{{ film.title }}" data-classement="{{ film.classement }}" data-duration="{{ film.duration }}" data-genre="{{ film.genre }}" data-realisateur="{{ film.director }}" data-casting="{{ film.casting }}" data-rating-press="{{ film.rating_press }}" data-rating-public="{{ film.rating_public }}" data-synopsis="{{ film.synopsis }}" data-link="{{ film.url }}">
             <figure>
-                <img {% if film.thumbnail %} src="{{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,70,100.jpg" alt="{{ film.title }}" {% endif %}>
+                <img {% if film.thumbnail %}
+                        src="{% if film.thumbnail.height > film.thumbnail.width %}
+                                    {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,100,70.jpg
+                                {% else %}
+                                    {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,70,100.jpg
+                                {% endif %}"
+                        alt="{{ film.title }}"
+                    {% endif %}>
                 <figcaption>
                     <ul>
                         <li>#{{ film.classement }}. {{ film.title }}</li>
