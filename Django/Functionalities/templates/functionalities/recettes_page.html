@@ -21,12 +21,23 @@
             width: 100%;
             margin: 0;
             padding: 0;
+            overflow: auto;
         }
+        table {
+            width: 100%;
+            height: 50%;
+            background-color: white;
+            color: black;
+            text-align: center;
+        }
+        th, td {
+            border: 1px solid black;
+        }
+
         @media screen and (max-width: 1024px) { 
             section > article {
                 flex-flow: column nowrap;
                 align-items: center; 
-                overflow-y: auto; 
                 top: auto;
             }
         }
@@ -56,61 +67,33 @@
                 <thead>
                     <tr>
                         {% for jour in jours_semaine %}
-                            <th>{{ jour }}</th>
+                        <th>{{ jour }}</th>
                         {% endfor %}
+                        <th>Total Hebdo</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         {% for jour in jours_semaine %}
-                            <td>
-                                <div>
-                                    <h4>Salle 1</h4>
-                                    <select>
-                                        <option>Choisir un film</option>
-                                        {% for film in films %}
-                                            <option>{{ film.title }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <ul>
-                                        <li>
-                                            Estimation spectateurs : <span></span>
-                                        </li>
-                                        <li>
-                                            Recettes Salle1 : <span></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4>Salle 2</h4>
-                                    <select>
-                                        <option>Choisir un film</option>
-                                        {% for film in films %}
-                                            <option>{{ film.title }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <ul>
-                                        <li>
-                                            Estimation spectateurs : <span></span>
-                                        </li>
-                                        <li>
-                                            Recettes Salle2 : <span></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+                        <td>
+                            {% for salle in salle_capacite %}
+                            <div>
+                                <h4>{{ salle }}</h4>
+                                <select name="film_{{ jour }}_{{ salle }}" id="film_{{ jour }}_{{ salle }}">
+                                    {% for film in films_selectionnes %}
+                                    <option value="{{ film.id }}">{{ film.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p>Value : {{ film.pred_spectateur_daily }}</p>
+                            </div>       
+                            {% endfor %}
+                        </td>
                         {% endfor %}
+                        <td>
+                            value total
+                        </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>
-                            {% for jour in jours_semaine %}
-                            <th>{{ film.pred_rct_daily }}</th>
-                        {% endfor %}
-                        </th>
-                    </tr>
-                </tfoot>
             </table>
         </article>
     </section>
@@ -118,5 +101,7 @@
 
 {% block extra_scripts %}
 <script>
+   
 </script>
+<!-- <script src="{% static 'js/recettes.js' %}"></script> -->
 {% endblock extra_scripts %}
