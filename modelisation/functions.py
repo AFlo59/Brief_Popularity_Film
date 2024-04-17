@@ -1,3 +1,6 @@
+from joblib import dump, load
+from vacances_scolaires_france import SchoolHolidayDates
+import datetime
 import pandas as pd
 
 def classify_entrees_year(df,column):
@@ -116,9 +119,6 @@ def classify_month_name(df,column):
             df.at[index, 'month_name'] = 'january'
     return df
 
-from vacances_scolaires_france import SchoolHolidayDates
-import datetime
-
 def is_holiday(df):
     holiday_dates = SchoolHolidayDates()
 
@@ -142,7 +142,6 @@ def nettoyer_genre(df):
 
 
 
-
 def calculate_director_scores(df):
     # 1. Fréquence de réalisation
     frequency = df['director'].value_counts()
@@ -154,9 +153,9 @@ def calculate_director_scores(df):
     avg_inv_hebdo_rank = 1 / df.groupby('director')['hebdo_rank'].mean()
     # 5. Moyenne des évaluations de la presse
     avg_rating_press = df.groupby('director')['rating_press'].mean()
-    # 5. Moyenne des récompenses
+    # 6. Moyenne des récompenses
     avg_award = df.groupby('director')['award'].mean()
-    # 6. Rendement (total_spectator / budget)
+    # 7. Rendement (total_spectator / budget)
     performance = (df.groupby('director')['total_spectator'].sum() / df.groupby('director')['budget'].sum())
 
     # Compilation des scores dans un DataFrame
@@ -176,9 +175,12 @@ def calculate_director_scores(df):
 
     # Combinaison des scores normalisés
     normalized_scores['director_combined_score'] = normalized_scores.mean(axis=1)
+
+    # Joindre avec le DataFrame principal
     df = df.join(normalized_scores['director_combined_score'], on='director')
-   
-    return df 
+    save_files( df[['director','director_combined_score']], 'director_scores')
+    return df
+
 
 
 def calculate_distributor_scores(df):
@@ -214,52 +216,42 @@ def calculate_distributor_scores(df):
     # Combinaison des scores normalisés
     normalized_scores['distributor_combined_score'] = normalized_scores.mean(axis=1)
     df = df.join(normalized_scores['distributor_combined_score'], on='distributor')
+    save_files( df[['distributor','distributor_combined_score']], 'distributor_scores')
     return df
 
 
-def calculate_actor_scores(df, writefile=False):
-    # Convert actors strings to list and clean the data
-    df['actor_list'] = df['casting'].str.strip('[]').str.split(',')
-    df['actor_list'] = df['actor_list'].apply(lambda x: [actor.strip().strip('"') for actor in x])
 
-    # Explode the DataFrame on actor_list for per-actor operations
+
+def calculate_actor_scores(df):
+    f_acteurs = pd.DataFrame(df['casting'].str.strip('[]').str.split(',').explode().unique(), columns=['actor'])
+    actor_counts = df['casting'].str.strip('[]').str.split(',').explode().value_counts()
+    # Convertir les acteurs en listes à partir des chaînes de caractères
+    df['actor_list'] = df['casting'].str.strip('[]').str.split(',')
+
+    # Exploder cette colonne pour avoir une ligne par acteur par film
     expanded_df = df.explode('actor_list')
 
-    # Count the frequency of each actor
-    actor_counts = expanded_df['actor_list'].value_counts()
-
-    # Calculate the average rating and performance for each actor
+    # Calculer la moyenne des évaluations de la presse pour chaque acteur
     avg_rating_by_actor = expanded_df.groupby('actor_list')['rating_press'].mean()
     performance_by_actor = expanded_df.groupby('actor_list').apply(
         lambda x: (x['total_spectator'].sum() / x['budget'].sum()) if x['budget'].sum() > 0 else 0)
 
-    # Creating DataFrame for scores
+    # Création d'un DataFrame pour les scores
     scores = pd.DataFrame({
         'frequency': actor_counts,
         'avg_rating_press': avg_rating_by_actor,
         'performance': performance_by_actor
     })
 
-    # Normalize the scores
+    # Normalisation des scores (chaque colonne sera divisée par sa valeur maximale)
     normalized_scores = scores.apply(lambda x: x / x.max())
 
-    # Calculate the combined score
-    normalized_scores['combined_score'] = normalized_scores.mean(axis=1)
-
-    # Create a dictionary of actor scores
-    actor_scores_dict = normalized_scores['combined_score'].to_dict()
-
-    # Sum actor scores based on the casting list
-    def sum_actor_scores(casting_list):
-        return sum(actor_scores_dict.get(actor, 0) for actor in casting_list)
-
-    # Apply the summing function to calculate total_actor_scores
-    df['total_actor_scores'] = df['actor_list'].apply(sum_actor_scores)
-
-    # if writefile:
-
+    # Calcul du score combiné
+    normalized_scores['actor_combined_score'] = normalized_scores.mean(axis=1)
+    f_acteurs = f_acteurs.join(normalized_scores['actor_combined_score'], on='actor')
+    f_acteurs['actor'] = f_acteurs['actor'].str.replace('"', '')
+    save_files( f_acteurs[['actor','actor_combined_score']], 'actor_scores')
     return df
-
 
 
 def calculate_year_scores(df):
@@ -287,6 +279,8 @@ def calculate_year_scores(df):
     # Combinaison des scores normalisés
     normalized_scores['year_combined_score'] = normalized_scores.mean(axis=1)
     df = df.join(normalized_scores['year_combined_score'], on='year')
+    save_files( df[['year','year_combined_score']], 'year_scores')
+
     return df
 
 def calculate_country_scores(df):
@@ -314,10 +308,25 @@ def calculate_country_scores(df):
     # Combinaison des scores normalisés
     normalized_scores['country_combined_score'] = normalized_scores.mean(axis=1)
     df = df.join(normalized_scores['country_combined_score'], on='country')
+    save_files( df[['country','country_combined_score']], 'country_scores')
+
     return df
-
-
 
 def drop_temp(df):
     df = df.drop(['actor_list','month','day',"casting",'director','raw_title','distributor',"award","lang",'first_day','first_weekend','hebdo_rank','total_spectator','rating_press','budget'], axis=1)
     return df
+
+def save_files(df,filename):
+    # scores_json = df.to_dict('dict')
+    # with open(f'modelisation/score_datasets/{filename}.json', 'w') as f:
+    #     json.dump(scores_json, f, indent=4)
+    model_path = f'modelisation/score_datasets/{filename}.pkl'
+    dump(df, model_path)
+
+def load_file(filename):
+    return load(f'modelisation/score_datasets/{filename}.pkl')
+
+
+        
+
+
