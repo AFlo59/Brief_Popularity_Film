@@ -135,7 +135,13 @@ def nettoyer_genre(df):
     df['genre'] = df['genre'].str.replace(',', '')
     return df
 
+def drop_temp_new(df):
+    df = df.drop(['month','day','director','distributor','casting','month_name'], axis=1)
+    return df
 
+def drop_temp(df):
+    df = df.drop(['actor_list','month','day',"casting",'director','raw_title','distributor',"award","lang",'first_day','first_weekend','hebdo_rank','total_spectator','rating_press','budget'], axis=1)
+    return df
 
 
 # ---------------------------------------------------
@@ -310,10 +316,6 @@ def calculate_country_scores(df):
     df = df.join(normalized_scores['country_combined_score'], on='country')
     save_files( df[['country','country_combined_score']], 'country_scores')
 
-    return df
-
-def drop_temp(df):
-    df = df.drop(['actor_list','month','day',"casting",'director','raw_title','distributor',"award","lang",'first_day','first_weekend','hebdo_rank','total_spectator','rating_press','budget'], axis=1)
     return df
 
 def save_files(df,filename):
