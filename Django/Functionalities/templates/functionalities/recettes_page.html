@@ -29,15 +29,12 @@
                 overflow-y: auto; 
                 top: auto;
             }
-
-           
         }
         @media screen and (max-width: 376px) { 
             section > article {
                 max-width: 355px;
                 min-width: 300px;
             }
-            
         }
     </style>
 {% endblock head_extrascripts %}
@@ -52,7 +49,6 @@
             </ul>
         {% endif %}
     {% endblock messages %}
-    
     <section>
         <h1>Prévision des recettes de la Semaine</h1>
         <article>
@@ -60,52 +56,61 @@
                 <thead>
                     <tr>
                         {% for jour in jours_semaine %}
-                        <th>{{ jour }}</th>
+                            <th>{{ jour }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         {% for jour in jours_semaine %}
-                        <td>
-                            <div class="film-selection">
-                                <h4>Salle 1 120 places</h4>
-                                <select name="film_{{ jour|lower }}_salle1" data-spectators-estimation="">
-                                    <option value="">Choisir un film</option>
-                                    {% for film in films %}
-                                    <option value="{{ film.id }}" data-spectators-estimation="{{ film.pred_spectateur }}">{{ film.title }}</option>
-                                    {% endfor %}
-                                </select>
-                                <ul>
-                                    <li>
-                                        Estimation spectateurs : {% if film.pred_spectateur is not None %}{% if film.pred_spectateur > 120 %}120{% else %}{{ film.pred_spectateur }}{% endif %}{% else %}N/A{% endif %}
-                                    </li>
-                                    <li>
-                                        Recettes Journalieres : <span id="revenue_{{ jour|lower }}_salle1">N/A</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="film-selection">
-                                <h4>Salle 2 80 places</h4>
-                                <select name="film_{{ jour|lower }}_salle2" data-spectators-estimation="">
-                                    <option value="">Choisir un film</option>
-                                    {% for film in films %}
-                                    <option value="{{ film.id }}" data-spectators-estimation="{{ film.pred_spectateur }}">{{ film.title }}</option>
-                                    {% endfor %}
-                                </select>
-                                <ul>
-                                    <li>
-                                        Estimation spectateurs : {% if film.pred_spectateur is not None %}{% if film.pred_spectateur > 80 %}80{% else %}{{ film.pred_spectateur }}{% endif %}{% else %}N/A{% endif %}
-                                    </li>
-                                    <li>
-                                        Recettes Journalieres : <span id="revenue_{{ jour|lower }}_salle2">N/A</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
+                            <td>
+                                <div>
+                                    <h4>Salle 1</h4>
+                                    <select>
+                                        <option>Choisir un film</option>
+                                        {% for film in films %}
+                                            <option>{{ film.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <ul>
+                                        <li>
+                                            Estimation spectateurs : <span></span>
+                                        </li>
+                                        <li>
+                                            Recettes Salle1 : <span></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4>Salle 2</h4>
+                                    <select>
+                                        <option>Choisir un film</option>
+                                        {% for film in films %}
+                                            <option>{{ film.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <ul>
+                                        <li>
+                                            Estimation spectateurs : <span></span>
+                                        </li>
+                                        <li>
+                                            Recettes Salle2 : <span></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         {% endfor %}
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>
+                            {% for jour in jours_semaine %}
+                            <th>{{ film.pred_rct_daily }}</th>
+                        {% endfor %}
+                        </th>
+                    </tr>
+                </tfoot>
             </table>
         </article>
     </section>
@@ -113,29 +118,5 @@
 
 {% block extra_scripts %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Fonction pour mettre à jour la recette journalière
-        function updateDailyRevenue(salleId) {
-            var filmSelect = document.querySelector(`[name="film_${salleId}"]`);
-            var revenueElement = document.querySelector(`#revenue_${salleId}`);
-            var spectatorsEstimation = filmSelect.options[filmSelect.selectedIndex].dataset.spectatorsEstimation;
-            
-            if (spectatorsEstimation !== undefined) {
-                var revenue = parseInt(spectatorsEstimation) * 10;
-                revenueElement.textContent = "Recettes Journalieres : " + Math.min(revenue, salleId === 'lundi_salle1' ? 120 : 80);
-            } else {
-                revenueElement.textContent = "Recettes Journalieres : N/A";
-            }
-        }
-
-        // Ajoutez des écouteurs d'événements pour les sélections de films
-        var filmSelects = document.querySelectorAll("select[name^='film_']");
-        filmSelects.forEach(function(select) {
-            select.addEventListener("change", function() {
-                var salleId = this.name.split("_")[1];
-                updateDailyRevenue(salleId);
-            });
-        });
-    });
 </script>
 {% endblock extra_scripts %}
