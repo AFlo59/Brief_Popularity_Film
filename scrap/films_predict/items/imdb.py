@@ -118,6 +118,7 @@ class SortieImdbItem(BaseImdbItem):
     copies = Field()
     score_pred = Field()
     duration = Field()
+    country = Field()
 
     def parse(self, response, date=None, thumbnail=""):
         data = response.xpath('//script[@type="application/ld+json"]/text()').extract()
@@ -134,6 +135,14 @@ class SortieImdbItem(BaseImdbItem):
                 if "duration" in data
                 else -1
             )
+
+        countries = response.xpath(
+            '//span[contains(text(), "Pays d’origine")]/following-sibling::div//a/text()'
+        ).extract()
+
+        if countries is not None and len(countries) > 0:
+            country = [normalize(country) for country in countries]
+            self["country"] = country[0]
 
         self["date"] = date
         self["thumbnail"] = thumbnail
