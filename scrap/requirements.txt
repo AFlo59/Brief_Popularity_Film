@@ -9,3 +9,5 @@ psycopg2-binary
 pymysql
 thefuzz
 dateparser
+pydantic
+scikit-learn==1.4.0
