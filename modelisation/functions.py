@@ -136,7 +136,7 @@ def nettoyer_genre(df):
     return df
 
 def drop_temp_new(df):
-    df = df.drop(['month','day','director','distributor','casting','month_name'], axis=1)
+    df = df.drop(['day','month','director','distributor','casting'], axis=1)
     return df
 
 def drop_temp(df):
