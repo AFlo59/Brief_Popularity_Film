@@ -72,23 +72,23 @@
                 </thead>
                 <tbody>
                     {% for salle, capacite in salle_capacite.items %}
-                        <tr>
-                            <td>
-                                <div>
-                                    <h4>{{ salle }}</h4>
-                                    <select id="film_select_{{ forloop.counter }}">Choisir un Film
-                                        {% for film in films %}
-                                            <option value="{{ film.id }}">{{ film.title }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <p>Rct: <span id="pred_rct_daily_{{ forloop.counter }}"></span></p>
-                                </div>
-                            </td>
-                            <td>
-                                <p>Bnf: <span id="pred_bnf_hebdo_{{ forloop.counter }}"></span></p>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                    <tr>
+                        <td>
+                            <div>
+                                <h4>{{ salle }}</h4>
+                                <select class="film-select" id="film_select_{{ forloop.counter }}">Choisir un Film
+                                    {% for film in films %}
+                                        <option value="{{ film.id }}">{{ film.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p>Rct: <span id="pred_rct_daily_{{ forloop.counter }}"></span></p>
+                            </div>
+                        </td>
+                        <td>
+                            <p>Bnf: <span id="pred_bnf_hebdo_{{ forloop.counter }}"></span></p>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </article>

@@ -12,9 +12,6 @@ def capitalize_name(name):
         return ' '.join([part.capitalize() for part in name.split(' ')])
     return None
 
-
-from django.core.serializers import serialize
-
 def recettes_page(request):
     today = datetime.now().date()
     current_weekday = today.weekday()
@@ -25,13 +22,20 @@ def recettes_page(request):
 
     films = FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday).order_by("-score_pred").values('title', 'id', 'score_pred')
 
+    # Exemples de limites de capacité pour chaque salle (en commentaires)
+    # Salle1: 120
+    # Salle2: 80
+
     salle_capacite = {"Salle1": 120, "Salle2": 80}
 
     for film in films:
         if film['score_pred'] is not None:
             film['pred_spect_daily'] = (film['score_pred'] / 2000) / 7
             for salle, capacite in salle_capacite.items():
-                film['pred_rct_daily_' + salle] = film['pred_spect_daily'] * 10 * capacite
+                # Calcul de pred_rct_daily avec une limite de capacité
+                # La limite pour Salle1 est 120, donc si pred_spect_daily * 10 dépasse 120, nous utilisons 120
+                # La limite pour Salle2 est 80, donc si pred_spect_daily * 10 dépasse 80, nous utilisons 80
+                film['pred_rct_daily_' + salle] = min(film['pred_spect_daily'] * 10, capacite)  
                 film['pred_rct_weekly_' + salle] = film['pred_rct_daily_' + salle] * 7
                 film['pred_bnf_hebdo_' + salle] = (-4900 + film['pred_rct_weekly_' + salle])
         else:
@@ -40,21 +44,50 @@ def recettes_page(request):
                 film['pred_rct_daily_' + salle] = None
                 film['pred_rct_weekly_' + salle] = None
                 film['pred_bnf_hebdo_' + salle] = None
-    print(films)
 
     context = {
         'films': films,
         'salle_capacite': salle_capacite,
     }
-    # data = films.values()
-    # films_js = serialize("json", data, fields=('title', 'id', 'score_pred') )
 
     return render(request, "functionalities/recettes_page.html", context)
 
+def get_data(request):
+    # Récupération du titre du film envoyé depuis la requête GET
+    film_title = request.GET.get('film')
 
-from datetime import datetime, timedelta
-from django.shortcuts import render
-from .models import FilmScrap
+    # Filtrage des films par titre
+    films = FilmScrap.objects.filter(title=film_title)
+
+    # Exemples de limites de capacité pour chaque salle
+    salle_capacite = {"Salle1": 120, "Salle2": 80}
+
+    films_data = []
+
+    for film in films:
+        film_data = {
+            'title': film.title,
+            'id': film.id,
+            'score_pred': film.score_pred,
+            # Calcul de pred_spect_daily avec une limite de capacité
+            'pred_spect_daily': min((film.score_pred / 2000) / 7, salle_capacite[salle]) if film.score_pred is not None else None,
+        }
+        for salle, capacite in salle_capacite.items():
+            # Calcul de pred_rct_daily avec une limite de capacité
+            # La limite pour Salle1 est 120, donc si pred_spect_daily * 10 dépasse 120, nous utilisons 120
+            # La limite pour Salle2 est 80, donc si pred_spect_daily * 10 dépasse 80, nous utilisons 80
+            film_data['pred_rct_daily_' + salle] = min(film_data['pred_spect_daily'] * 10, capacite) if film_data['pred_spect_daily'] is not None else None
+            film_data['pred_rct_weekly_' + salle] = film_data['pred_rct_daily_' + salle] * 7 if film_data['pred_rct_daily_' + salle] is not None else None
+            film_data['pred_bnf_hebdo_' + salle] = (-4900 + film_data['pred_rct_weekly_' + salle]) if film_data['pred_rct_weekly_' + salle] is not None else None
+
+        films_data.append(film_data)
+
+    response_data = {
+    "films": films_data
+    }
+    return JsonResponse(response_data)
+
+
 
 @login_required
 def predict_page(request):
