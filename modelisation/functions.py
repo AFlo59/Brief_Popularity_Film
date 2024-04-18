@@ -330,5 +330,5 @@ def load_file(filename):
 
 
         
-
-
+def calculate_total_actors_score(df):
+    
