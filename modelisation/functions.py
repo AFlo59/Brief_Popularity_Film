@@ -193,45 +193,44 @@ def calculate_director_scores(df):
 
 
 def calculate_distributor_scores(df):
-    # 1. Fréquence de distribution
-    frequency = df["distributor"].value_counts()
-    # 2. Moyenne des spectateurs totaux
-    avg_total_spectators = df.groupby("distributor")["total_spectator"].mean()
-    # 3. Moyenne de la première semaine
-    avg_first_week = df.groupby("distributor")["first_week"].mean()
-    # 4. Moyenne inversée du classement hebdomadaire
-    avg_inv_hebdo_rank = 1 / df.groupby("distributor")["hebdo_rank"].mean()
-    # 5. Moyenne des évaluations de la presse
-    avg_rating_press = df.groupby("distributor")["rating_press"].mean()
-    # 5. Moyenne des récompenses
-    avg_award = df.groupby("distributor")["award"].mean()
-    # 6. Rendement (total_spectator / budget)
-    performance = (
-        df.groupby("distributor")["total_spectator"].sum()
-        / df.groupby("distributor")["budget"].sum()
+    f_distributors = pd.DataFrame(
+        df["distributor"].str.strip("[]").str.split(",").explode().unique(),
+        columns=["distributors"],
+    )
+    distributor_counts = df["distributor"].str.strip("[]").str.split(",").explode().value_counts()
+    # Convertir les acteurs en listes à partir des chaînes de caractères
+    df["distributor_list"] = df["distributor"].str.strip("[]s").str.split(",")
+
+    # Exploder cette colonne pour avoir une ligne par acteur par film
+    expanded_df = df.explode("distributor_list")
+
+    # Calculer la moyenne des évaluations de la presse pour chaque acteur
+    avg_rating_by_distributor = expanded_df.groupby("distributor_list")["rating_press"].mean()
+    performance_by_distributor = expanded_df.groupby("distributor_list").apply(
+        lambda x: (x["total_spectator"].sum() / x["budget"].sum())
+        if x["budget"].sum() > 0
+        else 0
     )
 
-    # Compilation des scores dans un DataFrame
-    distributor_scores = pd.DataFrame(
+    # Création d'un DataFrame pour les scores
+    scores = pd.DataFrame(
         {
-            "frequency": frequency,
-            "avg_total_spectators": avg_total_spectators,
-            "avg_first_week": avg_first_week,
-            "avg_inv_hebdo_rank": avg_inv_hebdo_rank,
-            "avg_rating_press": avg_rating_press,
-            "avg_award": avg_award,
-            "performance": performance,
+            "frequency": distributor_counts,
+            "avg_rating_press": avg_rating_by_distributor,
+            "performance": performance_by_distributor,
         }
     )
-    # Normalisation des scores
-    max_values = distributor_scores.max()
-    normalized_scores = distributor_scores / max_values
 
-    # Combinaison des scores normalisés
+    # Normalisation des scores (chaque colonne sera divisée par sa valeur maximale)
+    normalized_scores = scores.apply(lambda x: x / x.max())
+
+    # Calcul du score combiné
     normalized_scores["distributor_combined_score"] = normalized_scores.mean(axis=1)
-    df = df.join(normalized_scores["distributor_combined_score"], on="distributor")
-    save_files(df[["distributor", "distributor_combined_score"]], "distributor_scores")
+    f_distributors = f_distributors.join(normalized_scores["distributor_combined_score"], on="distributors")
+    f_distributors["distributor"] = f_distributors["distributors"].str.replace('"', "")
+    save_files(f_distributors[["distributor", "distributor_combined_score"]], "distributor_scores")
     return df
+
 
 
 def calculate_actor_scores(df):
