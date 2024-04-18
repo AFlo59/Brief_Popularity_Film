@@ -1,20 +1,20 @@
 version: '3.8'
 services:
-  db:
-    container_name: mysql
-    image: mysql
-    ports:
-      - "3306:3306"
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_USER: ${FILM_USER}
-      MYSQL_PASSWORD: ${FILM_PWD}
-      MYSQL_ROOT_PASSWORD: ${FILM_PWD}
-      MYSQL_DATABASE: ${FILM_DB}
-    volumes:
-      - ./mysql-data:/var/lib/mysql
+  # db:
+  #   container_name: mysql
+  #   image: mysql
+  #   ports:
+  #     - "3306:3306"
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     MYSQL_USER: ${FILM_USER}
+  #     MYSQL_PASSWORD: ${FILM_PWD}
+  #     MYSQL_ROOT_PASSWORD: ${FILM_PWD}
+  #     MYSQL_DATABASE: ${FILM_DB}
+  #   volumes:
+  #     - ./mysql-data:/var/lib/mysql
 
   scrap:
     container_name: scrap

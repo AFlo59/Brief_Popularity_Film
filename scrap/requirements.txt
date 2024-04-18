@@ -10,4 +10,6 @@ pymysql
 thefuzz
 dateparser
 pydantic
-scikit-learn==1.4.0
+scikit-learn
+vacances_scolaires_france
+pandas

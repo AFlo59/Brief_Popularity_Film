@@ -84,8 +84,8 @@ def batch_prediction():
 
 
 def one_prediction():
-    pipe_transform = load("./scrap/_data_prediction/pipe_transform.pkl")
-    model = load("./scrap/_data_prediction/model.pkl")
+    pipe_transform = load("_data_prediction/pipe_transform.pkl")
+    model = load("_data_prediction/model.pkl")
 
     fi = FeaturesInput(
         year=2024,
