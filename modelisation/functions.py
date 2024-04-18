@@ -136,6 +136,15 @@ def nettoyer_genre(df):
     df['genre'] = df['genre'].str.replace(',', '')
     return df
 
+def nettoyer_casting(df):
+    # df['casting'] = df['casting'].apply(lambda x: x.split()[0] if x else None)
+    df['casting'] = df['casting'].apply(lambda x: ', '.join(x))
+    df['casting'] = df['casting'].str.replace('"', '')
+    df['casting'] = df['casting'].str.replace('[', '')
+    df['casting'] = df['casting'].str.replace(']', '')
+    # df['casting'] = df['casting'].str.replace(',', ' ')
+    return df
+
 def drop_temp_new(df):
     df = df.drop(['day','month','director','distributor','casting'], axis=1)
     return df
@@ -225,6 +234,42 @@ def calculate_distributor_scores(df):
     df = df.join(normalized_scores['distributor_combined_score'], on='distributor')
     save_files( df[['distributor','distributor_combined_score']], 'distributor_scores')
     return df
+
+# def calculate_actor_scores(df):
+#     # 1. Fréquence de distribution
+#     frequency = df['casting'].value_counts()
+#     # 2. Moyenne des spectateurs totaux
+#     avg_total_spectators = df.groupby('casting')['total_spectator'].mean()
+#     # 3. Moyenne de la première semaine
+#     avg_first_week = df.groupby('casting')['first_week'].mean()
+#     # 4. Moyenne inversée du classement hebdomadaire
+#     avg_inv_hebdo_rank = 1 / df.groupby('casting')['hebdo_rank'].mean()
+#     # 5. Moyenne des évaluations de la presse
+#     avg_rating_press = df.groupby('casting')['rating_press'].mean()
+#     # 5. Moyenne des récompenses
+#     avg_award = df.groupby('casting')['award'].mean()
+#     # 6. Rendement (total_spectator / budget)
+#     performance = (df.groupby('casting')['total_spectator'].sum() / df.groupby('casting')['budget'].sum())
+
+#     # Compilation des scores dans un DataFrame
+#     actor_scores = pd.DataFrame({
+#         'frequency': frequency,
+#         'avg_total_spectators': avg_total_spectators,
+#         'avg_first_week': avg_first_week,
+#         'avg_inv_hebdo_rank': avg_inv_hebdo_rank,
+#         'avg_rating_press': avg_rating_press,
+#         'avg_award': avg_award,
+#         'performance': performance
+#     })
+#     # Normalisation des scores
+#     max_values = actor_scores.max()
+#     normalized_scores = actor_scores / max_values
+
+#     # Combinaison des scores normalisés
+#     normalized_scores['actor_combined_score'] = normalized_scores.mean(axis=1)
+#     df = df.join(normalized_scores['actor_combined_score'], on='casting')
+#     save_files( df[['casting','actor_combined_score']], 'actor_scores')
+#     return df
 
 
 
@@ -336,12 +381,16 @@ def calculate_total_actors_score(df):
     actor_scores_path = 'actor_scores'
     actor_scores = load_file(actor_scores_path)
     
-    # Assurer que la colonne 'casting' est correctement formatée comme liste
-    df['casting'] = df['casting'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
-
-    # Application de la fonction pour calculer le score combiné pour chaque liste d'acteurs
-    df['actor_combined_score'] = df['casting'].apply(lambda actors: average_score(actors, actor_scores))
-
+    scores = []
+        # Séparation des noms d'acteurs et recherche de leurs scores
+    for actor in df['casting'].split(', '):
+        actor = actor.strip()
+        if actor in actor_scores:
+                scores.append(actor_scores[actor])
+        if scores:
+            return sum(scores) / len(scores)
+        else:
+            return None  # ou 0 si vous préférez
     return df
 
 def average_score(actors, score_dict):
