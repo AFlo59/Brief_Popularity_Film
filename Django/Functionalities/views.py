@@ -5,8 +5,7 @@ from .models import FilmScrap
 from dateutil.relativedelta import relativedelta as rd
 from datetime import datetime, timedelta
 from django.utils import timezone
-
-
+from django.http import JsonResponse
 
 def capitalize_name(name):
     if name:
@@ -14,63 +13,43 @@ def capitalize_name(name):
     return None
 
 
+from django.core.serializers import serialize
+
 def recettes_page(request):
-    today = timezone.now().date()
-    one_week_later = today + timedelta(days=7)
-    next_day = today + timedelta(days=1)
+    today = datetime.now().date()
+    current_weekday = today.weekday()
 
-    films = FilmScrap.objects.filter(date__range=(next_day, one_week_later)).order_by("-score_pred")
+    days_until_wednesday = (2 - current_weekday) % 7
+    wednesday_this_week = today + timedelta(days=days_until_wednesday)
+    next_tuesday = wednesday_this_week + timedelta(days=6)
 
-    jours_semaine = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    films = FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday).order_by("-score_pred").values('title', 'id', 'score_pred')
+
     salle_capacite = {"Salle1": 120, "Salle2": 80}
 
     for film in films:
-        film.pred_spectateur_daily = film.score_pred / 2000 / 7 if film.score_pred is not None else None
+        if film['score_pred'] is not None:
+            film['pred_spect_daily'] = (film['score_pred'] / 2000) / 7
+            for salle, capacite in salle_capacite.items():
+                film['pred_rct_daily_' + salle] = film['pred_spect_daily'] * 10 * capacite
+                film['pred_rct_weekly_' + salle] = film['pred_rct_daily_' + salle] * 7
+                film['pred_bnf_hebdo_' + salle] = (-4900 + film['pred_rct_weekly_' + salle])
+        else:
+            film['pred_spect_daily'] = None
+            for salle in salle_capacite.keys():
+                film['pred_rct_daily_' + salle] = None
+                film['pred_rct_weekly_' + salle] = None
+                film['pred_bnf_hebdo_' + salle] = None
+    print(films)
 
-    # Organiser les films disponibles par jour et par salle
-    films_disponibles = {jour: {'Salle1': [], 'Salle2': []} for jour in jours_semaine}
+    context = {
+        'films': films,
+        'salle_capacite': salle_capacite,
+    }
+    # data = films.values()
+    # films_js = serialize("json", data, fields=('title', 'id', 'score_pred') )
 
-    for film in films:
-        for jour in jours_semaine:
-            for salle in salle_capacite:
-                capacite = salle_capacite[salle]
-                if not films_disponibles[jour][salle] and film.pred_spectateur_daily and film.pred_spectateur_daily >= capacite * 0.5:
-                    if any(film in films_disponibles[jour][autre_salle] for autre_salle in salle_capacite if autre_salle != salle):
-                        capacite_autre_salle = salle_capacite[[autre_salle for autre_salle in salle_capacite if autre_salle != salle][0]]
-                        film.pred_spectateur_daily -= capacite_autre_salle
-                    films_disponibles[jour][salle].append(film)
-
-    return render(request, "functionalities/recettes_page.html", {"jours_semaine": jours_semaine, "salle_capacite": salle_capacite, "films_disponibles": films_disponibles})
-
-# def get_film_data(request):
-#     if request.method == 'POST' and request.is_ajax():
-#         film_id = request.POST.get('film_id')
-#         salle = request.POST.get('salle')
-#         jour = request.POST.get('jour')
-        
-#         film = FilmScrap.objects.get(pk=film_id)
-#         if film.score_pred is not None:
-#             pred_spectateur = film.score_pred / 2000 / 7
-#             films_selectionnes = FilmScrap.objects.filter(date=jour, id__in=request.POST.getlist('film_id'), score_pred__isnull=False).count()
-#             pred_spectateur = min(pred_spectateur, 200 / films_selectionnes) if films_selectionnes > 0 else 0
-#             recettes_daily = pred_spectateur * 10
-#             recettes_weekly = min(pred_spectateur * 10 * 7, 120 * 10 + 80 * 10)
-#             benefice = recettes_weekly - 4900
-#         else:
-#             pred_spectateur = None
-#             recettes_daily = None
-#             recettes_weekly = None
-#             benefice = None
-        
-#         data = {
-#             'spectateurs': pred_spectateur,
-#             'recettes_daily': recettes_daily,
-#             'recettes_weekly': recettes_weekly,
-#             'benefice': benefice
-#         }
-#         return JsonResponse(data)
-#     else:
-#         return JsonResponse({'error': 'Invalid request'})
+    return render(request, "functionalities/recettes_page.html", context)
 
 
 from datetime import datetime, timedelta

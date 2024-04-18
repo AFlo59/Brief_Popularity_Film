@@ -66,42 +66,37 @@
             <table>
                 <thead>
                     <tr>
-                        {% for jour in jours_semaine %}
-                        <th>{{ jour }}</th>
-                        {% endfor %}
+                        <th>Selection des films</th>
                         <th>Total Hebdo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        {% for jour in jours_semaine %}
-                        <td>
-                            {% for salle in salle_capacite %}
-                            <div>
-                                <h4>{{ salle }}</h4>
-                                <select name="film_{{ jour }}_{{ salle }}" id="film_{{ jour }}_{{ salle }}">
-                                    {% for film in films_selectionnes %}
-                                    <option value="{{ film.id }}">{{ film.title }}</option>
-                                    {% endfor %}
-                                </select>
-                                <p>Value : {{ film.pred_spectateur_daily }}</p>
-                            </div>       
-                            {% endfor %}
-                        </td>
-                        {% endfor %}
-                        <td>
-                            value total
-                        </td>
-                    </tr>
+                    {% for salle, capacite in salle_capacite.items %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <h4>{{ salle }}</h4>
+                                    <select id="film_select_{{ forloop.counter }}">Choisir un Film
+                                        {% for film in films %}
+                                            <option value="{{ film.id }}">{{ film.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <p>Rct: <span id="pred_rct_daily_{{ forloop.counter }}"></span></p>
+                                </div>
+                            </td>
+                            <td>
+                                <p>Bnf: <span id="pred_bnf_hebdo_{{ forloop.counter }}"></span></p>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </article>
     </section>
-{% endblock content %}
-
-{% block extra_scripts %}
-<script>
-   
-</script>
-<!-- <script src="{% static 'js/recettes.js' %}"></script> -->
-{% endblock extra_scripts %}
+    {% endblock content %}
+    
+    {% block extra_scripts %}
+    {{ films_json|json_script:"films-data" }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/recettes.js' %}"></script>
+    {% endblock extra_scripts %}
