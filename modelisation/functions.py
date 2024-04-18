@@ -1,4 +1,5 @@
 from joblib import dump, load
+import ast 
 from vacances_scolaires_france import SchoolHolidayDates
 import datetime
 import pandas as pd
@@ -257,6 +258,7 @@ def calculate_actor_scores(df):
     f_acteurs = f_acteurs.join(normalized_scores['actor_combined_score'], on='actor')
     f_acteurs['actor'] = f_acteurs['actor'].str.replace('"', '')
     save_files( f_acteurs[['actor','actor_combined_score']], 'actor_scores')
+    calculate_total_actors_score(df)
     return df
 
 
@@ -328,7 +330,22 @@ def save_files(df,filename):
 def load_file(filename):
     return load(f'modelisation/score_datasets/{filename}.pkl')
 
-
-        
+       
 def calculate_total_actors_score(df):
-    
+    actor_scores_path = 'actor_scores'
+    actor_scores = load_file(actor_scores_path)
+    df['casting'] = df['casting'].apply(ast.literal_eval)
+    # global_average = sum(actor_scores.values()) / len(actor_scores) if actor_scores else 0
+    df['actor_combined_score'] = df['casting'].apply(lambda actors: average_score(actors, actor_scores))
+
+    return df
+
+def average_score(actors, score_dict):
+    """Calcule la moyenne des scores pour une liste d'acteurs."""
+    scores = [score_dict.get(actor, 0) for actor in actors]
+
+    if scores:
+        return sum(scores) / len(scores)
+    else:
+        return 0
+
