@@ -69,13 +69,18 @@ def get_data(request):
             'title': film.title,
             'id': film.id,
             'score_pred': film.score_pred,
-            # Calcul de pred_spect_daily avec une limite de capacité
-            'pred_spect_daily': min((film.score_pred / 2000) / 7, salle_capacite[salle]) if film.score_pred is not None else None,
+            'pred_spect_daily': None,
+            'pred_rct_daily': None,
+            'pred_bnf_weekly': None,
         }
+
+        if film.score_pred is not None:
+            pred_spect_daily = film.score_pred / 2000 / 7
+            # Utilisation de la capacité de la première salle par défaut
+            film_data['pred_spect_daily'] = min(pred_spect_daily, salle_capacite["Salle1"])
+
         for salle, capacite in salle_capacite.items():
             # Calcul de pred_rct_daily avec une limite de capacité
-            # La limite pour Salle1 est 120, donc si pred_spect_daily * 10 dépasse 120, nous utilisons 120
-            # La limite pour Salle2 est 80, donc si pred_spect_daily * 10 dépasse 80, nous utilisons 80
             film_data['pred_rct_daily_' + salle] = min(film_data['pred_spect_daily'] * 10, capacite) if film_data['pred_spect_daily'] is not None else None
             film_data['pred_rct_weekly_' + salle] = film_data['pred_rct_daily_' + salle] * 7 if film_data['pred_rct_daily_' + salle] is not None else None
             film_data['pred_bnf_hebdo_' + salle] = (-4900 + film_data['pred_rct_weekly_' + salle]) if film_data['pred_rct_weekly_' + salle] is not None else None
@@ -83,9 +88,10 @@ def get_data(request):
         films_data.append(film_data)
 
     response_data = {
-    "films": films_data
+        "films": films_data
     }
     return JsonResponse(response_data)
+
 
 
 
