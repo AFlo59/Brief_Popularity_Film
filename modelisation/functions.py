@@ -332,20 +332,21 @@ def load_file(filename):
 
        
 def calculate_total_actors_score(df):
+    """Calcule et ajoute le score combiné des acteurs basé sur un dictionnaire de scores."""
     actor_scores_path = 'actor_scores'
     actor_scores = load_file(actor_scores_path)
-    df['casting'] = df['casting'].apply(ast.literal_eval)
-    # global_average = sum(actor_scores.values()) / len(actor_scores) if actor_scores else 0
+    
+    # Assurer que la colonne 'casting' est correctement formatée comme liste
+    df['casting'] = df['casting'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+
+    # Application de la fonction pour calculer le score combiné pour chaque liste d'acteurs
     df['actor_combined_score'] = df['casting'].apply(lambda actors: average_score(actors, actor_scores))
 
     return df
 
 def average_score(actors, score_dict):
-    """Calcule la moyenne des scores pour une liste d'acteurs."""
-    scores = [score_dict.get(actor, 0) for actor in actors]
+    """Calcule la moyenne des scores pour une liste d'acteurs, avec 0 comme valeur par défaut si un acteur n'est pas trouvé."""
+    scores = [score_dict.get(actor, 0) for actor in actors]  # Utilise 0 si l'acteur n'est pas trouvé
+    return sum(scores) / len(actors) if actors else 0  # Retourne 0 si la liste est vide
 
-    if scores:
-        return sum(scores) / len(scores)
-    else:
-        return 0
 
