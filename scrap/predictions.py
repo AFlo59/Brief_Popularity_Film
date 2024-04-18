@@ -11,16 +11,17 @@ from joblib import load
 # Modèle Pydantic pour la structure de donnée d'entrée
 class FeaturesInput(BaseModel):
     year: int
-    director: str
-    country: str
+    day: int
+    month: int
     duration: int
-    genre: str
+    country: str
     copies: int
-    rating_press: float
-    first_day: int
-    budget: int
+    director: str
     distributor: str
     casting: List
+    # genre: str
+    # rating_press: float
+    # budget: int
 
 
 class PredictionOutput(BaseModel):
@@ -30,13 +31,15 @@ class PredictionOutput(BaseModel):
 conn = engine.connect()
 
 
-def load_model(path="model.pickle") -> Pipeline:  # entrer le bon modèle
+def load_pkl(path="_data_prediction/model.pkl") -> Pipeline:  # entrer le bon modèle
     model = load(path)
     return model
 
 
 def batch_prediction():
-    model = load_model()
+    pipe_transform = load("_data_prediction/pipe_transform.pkl")
+    model = load("_data_prediction/model.pkl")
+
     query = conn.execute(text(""" select * from functionalities_filmscrap """))
     films = query.mappings().all()
 
@@ -80,5 +83,31 @@ def batch_prediction():
     # print(films)
 
 
+def one_prediction():
+    pipe_transform = load("./scrap/_data_prediction/pipe_transform.pkl")
+    model = load("./scrap/_data_prediction/model.pkl")
+
+    fi = FeaturesInput(
+        year=2024,
+        day=10,
+        month=4,
+        duration=6120,
+        country="france",
+        copies=414,
+        director="florent bernard",
+        distributor=["nolita cinema", "tf1 studio", "apollo films"],
+        casting=["charlotte gainsbourg", "jose garcia", "lily aubry"],
+    )
+
+    t = pipe_transform.transform(fi)
+    pred = PredictionOutput(nb_entree=model.predict(t))
+
+    print(pred)
+
+
 def comparer_classement(film1, film2):
     return film2["pred"] - film1["pred"]
+
+
+if __name__ == "__main__":
+    one_prediction()
