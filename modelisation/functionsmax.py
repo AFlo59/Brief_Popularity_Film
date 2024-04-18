@@ -1,7 +1,12 @@
+import json
 from joblib import dump, load
 from vacances_scolaires_france import SchoolHolidayDates
 import datetime
 import pandas as pd
+
+
+def clean_genre(df):
+    return df["genre"].apply(lambda x: json.loads(x)[0] if x is not None else x)
 
 
 def classify_entrees_year(df, column):
@@ -136,21 +141,12 @@ def is_holiday(df):
 
 
 def nettoyer_genre(df):
-    for index, row in df.iterrows():
-        print(df.iloc[index]['genre'].at[0])
-        try:
-            df.iloc[index]['genre'] =  df.iloc[index]['genre'][0]
-        except Exception:
-            pass
-
+    df["genre"] = df["genre"].apply(lambda x: x.split()[0] if x else None)
+    df["genre"] = df["genre"].str.replace('"', "")
+    df["genre"] = df["genre"].str.replace("[", "")
+    df["genre"] = df["genre"].str.replace("]", "")
+    df["genre"] = df["genre"].str.replace(",", "")
     return df
-
-    # df["genre"] = df["genre"].apply(lambda x: x.split()[0] if x else None)
-    # df["genre"] = df["genre"].str.replace('"', "")
-    # df["genre"] = df["genre"].str.replace("[", "")
-    # df["genre"] = df["genre"].str.replace("]", "")
-    # df["genre"] = df["genre"].str.replace(",", "")
-    # return df
 
 
 # ---------------------------------------------------
@@ -206,7 +202,9 @@ def calculate_distributor_scores(df):
         df["distributor"].str.strip("[]").str.split(",").explode().unique(),
         columns=["distributors"],
     )
-    distributor_counts = df["distributor"].str.strip("[]").str.split(",").explode().value_counts()
+    distributor_counts = (
+        df["distributor"].str.strip("[]").str.split(",").explode().value_counts()
+    )
     # Convertir les acteurs en listes à partir des chaînes de caractères
     df["distributor_list"] = df["distributor"].str.strip("[]s").str.split(",")
 
@@ -214,7 +212,9 @@ def calculate_distributor_scores(df):
     expanded_df = df.explode("distributor_list")
 
     # Calculer la moyenne des évaluations de la presse pour chaque acteur
-    avg_rating_by_distributor = expanded_df.groupby("distributor_list")["rating_press"].mean()
+    avg_rating_by_distributor = expanded_df.groupby("distributor_list")[
+        "rating_press"
+    ].mean()
     performance_by_distributor = expanded_df.groupby("distributor_list").apply(
         lambda x: (x["total_spectator"].sum() / x["budget"].sum())
         if x["budget"].sum() > 0
@@ -235,11 +235,15 @@ def calculate_distributor_scores(df):
 
     # Calcul du score combiné
     normalized_scores["distributor_combined_score"] = normalized_scores.mean(axis=1)
-    f_distributors = f_distributors.join(normalized_scores["distributor_combined_score"], on="distributors")
+    f_distributors = f_distributors.join(
+        normalized_scores["distributor_combined_score"], on="distributors"
+    )
     f_distributors["distributor"] = f_distributors["distributors"].str.replace('"', "")
-    save_files(f_distributors[["distributor", "distributor_combined_score"]], "distributor_scores")
+    save_files(
+        f_distributors[["distributor", "distributor_combined_score"]],
+        "distributor_scores",
+    )
     return df
-
 
 
 def calculate_actor_scores(df):
