@@ -49,7 +49,7 @@ def convert_director(df, column):
             found = scores.loc[scores[column] == df.iloc[index][column]]
             val.append(found.iloc[0]["director_combined_score"])
         except Exception:
-            val.append(0)
+            val.append(0.1)
 
     df["director_combined_score"] = pd.Series(val)
     return df
