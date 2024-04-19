@@ -11,6 +11,8 @@ from django.http import JsonResponse
 # Salle1: 120
 # Salle2: 80
 SALLE_CAPACITE = {"Salle1": 120, "Salle2": 80}
+def calculate_charge_value(salle):
+    return 4900 * 0.6 if salle == "Salle1" else 4900 * 0.4
 
 
 def capitalize_name(name):
@@ -37,22 +39,26 @@ def recettes_page(request):
         if film["score_pred"] is not None:
             film["pred_spect_daily"] = (film["score_pred"] / 2000) / 7
             for salle, capacite in SALLE_CAPACITE.items():
+                charge_value_temp = calculate_charge_value(salle)
                 # Calcul de pred_rct_daily avec une limite de capacité
                 # La limite pour Salle1 est 120, donc si pred_spect_daily * 10 dépasse 120, nous utilisons 120
                 # La limite pour Salle2 est 80, donc si pred_spect_daily * 10 dépasse 80, nous utilisons 80
-                film["pred_rct_daily_" + salle] = min(
-                    film["pred_spect_daily"] * 10, capacite
-                )
+                film["pred_rct_daily_" + salle] = round(min(
+                    film["pred_spect_daily"] * 10, capacite * 10
+                ))
                 film["pred_rct_weekly_" + salle] = film["pred_rct_daily_" + salle] * 7
+                # Calcul de pred_bnf_hebdo en fonction de la salle
+
+                
                 film["pred_bnf_hebdo_" + salle] = (
-                    -4900 + film["pred_rct_weekly_" + salle]
+                    film["pred_rct_weekly_" + salle] - charge_value_temp 
                 )
-        else:
-            film["pred_spect_daily"] = None
-            for salle in SALLE_CAPACITE.keys():
-                film["pred_rct_daily_" + salle] = None
-                film["pred_rct_weekly_" + salle] = None
-                film["pred_bnf_hebdo_" + salle] = None
+    else:
+        film["pred_spect_daily"] = None
+        for salle in SALLE_CAPACITE.keys():
+            film["pred_rct_daily_" + salle] = None
+            film["pred_rct_weekly_" + salle] = None
+            film["pred_bnf_hebdo_" + salle] = None
 
     context = {
         "films": films,
@@ -66,6 +72,7 @@ def get_data(request):
     # Récupération du titre du film envoyé depuis la requête GET
     film_id = request.GET.get("film")
     salle = request.GET.get("salle")
+    charge_value_temp = calculate_charge_value(salle)
 
     # Filtrage des films par titre
     film = FilmScrap.objects.filter(id=film_id).first()
@@ -85,10 +92,11 @@ def get_data(request):
         film_data["pred_spect_daily"] = min(pred_spect_daily, SALLE_CAPACITE["Salle1"])
 
     capacite = SALLE_CAPACITE[f"Salle{salle}"]
+    
 
     # Calcul de pred_rct_daily avec une limite de capacité
     film_data["pred_rct_daily"] = (
-        min(film_data["pred_spect_daily"] * 10, capacite)
+        min(film_data["pred_spect_daily"] * 10, capacite * 10)
         if film_data["pred_spect_daily"] is not None
         else None
     )
@@ -97,9 +105,10 @@ def get_data(request):
         if film_data["pred_rct_daily"] is not None
         else None
     )
+    
     film_data["pred_bnf_hebdo"] = (
-        (-4900 + film_data["pred_rct_weekly"])
-        if film_data["pred_rct_weekly"] is not None
+        (film_data["pred_rct_weekly"] - charge_value_temp)
+            if film_data["pred_rct_weekly"] is not None
         else None
     )
 
