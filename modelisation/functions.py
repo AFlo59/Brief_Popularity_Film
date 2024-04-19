@@ -6,7 +6,20 @@ import pandas as pd
 
 
 def clean_genre(df):
-    return df["genre"].apply(lambda x: json.loads(x)[0] if x is not None else x)
+    def parse(x):
+        if x is None:
+            return ""
+
+        if isinstance(x, list):
+            return x[0]
+
+        if isinstance(x, str):
+            return json.loads(x)[0]
+
+        return x
+
+    df["genre"] = df["genre"].apply(parse)
+    return df
 
 
 def classify_entrees_year(df, column):

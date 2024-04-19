@@ -1,6 +1,19 @@
-import json
 import pandas as pd
 from modelisation.functions import load_file
+
+
+def drop_after_converter(df):
+    return df.drop(
+        columns=[
+            "director",
+            "casting",
+            "distributor",
+            "country",
+            "month",
+            "day",
+            "year",
+        ]
+    )
 
 
 def convert_entrees_year(df, column):
