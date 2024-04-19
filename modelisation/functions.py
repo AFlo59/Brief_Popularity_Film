@@ -1,3 +1,4 @@
+import json
 from joblib import dump, load
 from vacances_scolaires_france import SchoolHolidayDates
 import datetime
@@ -135,16 +136,19 @@ def is_holiday(df):
     return df
 
 
+# def nettoyer_genre(df):
+#     for index, row in df.iterrows():
+#         print(df.iloc[index]['genre'].at[0])
+#         try:
+#             df.iloc[index]['genre'] =  df.iloc[index]['genre'][0]
+#         except Exception:
+#             pass
+
+#     return df
+
+
 def nettoyer_genre(df):
-    for index, row in df.iterrows():
-        print(df.iloc[index]['genre'].at[0])
-        try:
-            df.iloc[index]['genre'] =  df.iloc[index]['genre'][0]
-        except Exception:
-            pass
-
-    return df
-
+    return df["genre"].apply(lambda x: json.loads(x)[0] if x is not None else x)
     # df["genre"] = df["genre"].apply(lambda x: x.split()[0] if x else None)
     # df["genre"] = df["genre"].str.replace('"', "")
     # df["genre"] = df["genre"].str.replace("[", "")
