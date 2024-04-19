@@ -1,7 +1,26 @@
+import json
 from joblib import dump, load
 from vacances_scolaires_france import SchoolHolidayDates
 import datetime
 import pandas as pd
+
+
+def clean_genre(df):
+    def parse(x):
+        if x is None:
+            return ""
+
+        if isinstance(x, list):
+            return x[0] if len(x) > 0 else ""
+
+        if isinstance(x, str):
+            x = json.loads(x)
+            return x[0] if len(x) > 0 else ""
+
+        return x
+
+    df["genre"] = df["genre"].apply(parse)
+    return df
 
 
 def classify_entrees_year(df, column):
@@ -197,7 +216,9 @@ def calculate_distributor_scores(df):
         df["distributor"].str.strip("[]").str.split(",").explode().unique(),
         columns=["distributors"],
     )
-    distributor_counts = df["distributor"].str.strip("[]").str.split(",").explode().value_counts()
+    distributor_counts = (
+        df["distributor"].str.strip("[]").str.split(",").explode().value_counts()
+    )
     # Convertir les acteurs en listes à partir des chaînes de caractères
     df["distributor_list"] = df["distributor"].str.strip("[]s").str.split(",")
 
@@ -205,7 +226,9 @@ def calculate_distributor_scores(df):
     expanded_df = df.explode("distributor_list")
 
     # Calculer la moyenne des évaluations de la presse pour chaque acteur
-    avg_rating_by_distributor = expanded_df.groupby("distributor_list")["rating_press"].mean()
+    avg_rating_by_distributor = expanded_df.groupby("distributor_list")[
+        "rating_press"
+    ].mean()
     performance_by_distributor = expanded_df.groupby("distributor_list").apply(
         lambda x: (x["total_spectator"].sum() / x["budget"].sum())
         if x["budget"].sum() > 0
@@ -226,11 +249,15 @@ def calculate_distributor_scores(df):
 
     # Calcul du score combiné
     normalized_scores["distributor_combined_score"] = normalized_scores.mean(axis=1)
-    f_distributors = f_distributors.join(normalized_scores["distributor_combined_score"], on="distributors")
+    f_distributors = f_distributors.join(
+        normalized_scores["distributor_combined_score"], on="distributors"
+    )
     f_distributors["distributor"] = f_distributors["distributors"].str.replace('"', "")
-    save_files(f_distributors[["distributor", "distributor_combined_score"]], "distributor_scores")
+    save_files(
+        f_distributors[["distributor", "distributor_combined_score"]],
+        "distributor_scores",
+    )
     return df
-
 
 
 def calculate_actor_scores(df):

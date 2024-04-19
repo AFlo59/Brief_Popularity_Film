@@ -13,3 +13,4 @@ pydantic
 scikit-learn
 vacances_scolaires_france
 pandas
+xgboost

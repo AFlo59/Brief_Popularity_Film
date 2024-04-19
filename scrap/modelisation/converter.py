@@ -1,10 +1,22 @@
-import json
 import pandas as pd
 from modelisation.functions import load_file
 
 
+def drop_after_converter(df):
+    return df.drop(
+        columns=[
+            "director",
+            "casting",
+            "distributor",
+            "country",
+            "month",
+            "day",
+            "year",
+        ]
+    )
+
+
 def convert_entrees_year(df, column):
-    print("convert_entrees_year", df.iloc[0][column])
     scores = load_file("year_scores")
 
     val = []
@@ -21,7 +33,6 @@ def convert_entrees_year(df, column):
 
 
 def convert_country(df, column):
-    print("convert_country", df.iloc[0][column])
     scores = load_file("country_scores")
 
     val = []
@@ -38,9 +49,6 @@ def convert_country(df, column):
 
 
 def convert_director(df, column):
-    print(
-        "convert_director",
-    )
     scores = load_file("director_scores")
 
     val = []
@@ -56,7 +64,6 @@ def convert_director(df, column):
 
 
 def convert_actor(df, column):
-    print("convert_actor")
     scores = load_file("actor_scores")
 
     df["actor_combined_score"] = 0
@@ -80,7 +87,6 @@ def convert_actor(df, column):
 
 
 def convert_distributor(df, column):
-    print("convert_distributor")
     scores = load_file("distributor_scores")
 
     df["distributor_combined_score"] = 0
