@@ -1,0 +1,8 @@
+sandbox/
+.gitignore
+compose.yml
+Dockerfile
+Dockerfile.prod
+env.tpl
+mysql-data
+.DS_Store

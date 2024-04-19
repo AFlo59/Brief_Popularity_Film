@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  api:
+    container_name: api
+    image: acrfilm.azurecr.io/api
+    platform: linux/amd64
+    restart: always
+    build:
+      context: ../api
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8001:8001"
+
+  django:
+    container_name: django
+    image: acrfilm.azurecr.io/django
+    platform: linux/amd64
+    restart: always
+    build:
+      context: ../Django
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+
+  scrap:
+    container_name: scrap
+    image: acrfilm.azurecr.io/scrap
+    platform: linux/amd64
+    restart: always
+    build:
+      context: ../scrap
+      dockerfile: Dockerfile.prod

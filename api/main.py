@@ -60,7 +60,9 @@ def batch_prediction():
     for film in films:
         conn.execute(
             text(f""" update functionalities_filmscrap
-                                    set classement = {nb} where id={film['id']}""")
+                                    set classement = {nb}
+                                    set score_pred = {film.pred}
+                                    where id={film['id']}""")
         )
         conn.commit()
 

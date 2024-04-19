@@ -142,6 +142,7 @@ class FilmSortieModel(Base):
     duration = Column(INTEGER)
     genre = Column(JSON)
     genre_raw = Column(JSON)
+    country = Column(String(100))
 
     time_created = Column(
         TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False

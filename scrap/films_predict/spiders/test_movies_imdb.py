@@ -26,18 +26,26 @@ class TestImdbSpider(scrapy.Spider):
         ).where(FilmModel.id == "516521623330c9fbfc52380751a4fbd6")
         query = self.conn.execute(stmt)
         film = query.fetchone()
-        print("start", film.raw_title)
 
-        url = f"https://www.imdb.com/find/?q={quote(film.original_title)}&s=tt&exact=true&ref_=fn_tt_ex"
+        # film = {
+        #     "original_title": normalize("S.O.S Fantômes : La Menace de glace"),
+        #     "year": 2024,
+        #     "raw_title": "S.O.S Fantômes : La Menace de glace",
+        #     "id": "leroy",
+        # }
+
+        print("start", film["raw_title"])
+
+        url = f"https://www.imdb.com/find/?q={quote(film['original_title'])}&s=tt&exact=true&ref_=fn_tt_ex"
 
         yield scrapy.Request(
             url,
             callback=self.parse,
             cb_kwargs=dict(
-                id_jp=film.id,
-                raw_title=film.raw_title,
-                original_title=film.original_title,
-                year_jp=film.year,
+                id_jp=film["id"],
+                raw_title=film["raw_title"],
+                original_title=film["original_title"],
+                year_jp=film["year"],
             ),
         )
 
@@ -54,7 +62,7 @@ class TestImdbSpider(scrapy.Spider):
             item = FilmImdbItem()
             item["id_jp"] = id_jp
             item["id"] = id
-            yield from item.parse(response, raw_title, id_jp)
+            yield from item.parse(response)
             print("parsed URL", response.url)
         else:
             query_normalized = original_title
