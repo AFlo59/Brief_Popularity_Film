@@ -11,10 +11,11 @@ def clean_genre(df):
             return ""
 
         if isinstance(x, list):
-            return x[0]
+            return x[0] if len(x) > 0 else ""
 
         if isinstance(x, str):
-            return json.loads(x)[0]
+            x = json.loads(x)
+            return x[0] if len(x) > 0 else ""
 
         return x
 
