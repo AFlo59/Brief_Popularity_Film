@@ -1,12 +1,13 @@
 import json
-from sqlalchemy import text
-from films_predict.migrations import FilmSortieModel
 from utils.environment import get_env
 import scrapy
 from films_predict.items.imdb import SortieImdbItem
 from scrapy.http import Response
-from db.database_mysql import engine
 import dateparser
+
+# from sqlalchemy import text
+# from films_predict.migrations import FilmSortieModel
+# from db.database_mysql import engine
 
 
 BASE_URL = get_env("SCRAP_IMDB")
@@ -19,10 +20,10 @@ class ImdbTop10MoviesSpider(scrapy.Spider):
         f"{BASE_URL}/calendar/?region=FR",
     ]
 
-    def __init__(self):
-        conn = engine.connect()
-        conn.execute(text(f"TRUNCATE TABLE {FilmSortieModel.__tablename__}"))
-        # conn.commit()
+    # def __init__(self):
+    #     conn = engine.connect()
+    #     conn.execute(text(f"TRUNCATE TABLE {FilmSortieModel.__tablename__}"))
+    #     conn.commit()
 
     def parse(
         self, response: Response, id="", date=None, thumbnail="", title="", director=""
