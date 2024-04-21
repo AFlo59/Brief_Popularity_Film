@@ -1,7 +1,5 @@
 import json
 import pickle
-from typing import List
-import functools
 
 import pandas as pd
 from sklearn.pipeline import Pipeline
@@ -60,21 +58,6 @@ def batch_prediction():
 
         conn.commit()
 
-    # print(preds)
-    # films = sorted(preds, key=functools.cmp_to_key(comparer_classement))
-    # nb = 1
-    # for film in films:
-    #     conn.execute(
-    #         text(f""" update functionalities_filmscrap
-    #                                 set classement = {nb}
-    #                                 set score_pred = {film.pred}
-    #                                 where id={film['id']}""")
-    #     )
-    #     conn.commit()
-
-    #     nb = nb + 1
-    # print(films)
-
 
 def one_prediction(data: dict):
     casting = (
@@ -97,18 +80,15 @@ def one_prediction(data: dict):
     for key in data:
         data[key] = [data[key]]
 
-    print(data)
+    # print(data)
     pipe_transform = load("_data_prediction/pipe_transform.pkl")
     model = load("_data_prediction/model.pkl")
 
     t = pipe_transform.transform(pd.DataFrame.from_dict(data))
     pred = PredictionOutput(nb_entree=model.predict(t))
-    print(pred)
+    # print(pred)
+
     return pred
-
-
-def comparer_classement(film1, film2):
-    return film2["pred"] - film1["pred"]
 
 
 if __name__ == "__main__":
