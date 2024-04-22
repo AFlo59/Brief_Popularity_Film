@@ -27,3 +27,4 @@ session = SessionMaker()
 def connect(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))")
+    
