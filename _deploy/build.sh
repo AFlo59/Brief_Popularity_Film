@@ -1,6 +1,9 @@
 YAML_FILE=compose.prod.acr.yml
 ACR=acrfilm
 
+chmod 755 prepare.sh
+./prepare.sh
+
 az login
 
 echo "*** Build"
