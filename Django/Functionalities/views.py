@@ -91,19 +91,19 @@ def get_data(request):
     capacite = SALLE_CAPACITE[f"Salle{salle}"]
     
     film_data["pred_rct_daily"] = (
-        round(min(film_data["pred_spect_daily"] * 10, capacite * 10),2)
+        int(min(film_data["pred_spect_daily"] * 10, capacite * 10))
         if film_data["pred_spect_daily"] is not None
         else None
     )
 
     film_data["pred_rct_weekly"] = (
-        film_data["pred_rct_daily"] * 7
+        int(film_data["pred_rct_daily"] * 7)
         if film_data["pred_rct_daily"] is not None
         else None
     )
     
     film_data["pred_bnf_hebdo"] = (
-        (film_data["pred_rct_weekly"] - charge_value_temp)
+        int(film_data["pred_rct_weekly"] - charge_value_temp)
             if film_data["pred_rct_weekly"] is not None
         else None
     )
