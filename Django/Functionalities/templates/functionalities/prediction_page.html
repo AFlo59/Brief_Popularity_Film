@@ -80,9 +80,6 @@
                         <th>Spectateur 1ere Semaine</th>
                         <th>Spectateur Hebdomadaire</th>
                         <th>Spectateur Journalier</th>
-                        <th>Rct Journaliere</th>
-                        <th>Rct Hebdo</th>
-                        <th>Bnf Hebdo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -127,21 +124,6 @@
                         <td>
                             {% if film.score_pred_divided_divided %}
                                 {{ film.score_pred_divided_divided }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if film.recette_journaliere %}
-                                {{ film.recette_journaliere }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if film.recette_hebdomadaire %}
-                                {{ film.recette_hebdomadaire }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if film.benefice_hebdomadaire %}
-                                {{ film.benefice_hebdomadaire }}
                             {% endif %}
                         </td>
 
