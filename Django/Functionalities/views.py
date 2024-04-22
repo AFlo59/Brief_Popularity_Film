@@ -113,12 +113,16 @@ def get_data(request):
 
 @login_required
 def predict_page(request):
-    today = timezone.now().date()
-    one_week_later = today + timedelta(days=7)
-    next_day = today + timedelta(days=1)
+    today = datetime.now().date()
+    current_weekday = today.weekday()
 
-    films = FilmScrap.objects.filter(date__range=(next_day, one_week_later)).order_by(
-        "-score_pred"
+    days_until_wednesday = (2 - current_weekday) % 7
+    wednesday_this_week = today + timedelta(days=days_until_wednesday)
+    next_tuesday = wednesday_this_week + timedelta(days=6)
+
+    films = (
+        FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday)
+        .order_by("-score_pred")
     )
 
     ranking = 1
@@ -162,17 +166,54 @@ def predict_page(request):
 
 @login_required
 def historique_page(request):
-    return render(request, "functionalities/historique_page.html")
+    today = datetime.now().date()
+    current_weekday = today.weekday()
+
+    days_until_wednesday = (2 - current_weekday) % 7
+    wednesday_this_week = today + timedelta(days=days_until_wednesday)
+    next_tuesday = wednesday_this_week + timedelta(days=6)
+
+    # Calculate the range of dates from last Tuesday to 6 days before last Tuesday
+    start_date = wednesday_this_week - timedelta(days=14)
+    end_date = next_tuesday - timedelta(days=7)
+
+    films = (
+        FilmScrap.objects.filter(date__gte=start_date, date__lte=end_date)
+        .order_by("-score_pred")
+    )
+    ranking = 1
+
+    for film in films:
+        if film.score_pred is not None:
+            film.classement = ranking
+            ranking += 1
+        else:
+            film.classement = None
+
+        if film.score_pred is not None:
+            film.score_pred_divided = round(film.score_pred / 2000, 2)
+        else:
+            film.score_pred_divided = None
+
+        if film.score_pred_divided is not None:
+            film.score_pred_divided_divided = round(film.score_pred_divided / 7, 2)
+        else:
+            film.score_pred_divided_divided = None
+    return render(request, "functionalities/historique_page.html", {"films": films})
 
 
 @login_required
 def nouveautes_page(request):
-    today = timezone.now().date()
-    one_week_later = today + timedelta(days=7)
-    next_day = today + timedelta(days=1)
+    today = datetime.now().date()
+    current_weekday = today.weekday()
 
-    films = FilmScrap.objects.filter(date__range=(next_day, one_week_later)).order_by(
-        "-score_pred"
+    days_until_wednesday = (2 - current_weekday) % 7
+    wednesday_this_week = today + timedelta(days=days_until_wednesday)
+    next_tuesday = wednesday_this_week + timedelta(days=6)
+
+    films = (
+        FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday)
+        .order_by("-score_pred")
     )[:10]
     fmt = "{0.hours}h {0.minutes}"
 
