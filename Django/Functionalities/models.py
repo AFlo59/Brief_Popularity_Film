@@ -7,7 +7,8 @@ from django.utils import timezone
 user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class FilmScrap(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.CharField(max_length=100, primary_key=True)
+    # id = models.AutoField(primary_key=True)
     classement = models.IntegerField(null=True, blank=True)
     score_pred = models.IntegerField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
