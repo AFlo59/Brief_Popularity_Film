@@ -6,11 +6,15 @@ from dateutil.relativedelta import relativedelta as rd
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
+from .shap_service import get_graph
+from django.core import serializers
 
 # Exemples de limites de capacité pour chaque salle (en commentaires)
 # Salle1: 120
 # Salle2: 80
 SALLE_CAPACITE = {"Salle1": 120, "Salle2": 80}
+
+
 def calculate_charge_value(salle):
     return 4900 * 0.6 if salle == "Salle1" else 4900 * 0.4
 
@@ -40,14 +44,16 @@ def recettes_page(request):
             film["pred_spect_daily"] = (film["score_pred"] / 2000) / 7
             for salle, capacite in SALLE_CAPACITE.items():
                 charge_value_temp = calculate_charge_value(salle)
-            
-                film["pred_rct_daily_" + salle] = round(min(
-                    film["pred_spect_daily"] * 10, capacite * 10
-                ), 2)
-                film["pred_rct_weekly_" + salle] = round(film["pred_rct_daily_" + salle] * 7, 2)
+
+                film["pred_rct_daily_" + salle] = round(
+                    min(film["pred_spect_daily"] * 10, capacite * 10), 2
+                )
+                film["pred_rct_weekly_" + salle] = round(
+                    film["pred_rct_daily_" + salle] * 7, 2
+                )
 
                 film["pred_bnf_hebdo_" + salle] = (
-                    film["pred_rct_weekly_" + salle] - charge_value_temp 
+                    film["pred_rct_weekly_" + salle] - charge_value_temp
                 )
     else:
         film["pred_spect_daily"] = None
@@ -67,10 +73,9 @@ def recettes_page(request):
 def get_data(request):
     film_id = request.GET.get("film")
     salle = request.GET.get("salle")
-    
+
     charge_value_temp = calculate_charge_value(f"Salle{salle}")
 
- 
     film = FilmScrap.objects.filter(id=film_id).first()
 
     film_data = {
@@ -80,18 +85,20 @@ def get_data(request):
         "pred_spect_daily": None,
         "pred_rct_daily": None,
         "pred_bnf_hebdo": None,
-        "salle" : salle,
+        "salle": salle,
         "charge_value_temp": charge_value_temp,
     }
 
     if film.score_pred is not None:
         pred_spect_daily = film.score_pred / 2000 / 7
-        film_data["pred_spect_daily"] = round(min(pred_spect_daily, SALLE_CAPACITE["Salle1"]), 2)
+        film_data["pred_spect_daily"] = round(
+            min(pred_spect_daily, SALLE_CAPACITE["Salle1"]), 2
+        )
 
     capacite = SALLE_CAPACITE[f"Salle{salle}"]
-    
+
     film_data["pred_rct_daily"] = (
-        round(min(film_data["pred_spect_daily"] * 10, capacite * 10),2)
+        round(min(film_data["pred_spect_daily"] * 10, capacite * 10), 2)
         if film_data["pred_spect_daily"] is not None
         else None
     )
@@ -101,14 +108,24 @@ def get_data(request):
         if film_data["pred_rct_daily"] is not None
         else None
     )
-    
+
     film_data["pred_bnf_hebdo"] = (
         (film_data["pred_rct_weekly"] - charge_value_temp)
-            if film_data["pred_rct_weekly"] is not None
+        if film_data["pred_rct_weekly"] is not None
         else None
     )
 
     return JsonResponse({"film": film_data})
+
+
+def shap_graph(request):
+    return JsonResponse(
+        {
+            "t": serializers.serialize(
+                "json", get_graph(), fields=("day", "month", "year", "casting")
+            )
+        }
+    )
 
 
 @login_required
