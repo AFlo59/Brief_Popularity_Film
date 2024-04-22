@@ -40,16 +40,12 @@ def recettes_page(request):
             film["pred_spect_daily"] = (film["score_pred"] / 2000) / 7
             for salle, capacite in SALLE_CAPACITE.items():
                 charge_value_temp = calculate_charge_value(salle)
-                # Calcul de pred_rct_daily avec une limite de capacité
-                # La limite pour Salle1 est 120, donc si pred_spect_daily * 10 dépasse 120, nous utilisons 120
-                # La limite pour Salle2 est 80, donc si pred_spect_daily * 10 dépasse 80, nous utilisons 80
+            
                 film["pred_rct_daily_" + salle] = round(min(
                     film["pred_spect_daily"] * 10, capacite * 10
-                ))
-                film["pred_rct_weekly_" + salle] = film["pred_rct_daily_" + salle] * 7
-                # Calcul de pred_bnf_hebdo en fonction de la salle
+                ), 2)
+                film["pred_rct_weekly_" + salle] = round(film["pred_rct_daily_" + salle] * 7, 2)
 
-                
                 film["pred_bnf_hebdo_" + salle] = (
                     film["pred_rct_weekly_" + salle] - charge_value_temp 
                 )
@@ -69,12 +65,12 @@ def recettes_page(request):
 
 
 def get_data(request):
-    # Récupération du titre du film envoyé depuis la requête GET
     film_id = request.GET.get("film")
     salle = request.GET.get("salle")
-    charge_value_temp = calculate_charge_value(salle)
+    
+    charge_value_temp = calculate_charge_value(f"Salle{salle}")
 
-    # Filtrage des films par titre
+ 
     film = FilmScrap.objects.filter(id=film_id).first()
 
     film_data = {
@@ -84,22 +80,22 @@ def get_data(request):
         "pred_spect_daily": None,
         "pred_rct_daily": None,
         "pred_bnf_hebdo": None,
+        "salle" : salle,
+        "charge_value_temp": charge_value_temp,
     }
 
     if film.score_pred is not None:
         pred_spect_daily = film.score_pred / 2000 / 7
-        # Utilisation de la capacité de la première salle par défaut
-        film_data["pred_spect_daily"] = min(pred_spect_daily, SALLE_CAPACITE["Salle1"])
+        film_data["pred_spect_daily"] = round(min(pred_spect_daily, SALLE_CAPACITE["Salle1"]), 2)
 
     capacite = SALLE_CAPACITE[f"Salle{salle}"]
     
-
-    # Calcul de pred_rct_daily avec une limite de capacité
     film_data["pred_rct_daily"] = (
-        min(film_data["pred_spect_daily"] * 10, capacite * 10)
+        round(min(film_data["pred_spect_daily"] * 10, capacite * 10),2)
         if film_data["pred_spect_daily"] is not None
         else None
     )
+
     film_data["pred_rct_weekly"] = (
         film_data["pred_rct_daily"] * 7
         if film_data["pred_rct_daily"] is not None
