@@ -4,6 +4,16 @@
     <title>Home</title>
     <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}">
     <style>
+        article {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        video {
+            width: 50%;
+            height: 50%;
+        }
     </style>
 {% endblock head_extrascripts %}
 {% block content %}
@@ -19,7 +29,10 @@
     <section>
         <h1>Welcome to our site ! </h1>
         <article>
-
+            <video autoplay loop class="video-center">
+                <source src="{% static 'video/CBom.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </article>
     </section>
 {% endblock content %}
