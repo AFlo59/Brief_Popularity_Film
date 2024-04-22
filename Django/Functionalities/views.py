@@ -47,7 +47,7 @@ def recettes_page(request):
                 film["pred_rct_weekly_" + salle] = round(film["pred_rct_daily_" + salle] * 7, 2)
 
                 film["pred_bnf_hebdo_" + salle] = (
-                    film["pred_rct_weekly_" + salle] - charge_value_temp 
+                    round(film["pred_rct_weekly_" + salle] - charge_value_temp ),2
                 )
     else:
         film["pred_spect_daily"] = None
