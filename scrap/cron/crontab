@@ -1,11 +1,5 @@
 # START CRON JOB
-# tous les dimanche à 3:00AM
-# 2024-04-21 03:00:00 UTC
-# 2024-04-28 03:00:00 UTC
-# 2024-05-05 03:00:00 UTC
-# 2024-05-12 03:00:00 UTC
-# 2024-05-19 03:00:00 UTC
-0 3 * * 0 /home/app/cron/imdb_top10_movies.sh >> /var/log/cron-log.log
-# les seances a 5:00AM
-0 5 * * 0 /home/app/cron/allocine_seances.sh >> /var/log/cron-log.log
+# tous les dimanche, lundi et mardi à 3:00AM (scrap) et 5:00AM (prediction)
+0 3 * * 0-2 /home/app/cron/imdb_top10_movies.sh >> /var/log/cron-log.log >/dev/null 2>&1
+0 5 * * 0-2 /home/app/cron/prediction.sh >> /var/log/pred-log.log >/dev/null 2>&1
 # END CRON JOB

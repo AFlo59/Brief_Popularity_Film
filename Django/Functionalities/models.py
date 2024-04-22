@@ -6,6 +6,7 @@ from django.utils import timezone
 
 user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+
 class FilmScrap(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     # id = models.AutoField(primary_key=True)
@@ -21,9 +22,9 @@ class FilmScrap(models.Model):
     director = models.JSONField(max_length=255, null=True)
     rating_press = models.FloatField(null=True)
     rating_public = models.FloatField(null=True)
-    casting = models.JSONField(max_length=255, max_length=255, null=True) 
+    casting = models.JSONField(max_length=255, null=True)
     distributor = models.CharField(max_length=255, null=True)
-    genre = models.JSONField(max_length=255, max_length=255, null=True)  
+    genre = models.JSONField(max_length=255, null=True)
     budget = models.BigIntegerField(null=True)
     lang = models.CharField(max_length=255, null=True)
     copies = models.IntegerField(null=True, blank=True)
