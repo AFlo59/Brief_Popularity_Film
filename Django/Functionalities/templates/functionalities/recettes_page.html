@@ -83,6 +83,7 @@
                             <h4>{{ salle }}</h4>
                             <select class="film-select" id="film_select_{{ forloop.counter }}"
                                 data-index="{{ forloop.counter }}">Choisir un Film
+                                <option value="">Selectionner un film</option>
                                 {% for film in films %}
                                 <option value="{{ film.id }}">{{ film.title }}</option>
                                 {% endfor %}
@@ -96,6 +97,16 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Bnf :</td>
+                </tr>
+            </tfoot>
         </table>
     </article>
 </section>
