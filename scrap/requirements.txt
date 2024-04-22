@@ -8,3 +8,9 @@ sqlalchemy
 psycopg2-binary
 pymysql
 thefuzz
+dateparser
+pydantic
+scikit-learn
+vacances_scolaires_france
+pandas
+xgboost

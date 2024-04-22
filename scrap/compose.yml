@@ -1,43 +1,28 @@
 version: '3.8'
 services:
-  # dbpg:
-  #   container_name: pdb
-  #   image: postgres:latest
+  # db:
+  #   container_name: mysql
+  #   image: mysql
   #   ports:
-  #     - "5432:5432"
+  #     - "3306:3306"
   #   restart: always
   #   env_file:
   #     - .env
   #   environment:
-  #     POSTGRES_USER: ${FILM_USER}
-  #     POSTGRES_PASSWORD: ${FILM_PWD}
-  #     POSTGRES_DB: ${FILM_DB}
+  #     MYSQL_USER: ${FILM_USER}
+  #     MYSQL_PASSWORD: ${FILM_PWD}
+  #     MYSQL_ROOT_PASSWORD: ${FILM_PWD}
+  #     MYSQL_DATABASE: ${FILM_DB}
   #   volumes:
-  #     - ./postgres-data:/var/lib/postgresql/data
-
-  db:
-    container_name: mysql
-    image: mysql
-    ports:
-      - "3306:3306"
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_USER: ${FILM_USER}
-      MYSQL_PASSWORD: ${FILM_PWD}
-      MYSQL_ROOT_PASSWORD: ${FILM_PWD}
-      MYSQL_DATABASE: ${FILM_DB}
-    volumes:
-      - ./mysql-data:/var/lib/mysql
+  #     - ./mysql-data:/var/lib/mysql
 
   scrap:
     container_name: scrap
-    # image: 
     build: .
     env_file:
       - .env
-    command: python -m http.server 8080
+    stdin_open: true
+    tty: true
     volumes:
       - .:/home/app
     ports:

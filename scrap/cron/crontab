@@ -1,0 +1,5 @@
+# START CRON JOB
+# tous les dimanche, lundi et mardi à 3:00AM (scrap) et 5:00AM (prediction)
+0 3 * * 0-2 /home/app/cron/imdb_top10_movies.sh >> /var/log/cron-log.log >/dev/null 2>&1
+0 5 * * 0-2 /home/app/cron/prediction.sh >> /var/log/pred-log.log >/dev/null 2>&1
+# END CRON JOB

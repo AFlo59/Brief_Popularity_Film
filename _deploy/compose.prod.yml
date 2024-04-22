@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  api:
+    container_name: api
+    restart: always
+    build: ../api
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../api:/home/app/web
+    command: uvicorn main:app --proxy-headers --host 0.0.0.0 --port 8001
+
+  django:
+    container_name: django
+    env_file:
+      - ../Django/.env
+    restart: always
+    build: ../Django
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../Django:/app
+    command: gunicorn DjangoProject.wsgi:application --bind=0.0.0.0:8000
+
+  scrap:
+    container_name: scrap
+    build: ../scrap
+    env_file:
+      - ../.env
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../scrap:/home/app

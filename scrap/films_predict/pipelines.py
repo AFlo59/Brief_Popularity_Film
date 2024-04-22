@@ -13,9 +13,12 @@ import sqlalchemy.dialects.mysql as mysql
 from itemadapter import ItemAdapter
 from films_predict.migrations import FilmModel as model_jp
 from films_predict.migrations import FilmAlloModel as model_allo
-from films_predict.migrations import FilmSortieModel as model_allo_sortie
+from films_predict.migrations import FilmSortieModel as model_sortie
+from films_predict.migrations import FilmImdbModel as model_imdb
 
-from .items import FilmAlloItem, FilmItem, FilmAlloSortieItem
+from films_predict.items.allocine import FilmAlloItem
+from films_predict.items.imdb import FilmImdbItem, SortieImdbItem
+from films_predict.items.jpbox import FilmItem
 
 
 class FilmsPipeline:
@@ -38,8 +41,10 @@ class FilmsPipeline:
             return self.handle_jp(item, spider)
         if isinstance(item, FilmAlloItem):
             return self.handle_allo(item, spider)
-        if isinstance(item, FilmAlloSortieItem):
-            return self.handle_allo_sortie(item, spider)
+        if isinstance(item, SortieImdbItem):
+            return self.handle_sortie(item, spider)
+        if isinstance(item, FilmImdbItem):
+            return self.handle_imdb(item, spider)
 
     def handle_jp(self, item: FilmItem, spider):
         film_item = ItemAdapter(item)
@@ -69,11 +74,23 @@ class FilmsPipeline:
 
         return item
 
-    def handle_allo_sortie(self, item: FilmAlloItem, spider):
+    def handle_sortie(self, item: SortieImdbItem, spider):
         film_item = ItemAdapter(item)
         save_item = film_item.asdict()
 
-        ups_stmt = mysql.insert(model_allo_sortie).values(save_item)
+        ups_stmt = mysql.insert(model_sortie).values(save_item)
+        ups_stmt = ups_stmt.on_duplicate_key_update(**save_item)
+
+        self.conn.execute(ups_stmt)
+        self.conn.commit()
+
+        return item
+
+    def handle_imdb(self, item: FilmImdbItem, spider):
+        film_item = ItemAdapter(item)
+        save_item = film_item.asdict()
+
+        ups_stmt = mysql.insert(model_imdb).values(save_item)
         ups_stmt = ups_stmt.on_duplicate_key_update(**save_item)
 
         self.conn.execute(ups_stmt)

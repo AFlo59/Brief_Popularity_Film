@@ -4,6 +4,7 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import datetime
+import html
 import json
 import re
 from types import NoneType
@@ -16,6 +17,7 @@ from timelength import TimeLength
 class FilmItem(Item):
     id = Field()
     title = Field()
+    original_title = Field()
     director = Field()
     raw_title = Field()
     raw_director = Field()
@@ -30,6 +32,7 @@ class FilmItem(Item):
     hebdo_rank = Field()
     total_spectator = Field()
     copies = Field()
+    date = Field()
 
     def parse(self, response):
         hebdo_rank = -1
@@ -41,6 +44,7 @@ class FilmItem(Item):
         total_spectator = -1
 
         title = response.xpath("//h1/text()").get()
+        original_title = response.xpath("//h1/following-sibling::h2/text()").get()
         director = response.xpath("//h1/following-sibling::h4/a/text()").get()
 
         block_year_duration = response.xpath(
@@ -79,14 +83,20 @@ class FilmItem(Item):
                 f'//h4/a[contains(text(), "{date_sortie}")]/ancestor::tr/td[6]/text()'
             ).get()
 
+            d = datetime.datetime.strptime(date_sortie, "%d/%m/%Y")
+            date_sortie = f"{d.year}-{d.month}-{d.day}"
+
         total_spectator = response.xpath(
             '//td[@class="col_poster_titre"]/h4[contains(text(), "Entrées")]/parent::td/following-sibling::td/text()'
         ).get()
 
         self["title"] = normalize(title)
-        self["director"] = normalize(director)
+        self["original_title"] = (
+            normalize(original_title) if original_title is not None else self["title"]
+        )
+        self["director"] = normalize(director) if director is not None else None
+        self["raw_director"] = director.strip() if director is not None else None
         self["raw_title"] = title.strip()
-        self["raw_director"] = director.strip()
         self["url_jp"] = response.url
         self["year"] = convert_int(normalize(block_year_duration[0]))
         self["duration"] = (
@@ -104,8 +114,91 @@ class FilmItem(Item):
         self["total_spectator"] = convert_int(
             normalize(total_spectator).replace(" ", "")
         )
+        self["date"] = date_sortie
 
+        print(self["raw_title"])
         # print("parse", self)
+
+        yield self
+
+
+class FilmImdbItem(Item):
+    id = Field()
+    id_jp = Field()
+    url = Field()
+    title = Field()
+    original_title = Field()
+    director = Field()
+    rating_press = Field()
+    rating_public = Field()
+    casting = Field()
+    synopsis = Field()
+    distributor = Field()
+    budget = Field()
+    lang = Field()
+    award = Field()
+    date = Field()
+
+    def parse(self, response, raw_title, id_jp):
+        # print("***** item", raw_title, id_jp)
+        data = response.xpath('//script[@type="application/ld+json"]/text()').get()
+        data = json.loads(data)
+
+        self["original_title"] = html.unescape(data["name"]) if "name" in data else None
+        self["title"] = (
+            html.unescape(data["alternateName"])
+            if "alternateName" in data
+            else self["original_title"]
+        )
+        self["url"] = data["url"] if "url" in data else None
+        self["date"] = data["datePublished"] if "datePublished" in data else None
+        self["rating_press"] = (
+            convert_float(data["aggregateRating"]["ratingValue"])
+            if "aggregateRating" in data
+            else -1
+        )
+        self["synopsis"] = (
+            html.unescape(data["description"]) if "description" in data else None
+        )
+        self["director"] = (
+            normalize(data["director"][0]["name"]).strip('"')
+            if "director" in data
+            else None
+        )
+        self["casting"] = (
+            [normalize(a["name"]) for a in data["actor"]] if "actor" in data else []
+        )
+
+        lang = response.xpath(
+            "//li[@data-testid='title-details-languages']/descendant::li/a/text()"
+        ).extract()
+        self["lang"] = [normalize(a) for a in lang] if len(lang) > 0 else []
+
+        budget = response.xpath(
+            "//li[@data-testid='title-boxoffice-budget']//ul//span/text()"
+        ).get()
+
+        self["budget"] = -1
+        if budget is not None:
+            budget = normalize(budget)
+            budget = re.sub(r"\s?[a-z]+", "", budget)
+            self["budget"] = convert_int(budget)
+
+        distributor = response.xpath(
+            "//li[@data-testid='title-details-companies']//ul//a/text()"
+        ).extract()
+        self["distributor"] = (
+            [normalize(a) for a in distributor] if len(distributor) > 0 else []
+        )
+
+        award = response.xpath(
+            "//li[@data-testid='award_information']//span/text()"
+        ).get()
+
+        self["award"] = 0
+        if award is not None:
+            match = re.search(r"^[0-9]+", award)
+            self["award"] = convert_int(match[0]) if match is not None else 0
 
         yield self
 

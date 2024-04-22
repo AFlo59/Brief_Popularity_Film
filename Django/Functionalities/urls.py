@@ -8,4 +8,5 @@ urlpatterns = [
     path("predict/", views.predict_page, name="predict"),
     path("history/", views.historique_page, name="historique"),
     path("news/", views.nouveautes_page, name="nouveautés"),
+    path("get_data/", views.get_data, name="get_data"),
 ]

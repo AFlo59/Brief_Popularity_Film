@@ -4,65 +4,105 @@
 {% load static widget_tweaks %}
 
 {% block head_extrascripts %}
-    <title>Recettes</title>
-    <style>
-        section {
-            min-width: 300px;
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        article {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        @media screen and (max-width: 1024px) { 
-            section > article {
-                flex-flow: column nowrap;
-                align-items: center; 
-                overflow-y: auto; 
-                top: auto;
-            }
+<title>Recettes</title>
+<style>
+    section {
+        min-width: 300px;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 
-           
+    article {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+    }
+
+    table {
+        width: 100%;
+        height: 50%;
+        text-align: center;
+        color: black;
+        background-color: white;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+    }
+
+    @media screen and (max-width: 1024px) {
+        section>article {
+            flex-flow: column nowrap;
+            align-items: center;
+            top: auto;
         }
-        @media screen and (max-width: 376px) { 
-            section > article {
-                max-width: 355px;
-                min-width: 300px;
-            }
-            
+    }
+
+    @media screen and (max-width: 376px) {
+        section>article {
+            max-width: 355px;
+            min-width: 300px;
         }
-    </style>
+    }
+</style>
 {% endblock head_extrascripts %}
 
 {% block content %}
-    {% block messages %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
+{% block messages %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock messages %}
+<section>
+    <h1>Prévision des recettes de la Semaine</h1>
+    <article>
+        <table>
+            <thead>
+                <tr>
+                    <th>Selection des films</th>
+                    <th>Total Hebdo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for salle, capacite in salle_capacite.items %}
+                <tr>
+                    <td>
+                        <div>
+                            <h4>{{ salle }}</h4>
+                            <select class="film-select" id="film_select_{{ forloop.counter }}"
+                                data-index="{{ forloop.counter }}">Choisir un Film
+                                {% for film in films %}
+                                <option value="{{ film.id }}">{{ film.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <p>Rct: <span id="pred_rct_daily_{{ forloop.counter }}"></span></p>
+                        </div>
+                    </td>
+                    <td>
+                        <p>Bnf: <span id="pred_bnf_hebdo_{{ forloop.counter }}"></span></p>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
-        {% endif %}
-    {% endblock messages %}
-    
-    <section>
-        <h1>Prévision des recettes de la Semaine</h1>
-        <div>
-            <p>somewhere here!</p>
-        </div>
-    </section>
+            </tbody>
+        </table>
+    </article>
+</section>
 {% endblock content %}
 
 {% block extra_scripts %}
-<script>
-    
-</script>
+{{ films_json|json_script:"films-data" }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/recettes.js' %}"></script>
 {% endblock extra_scripts %}

@@ -1,46 +1,74 @@
+import functools
+from typing import List
+from models import FeaturesInput, PredictionOutput
 from fastapi import FastAPI
-from pydantic import BaseModel
 import model_utils
+from db.database_mysql import engine
+from sqlalchemy.sql import text
 
 
 app = FastAPI()
-model = model_utils.load_model()
-
-
-# Modèle Pydantic pour la structure de donnée d'entrée
-class FeaturesInput(BaseModel):
-    Url: int
-    Titre: str
-    TitreOriginal: str
-    Score: float
-    Genre: str
-    Annee: int
-    Duree: float    
-    Description: str
-    Acteurs: str
-    Public: str
-    Pays: str
-    LangueOrigine: str
-
-class PredictionOutput(BaseModel):
-    category: int
+conn = engine.connect()
 
 
 @app.post("/predict")
-def prediction_root(feature_input: FeaturesInput):
-    F1 = feature_input.Url
-    F2 = feature_input.Titre
-    F3 = feature_input.TitreOriginal
-    F4 = feature_input.Score
-    F5 = feature_input.Genre
-    F6 = feature_input.Annee
-    F7 = feature_input.Duree
-    F8 = feature_input.Description
-    F9 = feature_input.Acteurs
-    F10 = feature_input.Public
-    F11 = feature_input.Pays 
-    F12 = feature_input.LangueOrigine
-    
-    pred = model_utils.prediction(model, [[F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12]])
+def prediction(fi: FeaturesInput = None):
+    if fi is None:
+        query = conn.execute(text(""" select * from functionalities_filmscrap """))
+        films = query.fetchall()
 
-    return PredictionOutput(category=pred)
+        for film in films:
+            fi.year = film["year"]
+            fi.director = film["director"]
+            print(fi)
+    else:
+        return PredictionOutput(nb_entree=model_utils.prediction(fi))
+
+
+@app.post("/batch_predict")
+def batch_prediction():
+    query = conn.execute(text(""" select * from functionalities_filmscrap """))
+    films = query.mappings().all()
+
+    preds = []
+
+    for film in films:
+        casting = eval(film["casting"])
+
+        if type(casting) is not List:
+            casting = [casting]
+
+        fi = FeaturesInput(
+            year=2024,
+            director=film["director_raw"] if film["director_raw"] is not None else "",
+            country="etatsunis",
+            duration=film["duration"],
+            genre=film["genre"] if film["genre"] is not None else "",
+            copies=600,
+            rating_press=film["rating_press"],
+            first_day=100000,
+            budget=1000000,
+            distributor=film["distributor"],
+            casting=casting,
+        )
+
+        pred = PredictionOutput(nb_entree=model_utils.prediction(fi))
+        preds.append({"id": film["id"], "title": film["title"], "pred": pred.nb_entree})
+
+    films = sorted(preds, key=functools.cmp_to_key(comparer_classement))
+    nb = 1
+    for film in films:
+        conn.execute(
+            text(f""" update functionalities_filmscrap
+                                    set classement = {nb}
+                                    set score_pred = {film.pred}
+                                    where id={film['id']}""")
+        )
+        conn.commit()
+
+        nb = nb + 1
+    # print(films)
+
+
+def comparer_classement(film1, film2):
+    return film2["pred"] - film1["pred"]
