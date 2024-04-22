@@ -76,10 +76,14 @@ def convert_actor(df, column):
         df_actors = df.iloc[index][
             column
         ]  # Assurez-vous que df_actors est une liste d'acteurs
-        for actor in df_actors:
-            found = scores[scores["actor"] == actor]
-            if not found.empty:
-                actors_scores.append(found.iloc[0]["actor_combined_score"])
+        if df_actors is not None:
+            for actor in df_actors:
+                try:
+                    found = scores[scores["actor"] == actor]
+                    if not found.empty:
+                        actors_scores.append(found.iloc[0]["actor_combined_score"])
+                except Exception:
+                    pass
 
         if actors_scores:  # Si la liste n'est pas vide, calculer la moyenne
             val.append(sum(actors_scores) / len(actors_scores))
@@ -104,10 +108,13 @@ def convert_distributor(df, column):
         df_distributors = df.iloc[index][
             column
         ]  # Assurez-vous que df_distributors est une liste de distributeurs
-        for distributor in df_distributors:
-            found = scores[scores["distributor"] == distributor]
-            if not found.empty:
-                distributors_scores.append(found.iloc[0]["distributor_combined_score"])
+        if df_distributors is not None:
+            for distributor in df_distributors:
+                found = scores[scores["distributor"] == distributor]
+                if not found.empty:
+                    distributors_scores.append(
+                        found.iloc[0]["distributor_combined_score"]
+                    )
 
         if distributors_scores:  # Si la liste n'est pas vide, calculer la moyenne
             val.append(sum(distributors_scores) / len(distributors_scores))
