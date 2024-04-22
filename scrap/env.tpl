@@ -1,0 +1,11 @@
+FILM_DB=
+FILM_USER=
+FILM_PWD=
+AZURE_URL=
+AZURE_USER=
+AZURE_PWD=
+IP_DB=
+SCRAP_JP=https://www.jpbox-office.com
+SCRAP_ALLO=https://www.allocine.fr
+SCRAP_IMDB=https://www.imdb.com
+CONFIG=
