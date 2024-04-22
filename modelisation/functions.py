@@ -23,6 +23,11 @@ def clean_genre(df):
     return df
 
 
+def clean_duration(df):
+    df["duration"] = df["duration"].fillna(-1)
+    return df
+
+
 def classify_entrees_year(df, column):
     # print(type(valeur))
     for index, valeur in df[column].items():
