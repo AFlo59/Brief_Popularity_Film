@@ -276,7 +276,7 @@
                                     {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,100,70.jpg
                                 {% else %}
                                     {{ film.thumbnail }}@.V1_QL100_UY100_CR1,0,70,100.jpg
-                                {% endif %}" alt="{{ film.title }}" {% endif %}>
+                                {% endif %}" alt="{{ film.title }}"{% else %} src="{% static 'img/image.png'%}" {% endif %}>
                 <figcaption>
                     <ul>
                         <li>#{{ film.classement }}. {{ film.title }}</li>
