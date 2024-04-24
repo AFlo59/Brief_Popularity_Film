@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 from modelisation.functions import load_file
 
@@ -12,9 +13,26 @@ def drop_after_converter(df):
             "country",
             "month",
             "day",
-            "year",
+            # "year",
         ]
     )
+
+
+def convert_json(df, column):
+    def parse(x):
+        if x is None:
+            return ""
+
+        if isinstance(x, list):
+            return x
+
+        if isinstance(x, str):
+            return json.loads(x)
+
+        return x
+
+    df[column] = df[column].apply(parse)
+    return df
 
 
 def convert_entrees_year(df, column):
@@ -66,9 +84,10 @@ def convert_director(df, column):
 
 def convert_actor(df, column):
     scores = load_file("actor_scores")
+    df = convert_json(df, column)
 
     # Calculer la médiane des scores des acteurs à utiliser comme valeur par défaut
-    mean_score = scores["actor_combined_score"].median()
+    mean_score = 0.25  # scores["actor_combined_score"].median()
 
     # Liste pour stocker les scores calculés
     val = []
@@ -99,9 +118,10 @@ def convert_actor(df, column):
 
 def convert_distributor(df, column):
     scores = load_file("distributor_scores")
+    df = convert_json(df, column)
 
     # Calculer la médiane des scores des distributeurs à utiliser comme valeur par défaut
-    mean_score = scores["distributor_combined_score"].median()
+    mean_score = 0.25  # scores["distributor_combined_score"].median()
 
     # Liste pour stocker les scores calculés
     val = []
@@ -125,4 +145,31 @@ def convert_distributor(df, column):
 
     # Ajouter les scores calculés au DataFrame
     df["distributor_combined_score"] = pd.Series(val)
+    return df
+
+
+def convert_genre(df, column):
+    scores = load_file("genre_scores")
+    df = convert_json(df, column)
+
+    mean_score = 0.25
+
+    # Liste pour stocker les scores calculés
+    val = []
+    for index, row in df.iterrows():
+        genres_scores = []
+        df_genres = df.iloc[index][column]
+        if df_genres is not None:
+            for genre in df_genres:
+                found = scores[scores["genre"] == genre]
+                if not found.empty:
+                    genres_scores.append(found.iloc[0]["genre_combined_score"])
+
+        if genres_scores:  # Si la liste n'est pas vide, calculer la moyenne
+            val.append(sum(genres_scores))  # / len(genres_scores))
+        else:  # Si aucun distributeur trouvé, utiliser la médiane des scores comme valeur par défaut
+            val.append(mean_score)
+
+    # Ajouter les scores calculés au DataFrame
+    df["genre_combined_score"] = pd.Series(val)
     return df
