@@ -23,14 +23,12 @@ def capitalize_name(name):
 
 def recettes_page(request):
     today = datetime.now().date()
-    current_weekday = today.weekday()
+    next_days = today + timedelta(days=1)
+    next_week = today + timedelta(days=7)
 
-    days_until_wednesday = (2 - current_weekday) % 7
-    wednesday_this_week = today + timedelta(days=days_until_wednesday)
-    next_tuesday = wednesday_this_week + timedelta(days=6)
 
     films = (
-        FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday)
+        FilmScrap.objects.filter(date__gte=next_days, date__lte=next_week)
         .order_by("-score_pred")
         .values("title", "id", "score_pred")
     )
@@ -114,14 +112,13 @@ def get_data(request):
 @login_required
 def predict_page(request):
     today = datetime.now().date()
-    current_weekday = today.weekday()
+    next_days = today + timedelta(days=1)
+    next_week = today + timedelta(days=7)
 
-    days_until_wednesday = (2 - current_weekday) % 7
-    wednesday_this_week = today + timedelta(days=days_until_wednesday)
-    next_tuesday = wednesday_this_week + timedelta(days=6)
+    
 
     films = (
-        FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday)
+        FilmScrap.objects.filter(date__gte=next_days, date__lte=next_week)
         .order_by("-score_pred")
     )
 
@@ -167,15 +164,8 @@ def predict_page(request):
 @login_required
 def historique_page(request):
     today = datetime.now().date()
-    current_weekday = today.weekday()
-
-    days_until_wednesday = (2 - current_weekday) % 7
-    wednesday_this_week = today + timedelta(days=days_until_wednesday)
-    next_tuesday = wednesday_this_week + timedelta(days=6)
-
-    # Calculate the range of dates from last Tuesday to 6 days before last Tuesday
-    start_date = wednesday_this_week - timedelta(days=14)
-    end_date = next_tuesday - timedelta(days=7)
+    start_date = today - timedelta(days=14)
+    end_date = today
 
     films = (
         FilmScrap.objects.filter(date__gte=start_date, date__lte=end_date)
@@ -205,14 +195,11 @@ def historique_page(request):
 @login_required
 def nouveautes_page(request):
     today = datetime.now().date()
-    current_weekday = today.weekday()
-
-    days_until_wednesday = (2 - current_weekday) % 7
-    wednesday_this_week = today + timedelta(days=days_until_wednesday)
-    next_tuesday = wednesday_this_week + timedelta(days=6)
+    next_days = today + timedelta(days=1)
+    next_week = today + timedelta(days=7)
 
     films = (
-        FilmScrap.objects.filter(date__gte=wednesday_this_week, date__lte=next_tuesday)
+        FilmScrap.objects.filter(date__gte=next_days, date__lte=next_week)
         .order_by("-score_pred")
     )[:10]
     fmt = "{0.hours}h {0.minutes}"
