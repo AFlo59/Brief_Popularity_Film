@@ -87,6 +87,3 @@ Django/
 ├── manage.py
 │
 └── README.md
-
-
-python manage.py tailwind install
