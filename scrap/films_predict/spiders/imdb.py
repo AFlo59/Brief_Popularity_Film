@@ -29,7 +29,7 @@ class ImdbMoviesSpider(scrapy.Spider):
                 FilmModel.original_title,
                 FilmModel.year,
             )
-            .where(FilmModel.scraped == 0)
+            .where((FilmModel.scraped == 0) & (FilmModel.time_created >= "2024-04-23"))
             .order_by(FilmModel.total_spectator.desc())
         )
         query = self.conn.execute(stmt)

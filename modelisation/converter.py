@@ -5,6 +5,7 @@ from modelisation.functions import load_file
 def drop_after_converter(df):
     return df.drop(
         columns=[
+            "duration",
             "director",
             "casting",
             "distributor",
@@ -86,7 +87,8 @@ def convert_actor(df, column):
                     pass
 
         if actors_scores:  # Si la liste n'est pas vide, calculer la moyenne
-            val.append(sum(actors_scores) / len(actors_scores))
+            # val.append(sum(actors_scores) / len(actors_scores))
+            val.append(sum(actors_scores))
         else:  # Si aucun acteur trouvé, utiliser la médiane des scores comme valeur par défaut
             val.append(mean_score)
 

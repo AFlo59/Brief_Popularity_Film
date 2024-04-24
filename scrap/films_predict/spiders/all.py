@@ -18,7 +18,7 @@ extractor = LinkExtractor(
 class AllMoviesSpider(scrapy.Spider):
     name = "all_movies"
     start_urls = [
-        f"{BASE_URL}/v9_demarrage.php?view=2",
+        f"{BASE_URL}/v9_demarrage.php?view=2&filtre=classg&limite=7500",
     ]
 
     def __init__(self):
@@ -53,4 +53,5 @@ class AllMoviesSpider(scrapy.Spider):
         ).get()
 
         if next_page:
+            print(f"{BASE_URL}{next_page}")
             yield scrapy.Request(f"{BASE_URL}{next_page}")

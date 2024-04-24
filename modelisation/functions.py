@@ -159,15 +159,6 @@ def is_holiday(df):
     return df
 
 
-def nettoyer_genre(df):
-    df["genre"] = df["genre"].apply(lambda x: x.split()[0] if x else None)
-    df["genre"] = df["genre"].str.replace('"', "")
-    df["genre"] = df["genre"].str.replace("[", "")
-    df["genre"] = df["genre"].str.replace("]", "")
-    df["genre"] = df["genre"].str.replace(",", "")
-    return df
-
-
 # ---------------------------------------------------
 
 
