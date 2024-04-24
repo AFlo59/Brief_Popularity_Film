@@ -51,7 +51,7 @@ def convert_country(df, column):
 
 def convert_director(df, column):
     scores = load_file("director_scores")
-    mean_score = scores["director_combined_score"].median()
+    mean_score = 0.25  # scores["director_combined_score"].median()
     val = []
     for index, row in df.iterrows():
         try:

@@ -43,3 +43,49 @@ SELECT distinct(actor)
      )
    ) as aa
    order by actor
+
+-- nb spectateur par acteur
+use films_db;
+SELECT actor, sum(jp.first_week) as week, sum(jp.total_spectator) as total, count(im.id) as nb_film
+FROM films_imdb as im
+join
+   JSON_TABLE(
+     im.casting,
+     "$[*]"
+     COLUMNS(
+       actor VARCHAR(255) PATH "$"
+     )
+   ) as aa
+LEFT JOIN films_jp jp ON jp.id = im.id_jp 
+where im.id_jp is not null and im.date = jp.date
+
+group by actor
+order by total desc
+
+-- nb spectateur par distributeur
+use films_db;
+SELECT dist, sum(jp.first_week) as week, sum(jp.total_spectator) as total, count(im.id) as nb_film
+FROM films_imdb as im
+join
+   JSON_TABLE(
+     im.distributor,
+     "$[*]"
+     COLUMNS(
+       dist VARCHAR(255) PATH "$"
+     )
+   ) as aa
+LEFT JOIN films_jp jp ON jp.id = im.id_jp 
+where im.id_jp is not null and im.date = jp.date
+
+group by dist
+order by total desc
+
+-- nb spectateur par realisateur
+use films_db;
+SELECT REPLACE(im.director, '"', '') as director, sum(jp.first_week) as week, sum(jp.total_spectator) as total, count(im.id) as nb_film
+FROM films_imdb as im
+LEFT JOIN films_jp jp ON jp.id = im.id_jp 
+where im.id_jp is not null and im.date = jp.date
+
+group by im.director
+order by total desc
