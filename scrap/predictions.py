@@ -1,30 +1,7 @@
-import json
-import pickle
-
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from pydantic import BaseModel
 from db.database_mysql import engine
 from sqlalchemy.sql import text
 from joblib import load
-
-
-# Modèle Pydantic pour la structure de donnée d'entrée
-class FeaturesInput(BaseModel):
-    year: int
-    day: int
-    month: int
-    duration: int
-    country: str
-    genre: str
-    director: str
-    distributor: str
-    casting: str
-
-
-class PredictionOutput(BaseModel):
-    nb_entree: float
-
 
 conn = engine.connect()
 
@@ -52,7 +29,7 @@ def batch_prediction():
         pred = one_prediction(dict(film))
         conn.execute(
             text(f""" update functionalities_filmscrap
-                                    set score_pred = {pred.nb_entree}
+                                    set score_pred = {pred[0]}
                                     where id='{film['id']}'""")
         )
 
@@ -85,7 +62,7 @@ def one_prediction(data: dict):
     model = load("_data_prediction/model.pkl")
 
     t = pipe_transform.transform(pd.DataFrame.from_dict(data))
-    pred = PredictionOutput(nb_entree=model.predict(t))
+    pred = model.predict(t)
     # print(pred)
 
     return pred
