@@ -1,5 +1,6 @@
 # Brief_Popularity_Film
 https://docs.google.com/document/d/1h7zXfZPCQWwzGSPq86XTDMQ9EpuFU0KU2U-AwzIBp-Y/edit
+https://www.canva.com/design/DAGDOPbUcKw/nE3kDhMeCVzk78CB65xq0g/edit
 
 Prédire la popularité d’un film - Projet Simplon DEV IA Valenciennes
 Contexte
